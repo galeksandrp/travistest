@@ -1,3 +1,11 @@
-language: c
-script:
-    - echo test test test test
+before_install:
+- openssl aes-256-cbc -K $encrypted_31dffbfc8a0a_key -iv $encrypted_31dffbfc8a0a_iv
+  -in id_rsa.enc -out ~/.ssh/id_rsa -d
+- chmod 600 ~/.ssh/id_rsa
+install:
+- sudo apt-get install -y autossh
+- echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6aZM9sttjXuKtwNn30dfDo2VEDbQpggRAu/2ft/6Qkr/PVch046PNqqJul8/h1k88oRJcjmPW13o0BmZDP2SR3cdkJjRIaNmY1gujEe+gcLhCkbhDCw421PR2YXd1KVo9jzV/yQVpjr/E4GbJtNZxbeZnlsVAmp9GQu+FbnzHfzXfvna0ph0hWt0mL+kyrQizgwsuj8cnepSNUejFB1XGwkDXIiMB5loyldGFeksvSN4PZkmcTBrMg+cFJt/E7FrdU37Zd6EVsOQcm5tBHKFpP3mxbBvzZompZqCXboLrYX3BOCHEuPZ5ysNjW8sP3KZ5LUndAx9ywtRHuE6wNH0T cabox@box-codeanywhere' >> ~/.ssh/authorized_keys
+- autossh -f -N cabox@preview.y0z7p1e06ozdunmiyhu5aqx9s0fcg14iptqsmrpmp2bxd2t9.box.codeanywhere.com -p 11458 -R 3722:127.0.0.1:22
+- watch -n 540 echo 'LOL'
+addons:
+  ssh_known_hosts: preview.y0z7p1e06ozdunmiyhu5aqx9s0fcg14iptqsmrpmp2bxd2t9.box.codeanywhere.com:11458
