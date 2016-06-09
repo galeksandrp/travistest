@@ -1,7 +1,3 @@
-language: android
-android:
-  components:
-    - android-17
 install:
 - sudo passwd -d $(whoami)
 - sudo passwd -d root
@@ -12,8 +8,9 @@ install:
 - sudo -u ng -i unzip ngrok-stable-linux-amd64.zip
 - sudo -u ng -i ./ngrok authtoken $NG
 - sudo -u ng -i ./ngrok tcp 22 > /dev/null &
-- export DEBIAN_FRONTEND=newt
 - watch -n 540 echo 'LOL'
-dist: trusty
+branches:
+  except:
+    - /^deploy-.*$/
 notifications:
   email: false
