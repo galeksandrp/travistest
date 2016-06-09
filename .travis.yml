@@ -1,3 +1,9 @@
+language: android
+sudo: required
+dist: trusty
+android:
+  components:
+    - android-17
 install:
 - sudo passwd -d $(whoami)
 - sudo passwd -d root
