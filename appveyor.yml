@@ -1,0 +1,37 @@
+version: 1.0.{build}
+branches:
+  only:
+  - /^appveyor-.*$/
+environment:
+  CLIENT_OVPN_SECRET:
+    secure: vY7Jr8z3G3cCY/ipTOsNvSJicodlIDj8hIXmxCoZCgs=
+  OPENVPN_PASSWORD:
+    secure: U4aH2bodfl5Tcb3+1sm3cubPd9sfzjDfcQUfTOhP7Lk=
+init:
+- ps: if ($env:APPVEYOR_REPO_COMMIT_MESSAGE -match '[ci rdp] ') {iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))}
+install:
+- ps: >-
+    iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
+
+    Disable-NetFirewallRule -DisplayName 'Core Networking - Dynamic Host Configuration Protocol (DHCP-Out)'
+- cmd: >-
+    choco install -y -i openvpn
+
+    appveyor-tools\secure-file -decrypt client.ovpn.enc -secret %CLIENT_OVPN_SECRET% -out "%PROGRAMFILES%\OpenVPN\config\client.ovpn"
+
+    cd "%PROGRAMFILES%\OpenVPN\config"
+
+    echo appveyor>> auth.txt
+
+    echo %OPENVPN_PASSWORD%>> auth.txt
+- ps: >-
+    echo "echo>$env:TMP\client.ovpn.lock" | out-file "$env:PROGRAMFILES\OpenVPN\config\client_up.bat" -encoding UTF8
+
+    start "$env:PROGRAMFILES\OpenVPN\bin\openvpn-gui" -argumentlist '--connect','client.ovpn'
+
+    while(!(Test-Path $env:TMP\client.ovpn.lock)) {
+        Start-Sleep -Seconds 1
+    }
+build_script:
+- cmd: >-
+    ping 192.168.1.60
