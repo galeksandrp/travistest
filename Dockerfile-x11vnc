@@ -1,0 +1,3 @@
+FROM galeksandrp/travistest:docker-x11vnc AS solib
+RUN echo 'sleep infinity' > .xinitrc
+CMD ["x11vnc", "-env", "FD_NOLISTEN=-listen tcp -ac", "-xdummy", "-setdesktopsize"]

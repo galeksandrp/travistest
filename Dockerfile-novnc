@@ -1,0 +1,4 @@
+FROM galeksandrp/novnc:docker-addclipboardsupport
+RUN apk add --no-cache bash
+RUN sed -i 's%</script>%rfb.resizeSession = true;</script>%' /usr/share/novnc/vnc_lite.html
+CMD ["sh", "-c", "echo -ne 'HTTP/1.0 200 OK\r\nRefresh: 2\r\nContent-Type: text/html\r\n\r\n<meta http-equiv=\"refresh\" content=\"2\">\r\nWAIT\r\n\r\n' | nc -l -p 6080 && exec novnc_server --vnc $VNC_SERVER:5900"]
