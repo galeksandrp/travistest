@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+docker-compose -f /c/docker/2833ruprod/docker-compose.yml exec -T phpshop apache2ctl "$@"
