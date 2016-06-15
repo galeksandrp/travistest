@@ -1,21 +1,34 @@
 language: cpp
+before_install:
+  - echo -e "machine bitbucket.org\nlogin galeksandrp\npassword $BITBUCKET_TOKEN" >> ~/.netrc
 install:
-- wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v-oss/zyxel_keenetics_gpl_v.1.00_4_d0.tar_.bz2
-  -O - | tar xj
-- yes 'Yes' | zyxel_keenetics_gpl_v.1.00_4_D0/zyxel_keenetics_gpl_v.1.00_4_D0.lnx
-  && rm zyxel_keenetics_gpl_v.1.00_4_D0 -rf
-- cd zyxel_keenetics_gpl_v.1.00_4_D0_161111/include
-- patch < ../../prereq-build.mk.patch
-- cd ..
+- git remote add private https://bitbucket.org/galeksandrp/zkp.git
+- git fetch private
+- git checkout private/master
+- cd $HOME
+- wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v1.1/zyxel_keenetics_gpl_v.1.00_4_D0_161111.tar.bz2 -O - | tar xj zyxel_keenetics_gpl_v.1.00_4_D0_161111/dl
+- cd $TRAVIS_BUILD_DIR
 script:
-- "./configure.sh keenetic"
+- ./configure.sh keenetic
+before_deploy:
+  - cd $TRAVIS_BUILD_DIR
+  - export COMMIT=$(git describe --abbrev=40 --always)
+  - export TAG=$(git describe --always)
+  - git checkout $TRAVIS_COMMIT
+  - echo version > $COMMIT
+  - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
+  - git tag deploy-$TAG || true
+  - git push --tags
 deploy:
   provider: releases
-  api_key:
-    secure: B8r1YGA7pxIe8c/wFWEHMqHBd4KYYO6Q23rydbmlxsu53E1rvVrg88ekY3AkUgihnQX2CYprDo68jS7Hq9J3xbSFj/XPD36ADN0FoLOhYBQaPROXVpt5iRSEHMdW3l97JCMEubvW8Y73B/7jRhr1AD3S0q4ODQ12Qt0sdL/ocXVBEQka17wEbKQmbznrFHwrUCEZNkD4HadWOWRaWptK3blo41Cq2J9an+TaLztzbE748Xz+8LL6NZaDWUFfWAzSMglWEBQy9szCMVjEGpdzKBchWy/zsm8aivCXEwJ6vynNCNQ6zMWq8SE1ec2tGf/jtguGDNkroDIOOQIKocTuXy+uDwBoV7YNQ08cst+SstgzAfBoHq7alSn5N+pcm84J8k3spxKbvx8mqBsEdPilc4+G7K3pPiaYEdGRcq3ZMuepjm8NDyHdfMXneBRNcAoeOBY6N6BVpOu0lDQJnqniFv+yQFVjJfftVQn8doou4MUMI+xD/qX9hrAf+cQbjMBPx+98SVMLkWseOTO1LZ4gmXUloWjiYLD439Jwnz4SwYBZVorrGU2wjcD7J7CdsLfxjU5CU+Fh/T0GmbYe+3gGN9x6h2DeXi1tsLzZJ4VhTKWWb8n69Cccar4bq7O59Cs9+WTCiOf8FJOEWHFPvr5wO2ngvYeo450DRa6PuSYc4uE=
+  api_key: $GITHUB_TOKEN
   skip_cleanup: true
-  file: !binary |-
-    RG8JCAgICAgICAgICAgICAgICAhEb2NrZXJmaWxl
+  file: $COMMIT
+  overwrite: true
   on:
-    repo: galeksandrp/travistest
-    branch: zkp
+    all_branches: true
+branches:
+  except:
+    - /^deploy-.*$/
+notifications:
+  email: false
