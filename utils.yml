@@ -1,0 +1,26 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  pgnewdump:
+    image: galeksandrp/travistest:docker-pg1c-12
+    command: |
+      sh -c 'echo $$POSTGRES_DATABASE:5432:$$POSTGRES_DATABASE:postgres:$$POSTGRES_PASSWORD > ~/.pgpass \
+        && chmod 0600 ~/.pgpass \
+        && pg_dump --file=/root/pgdump/$$POSTGRES_DATABASE.sql --format=c --host=$$POSTGRES_DATABASE --username=postgres $$POSTGRES_DATABASE'
+    user: root
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DATABASE: pgnew
+    volumes:
+      - ./docker-entrypoint-pg1c-pgnew.d:/root/pgdump
+  pggilevdump:
+    image: galeksandrp/travistest:docker-pg1c-12
+    command: |
+      sh -c 'echo $$POSTGRES_DATABASE:5432:$$POSTGRES_DATABASE:postgres:$$POSTGRES_PASSWORD > ~/.pgpass \
+        && chmod 0600 ~/.pgpass \
+        && pg_dump --file=/root/pgdump/$$POSTGRES_DATABASE.sql --format=c --host=$$POSTGRES_DATABASE --username=postgres $$POSTGRES_DATABASE'
+    user: root
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DATABASE: pggilev
+    volumes:
+      - ./docker-entrypoint-pg1c-pggilev.d:/root/pgdump

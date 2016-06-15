@@ -1,0 +1,72 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  pgnew:
+    build:
+      context: docker-entrypoint-pg1c-pgnew.d
+      dockerfile: ../Dockerfile-pg1c
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: pgnew
+      POSTGRES_USER_PASSWORD: pgnew
+    restart: always
+    volumes:
+      - pgnew:/var/lib/pgpro/1c-12/data
+  newpg:
+    build:
+      context: docker-entrypoint-1cserver-newpg.d
+      dockerfile: ../Dockerfile-1cserver
+    init: true
+    restart: always
+    hostname: 5a221807cf7e
+    volumes:
+      # - newpg:/home/usr1cv8/.1cv8/1C/1cv8
+      - ./docker-entrypoint-1cserver-newpg.d/1cv8:/home/usr1cv8/.1cv8/1C/1cv8
+      - /var/1C/licenses:/var/1C/licenses
+
+  pggilev:
+    build:
+      context: docker-entrypoint-pg1c-pggilev.d
+      dockerfile: ../Dockerfile-pg1c
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: pggilev
+      POSTGRES_USER_PASSWORD: pggilev
+    restart: always
+    volumes:
+      - pggilev:/var/lib/pgpro/1c-12/data
+      # - ./docker-entrypoint-pg1c.d/postgresql.conf:/var/lib/pgpro/1c-12/data/postgresql.conf:ro
+      # - ./docker-entrypoint-pg1c.d/pg_hba.conf:/var/lib/pgpro/1c-12/data/pg_hba.conf:ro
+  gilevpg:
+    build:
+      context: docker-entrypoint-1cserver-gilevpg.d
+      dockerfile: ../Dockerfile-1cserver
+    init: true
+    restart: always
+    hostname: 5a221807cf7e
+    volumes:
+      # - gilevpg:/home/usr1cv8/.1cv8/1C/1cv8
+      - ./docker-entrypoint-1cserver-gilevpg.d/1cv8:/home/usr1cv8/.1cv8/1C/1cv8
+      - /var/1C/licenses:/var/1C/licenses
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8800:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: example@example.com
+      PGADMIN_DEFAULT_PASSWORD: Example
+    restart: always
+    volumes:
+      - ./docker-entrypoint-pgadmin.d/servers.json:/pgadmin4/servers.json:ro
+
+volumes:
+  pgnew:
+  newpg:
+  pggilev:
+  gilevpg:
+  pgtrade:
+  tradepg:
+
+networks:
+  default:
+    name: customnetwork_1c
