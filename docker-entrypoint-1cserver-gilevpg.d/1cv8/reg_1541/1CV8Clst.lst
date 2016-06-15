@@ -1,0 +1,42 @@
+﻿{0,
+{cfaf2713-6ea8-4e26-b19f-b29fe5bd8f67,"Local cluster",1541,"gilevpg",0,0,0,60,0,0,0,
+{1,
+{"gilevpg",1541}
+},0,0,1,0},
+{1,
+{942f144a-692c-4b1f-938b-89f59fc64eac,"gilevpg","","PostgreSQL","pggilev","pggilev","postgres","ZXP/MUbJFiDnGW+9NEGdDD1pz+yAunVNfVmL8wEJINI=","CrSQLDB=Y;DB=pggilev;DBMS=PostgreSQL;DBSrvr=pggilev;DBUID=postgres;LIC=1016555994872648685;LicDstr=Y;Locale=ru_RU;Ref=gilevpg;SLev=0;Srvr=gilevpg;SUsr=",0,
+{0,00010101000000,00010101000000,"","","",0},0,1,"",0,"","",7,0}
+},
+{1,
+{91737d7b-894a-4503-a4b5-ba6c1b2781c1,"gilevpg",1,0,1000,e3b55f77-948d-4b08-80fb-6ae7b8d2e356,0}
+},
+{0},
+{1,
+{e3b55f77-948d-4b08-80fb-6ae7b8d2e356,"Main server",1540,"gilevpg",1,
+{1,
+{1560,1591}
+},"","wLGx1HnU9PabYdZT/oOJPQ==",0,0,8,256,1000,1,0,1,0,1,1541,0,0,300,""}
+},
+{1,
+{5a6a069b-bc3e-4fcd-b56d-0526ffee8be6,"Main cluster manager","gilevpg",1,1,e3b55f77-948d-4b08-80fb-6ae7b8d2e356}
+},
+{0},
+{0},
+{0},
+{0},
+{0},
+{0,0},0,
+{0},
+{0},
+{0},
+{0},
+{0},
+{0},
+{0},
+{0},
+{0},8,
+{0},
+{0},
+{""},
+{""},
+{0},"LcTuANWBTaMTAgSHB2FZFnQHA8fiEU2fp86BgJlJrLo="}

@@ -1,0 +1,42 @@
+﻿{0,
+{fde24e77-63b5-40f1-be2d-225fcb0b0532,"Local cluster",1541,"newpg",0,0,0,60,0,0,0,
+{1,
+{"newpg",1541}
+},0,0,1,0},
+{1,
+{1680ca26-196b-4e71-b60f-15a07ed5bce5,"newpg","","PostgreSQL","pgnew","pgnew","postgres","Vmiuj+HEKJduK5Y4Y1g+rlZkrxyWRiSvl8+YTNbNSNo=","CrSQLDB=Y;DB=pgnew;DBMS=PostgreSQL;DBSrvr=pgnew;DBUID=postgres;LIC=728067306574944237;LicDstr=Y;Locale=ru_RU;Ref=newpg;SLev=0;Srvr=newpg;SUsr=",0,
+{0,00010101000000,00010101000000,"","","",0},0,1,"",0,"","",4,0}
+},
+{1,
+{a69e8642-43a2-4b3d-b06a-fdab0bcc4f05,"newpg",1,0,1000,7aa5d034-8d87-4427-9b68-6241a48099e8,0}
+},
+{0},
+{1,
+{7aa5d034-8d87-4427-9b68-6241a48099e8,"Main server",1540,"newpg",1,
+{1,
+{1560,1591}
+},"","1JrSwE77iavpEz5PAu4GVw==",0,0,8,256,1000,1,0,1,0,1,1541,0,0,300,""}
+},
+{1,
+{0f1e7ed3-ab9c-4680-9bde-ea0d4e0e7452,"Main cluster manager","newpg",1,1,7aa5d034-8d87-4427-9b68-6241a48099e8}
+},
+{0},
+{0},
+{0},
+{0},
+{0},
+{0,0},0,
+{0},
+{0},
+{0},
+{0},
+{0},
+{0},
+{0},
+{0},
+{0},5,
+{0},
+{0},
+{""},
+{""},
+{0},"KrQUKoMUXyR6iiNYo4OBjZiUoR5Ovs5Sl96jfwFFeF8="}
