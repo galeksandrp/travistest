@@ -8,14 +8,23 @@ install:
 - patch < ../../prereq-build.mk.patch
 - cd ..
 script:
-- "./configure.sh keenetic"
+- ./configure.sh keenetic
+before_deploy:
+  - cd $TRAVIS_BUILD_DIR
+  - echo version > $TRAVIS_COMMIT
+  - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
+  - git tag deploy-$(git describe --always) || true
+  - git push --tags
 deploy:
   provider: releases
-  api_key:
-    secure: B8r1YGA7pxIe8c/wFWEHMqHBd4KYYO6Q23rydbmlxsu53E1rvVrg88ekY3AkUgihnQX2CYprDo68jS7Hq9J3xbSFj/XPD36ADN0FoLOhYBQaPROXVpt5iRSEHMdW3l97JCMEubvW8Y73B/7jRhr1AD3S0q4ODQ12Qt0sdL/ocXVBEQka17wEbKQmbznrFHwrUCEZNkD4HadWOWRaWptK3blo41Cq2J9an+TaLztzbE748Xz+8LL6NZaDWUFfWAzSMglWEBQy9szCMVjEGpdzKBchWy/zsm8aivCXEwJ6vynNCNQ6zMWq8SE1ec2tGf/jtguGDNkroDIOOQIKocTuXy+uDwBoV7YNQ08cst+SstgzAfBoHq7alSn5N+pcm84J8k3spxKbvx8mqBsEdPilc4+G7K3pPiaYEdGRcq3ZMuepjm8NDyHdfMXneBRNcAoeOBY6N6BVpOu0lDQJnqniFv+yQFVjJfftVQn8doou4MUMI+xD/qX9hrAf+cQbjMBPx+98SVMLkWseOTO1LZ4gmXUloWjiYLD439Jwnz4SwYBZVorrGU2wjcD7J7CdsLfxjU5CU+Fh/T0GmbYe+3gGN9x6h2DeXi1tsLzZJ4VhTKWWb8n69Cccar4bq7O59Cs9+WTCiOf8FJOEWHFPvr5wO2ngvYeo450DRa6PuSYc4uE=
+  api_key: $GITHUB_TOKEN
   skip_cleanup: true
-  file: !binary |-
-    RG8JCAgICAgICAgICAgICAgICAhEb2NrZXJmaWxl
+  file: $TRAVIS_COMMIT
+  overwrite: true
   on:
-    repo: galeksandrp/travistest
-    branch: zkp
+    all_branches: true
+branches:
+  except:
+    - /^deploy-.*$/
+notifications:
+  email: false
