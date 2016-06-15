@@ -5,34 +5,13 @@ branches:
 configuration: Release
 init:
 - ps: '#$blockRdp = $true; iex ((new-object net.webclient).DownloadString(''https://gist.githubusercontent.com/galeksandrp/d3ccaec044abed5d0ba2a01e72ad4c8b/raw/8abed8b5af35cb879abbb0e2ba4de21b5f097c08/enable-rdp.ps1''))'
-clone_script:
-- cmd: >-
-    git clone --depth=1 --single-branch https://github.com/bitcoin/bitcoin.git %APPVEYOR_BUILD_FOLDER%
-
-    git fetch --tags --depth=1 -q
-
-    git rev-list --tags --max-count=1 > output.txt
-
-    set /p GIT_TAG=<output.txt
-
-    git checkout %GIT_TAG%
 environment:
   RDP_PASSWORD:
     secure: EPntnepDJxCOkdpUUnJiYQ==
-install:
-- cmd: >-
-    set MSYSTEM=MINGW64
-
-    set CHERE_INVOKING=enabled_from_arguments
-
-    %SYSTEMDRIVE%\msys64\usr\bin\bash --login -c "pacman -S --noconfirm mingw-w64-x86_64-{boost,libevent}"
 build_script:
 - cmd: >-
-    %SYSTEMDRIVE%\msys64\usr\bin\bash --login -c "./autogen.sh"
+    "%ProgramFiles(x86)%\WiX Toolset v3.10\bin\candle" Sample.wxs
 
-    %SYSTEMDRIVE%\msys64\usr\bin\bash --login -c "./configure --disable-wallet --disable-tests --with-boost-libdir=/mingw64/lib --with-boost-system=boost_system-mt --with-boost-filesystem=boost_filesystem-mt --with-boost-program-options=boost_program_options-mt --with-boost-thread=boost_thread-mt --with-boost-chrono=boost_chrono-mt --with-boost-unit-test-framework=boost_unit_test_framework-mt"
-
-    %SYSTEMDRIVE%\msys64\usr\bin\bash --login -c "make -j3"
+    "%ProgramFiles(x86)%\WiX Toolset v3.10\bin\light" Sample.wixobj -ext WixUIExtension
 artifacts:
-- path: DepotDownloader\bin\Release\DepotDownloader.exe
-- path: DepotDownloader\bin\Release
+- path: Sample.msi
