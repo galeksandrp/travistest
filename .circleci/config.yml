@@ -1,0 +1,9 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: galeksandrp/travistest:docker-ubuntu-bionic
+    steps:
+      - checkout
+      - run: |
+          curl https://developer.microsoft.com/en-us/microsoft-edge/api/tools/vms/ | jq -r '.[].software[].files[].url' | xargs -i bash -c 'FILENAME=$(echo {} | cut -d '/' -f5,8 | tr '/' '_') && curl -H "Authorization: OAuth $YANDEX_DISK_SECONDARY_TOKEN" -f "https://cloud-api.yandex.net:443/v1/disk/resources?path=app:/$FILENAME&fields=name" || curl {} | curl -X PUT -T - $(curl -H "Authorization: OAuth $YANDEX_DISK_SECONDARY_TOKEN" -f "https://cloud-api.yandex.net:443/v1/disk/resources/upload?path=app:/$FILENAME" | jq -r ".href")'
