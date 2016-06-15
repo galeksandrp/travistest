@@ -1,0 +1,16 @@
+ version: 2
+ jobs:
+   build:
+     docker:
+       - image: mageia:5
+     working_directory: /opt/Wive-RTNL
+     steps:
+       - run: urpmi.update -a && urpmi --auto git groff zip --download-all
+       - run: git clone -b install-dependencies https://gitlab.com/galeksandrp/wive-ng-rtnl.git /opt/Wive-RTNL
+       - run: echo Mageia >> /etc/issue
+       - run:
+           command: ./build_toolchain.sh
+           working_directory: /opt/Wive-RTNL/toolchain
+       - run: ./compile RT3052-2T2R-USB
+       - store_artifacts:
+           path: /opt/Wive-RTNL/images
