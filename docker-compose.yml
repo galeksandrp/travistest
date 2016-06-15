@@ -1,0 +1,247 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  1cx11vnc:
+    build:
+      context: docker-entrypoint-1c.d
+      dockerfile: ../Dockerfile-1c
+    environment:
+      LANG: ru_RU.UTF-8
+      DISPLAY: ":0"
+    init: true
+    volumes_from:
+      - x11vnc
+    restart: always
+    hostname: 5a221807cf7e
+    volumes:
+      # - /tmp/.X11-unix:/tmp/.X11-unix
+      # - ~/.1cv8/1C/1cv8/conf/nethasp.ini:/root/.1cv8/1C/1cv8/conf/nethasp.ini:ro
+      - /var/1C/licenses:/var/1C/licenses
+      - ./docker-entrypoint-1c.d/ibases.v8i:/root/.1C/1cestart/ibases.v8i
+      # - 1c-documents:/root/Documents
+      - ./docker-entrypoint-1c.d/Documents:/root/Documents
+  openboxx11vnc:
+    build:
+      context: .github
+      dockerfile: ../Dockerfile-openbox
+    environment:
+      DISPLAY: ":0"
+    volumes_from:
+      - x11vnc
+    restart: always
+  xorg:
+    build:
+      context: .github
+      dockerfile: ../Dockerfile-xorg
+    restart: always
+    ipc: shareable
+    volumes:
+      - xorg-socket:/tmp/.X11-unix
+  x11vnc:
+    build:
+      context: docker-entrypoint-x11vnc.d
+      dockerfile: ../Dockerfile-x11vnc
+    command: x11vnc -env 'FD_NOLISTEN=-noreset +extension GLX +extension RANDR +extension RENDER -ac' -forever -setdesktopsize
+    environment:
+      DISPLAY: ":0"
+      X11VNC_PRINT_XERROR: yep
+    volumes_from:
+      - xorg
+    ipc: "service:xorg"
+    restart: always
+  novncx11vnc:
+    build:
+      context: .github
+      dockerfile: ../Dockerfile-novnc
+    environment:
+      VNC_SERVER: x11vnc
+      VIRTUAL_HOST: novncx11vnc-6080.kr.specmedtorg.ru
+    # depends_on:
+    #  - x11vnc
+    restart: always
+    ports:
+      - "6080"
+
+  1cxvnc:
+    build:
+      context: docker-entrypoint-1c.d
+      dockerfile: ../Dockerfile-1c
+    environment:
+      LANG: ru_RU.UTF-8
+      DISPLAY: ":0"
+    init: true
+    volumes_from:
+      - xvnc
+    restart: always
+    hostname: 5a221807cf7e
+    volumes:
+      # - ~/.1cv8/1C/1cv8/conf/nethasp.ini:/root/.1cv8/1C/1cv8/conf/nethasp.ini:ro
+      - /var/1C/licenses:/var/1C/licenses
+  openboxxvnc:
+    build:
+      context: .github
+      dockerfile: ../Dockerfile-openbox
+    environment:
+      DISPLAY: ":0"
+    volumes_from:
+      - xvnc
+    restart: always
+  xvnc:
+    image: galeksandrp/travistest:docker-xvnc
+    command: Xvnc SecurityTypes=None
+    restart: always
+    # ports:
+    #   - "5900:5900"
+    volumes:
+      - xvnc-socket:/tmp/.X11-unix
+  novncxvnc:
+    build:
+      context: .github
+      dockerfile: ../Dockerfile-novnc
+    environment:
+      VNC_SERVER: xvnc
+      VIRTUAL_HOST: novncxvnc-6080.kr.specmedtorg.ru
+    # depends_on:
+    #  - xvnc
+    restart: always
+    ports:
+      - "6080"
+
+  1cxrdp:
+    build:
+      context: docker-entrypoint-1c.d
+      dockerfile: ../Dockerfile-1c
+    environment:
+      LANG: ru_RU.UTF-8
+      DISPLAY: "xrdp:10"
+    init: true
+    restart: always
+    hostname: 5a221807cf7e
+    volumes:
+      # - ~/.1cv8/1C/1cv8/conf/nethasp.ini:/root/.1cv8/1C/1cv8/conf/nethasp.ini:ro
+      - /var/1C/licenses:/var/1C/licenses
+  openboxxrdp:
+    build:
+      context: .github
+      dockerfile: ../Dockerfile-openbox
+    environment:
+      DISPLAY: "xrdp:10"
+    volumes_from:
+      - xvnc
+    restart: always
+
+  1cxpra:
+    build:
+      context: docker-entrypoint-1c.d
+      dockerfile: ../Dockerfile-1c
+    environment:
+      LANG: ru_RU.UTF-8
+      DISPLAY: ":0"
+    init: true
+    volumes_from:
+      - xpra
+    restart: always
+    hostname: 5a221807cf7e
+    volumes:
+      # - ~/.1cv8/1C/1cv8/conf/nethasp.ini:/root/.1cv8/1C/1cv8/conf/nethasp.ini:ro
+      - /var/1C/licenses:/var/1C/licenses
+  xpra:
+    # image: galeksandrp/travistest:docker-xpra
+    build:
+      context: .github
+      dockerfile: ../Dockerfile-xpra
+    # command: "xpra start :0 --bind-tcp=0.0.0.0:10000 --daemon=no"
+    environment:
+      VIRTUAL_HOST: xpra-10000.kr.specmedtorg.ru
+      # LANG: ru_RU.UTF-8
+    ports:
+      - "10000"
+    restart: always
+    volumes:
+      - xpra-socket:/tmp/.X11-unix
+      - xpra-xauth:/root/.Xauthority
+
+  xrdp:
+    build:
+      context: .github
+      dockerfile: ../Dockerfile-xrdp
+    init: true
+    command: bash -c '(echo root:root | chpasswd) && xrdp-sesman && exec xrdp --nodaemon'
+    ports:
+      - "3390:3389"
+    volumes:
+      - xrdp-socket:/tmp/.X11-unix
+      - xrdp-xauth:/root/.Xauthority
+
+  nginx-back:
+    build:
+      context: docker-entrypoint-nginx.d
+      dockerfile: ../Dockerfile-nginx
+    environment:
+      VIRTUAL_HOST: 1c.kr.specmedtorg.ru
+      # LETSENCRYPT_HOST: 1c.kr.specmedtorg.ru
+    restart: always
+    volumes:
+      - ./docker-entrypoint-nginx.d:/usr/share/nginx/html
+
+  guacd:
+    image: guacamole/guacd
+    restart: always
+  guacamole:
+    image: guacamole/guacamole
+    environment:
+      GUACD_HOSTNAME: guacd
+      POSTGRES_HOSTNAME: postgres
+      POSTGRES_DATABASE: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 34q9wu49348hgdd
+      VIRTUAL_HOST: guacamole-8080.kr.specmedtorg.ru
+    restart: always
+  postgres:
+    image: postgres:15.1-alpine
+    environment:
+      POSTGRES_PASSWORD: 34q9wu49348hgdd
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      HSTS: off
+    volumes:
+      - ./docker-entrypoint-nginx-proxy.d/certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./docker-entrypoint-nginx-proxy.d/htpasswd:/etc/nginx/htpasswd
+  # nginx-proxy-acme:
+  #   image: nginxproxy/acme-companion
+  #   volumes_from:
+  #     - nginx-proxy
+  #   environment:
+  #     DEFAULT_EMAIL: galeksandrp@gmail.com
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - acme:/etc/acme.sh
+
+volumes:
+  1c-documents:
+  xpra-socket:
+  xpra-xauth:
+  x11vnc-socket:
+  xvnc-socket:
+  xrdp-socket:
+  xrdp-xauth:
+  xorg-socket:
+  xorg-xauth:
+  vhost:
+  html:
+  acme:
+
+networks:
+  default:
+    name: customnetwork_1c

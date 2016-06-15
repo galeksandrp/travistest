@@ -1,0 +1,6 @@
+FROM galeksandrp/travistest:docker-xpra
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  netcat \
+  && rm -rf /var/lib/apt/lists/*
+RUN echo '' > /etc/xpra/http-headers/10_content_security_policy.txt
+CMD ["sh", "-c", "echo -ne 'HTTP/1.0 200 OK\r\nRefresh: 2\r\nContent-Type: text/html\r\n\r\n<meta http-equiv=\"refresh\" content=\"2\">\r\nWAIT\r\n\r\n' | nc -l -q0 10000 && exec xpra start :0 --bind-tcp=0.0.0.0:10000 --daemon=no"]
