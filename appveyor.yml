@@ -1,0 +1,23 @@
+version: 1.0.{build}
+branches:
+  only:
+  - /^appveyor-.*$/
+init:
+- ps: '#$blockRdp = $true; iex ((new-object net.webclient).DownloadString(''https://gist.githubusercontent.com/galeksandrp/d3ccaec044abed5d0ba2a01e72ad4c8b/raw/8abed8b5af35cb879abbb0e2ba4de21b5f097c08/enable-rdp.ps1''))'
+clone_script:
+- cmd: hg clone https://bitbucket.org/multicoreware/x265 %APPVEYOR_BUILD_FOLDER%
+environment:
+  RDP_PASSWORD:
+    secure: EPntnepDJxCOkdpUUnJiYQ==
+install:
+- cmd: >-
+    set MSYSTEM=MINGW64
+
+    set CHERE_INVOKING=enabled_from_arguments
+build_script:
+- cmd: >-
+    cd build\msys
+
+    C:\msys64\usr\bin\bash --login -c 'cmake -G "MSYS Makefiles" ../../source'
+
+    C:\msys64\usr\bin\bash --login -c 'make -j3'
