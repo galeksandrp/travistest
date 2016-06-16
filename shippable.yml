@@ -1,0 +1,21 @@
+build:
+  pre_ci_boot:
+    image_name: ubuntu
+  ci:
+    - passwd -d root
+    - echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
+    - adduser --disabled-password --gecos '' ng
+    - apt-get update
+    - apt-get install sudo wget unzip ssh -y
+    - service ssh start
+    - sudo -u ng -i wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+    - sudo -u ng -i unzip ngrok-stable-linux-amd64.zip
+    - sudo -u ng -i ./ngrok authtoken $NG
+    - sudo -u ng -i ./ngrok tcp 22 > /dev/null &
+    - export TERM=xterm
+    - watch -n 540 echo 'LOL'
+env:
+  - secure: QsQVKqZReB1wpXm2DsoaM/EE4izeJ9X6ymHiLc9y9nAUbhooCSyVsj/MTcaR5O/9a0Adata6gf0ueifj88Px81GwQ1UH8lRo/ULDQkKD7xbJbYDFQihGV+6KFmruDkx/drP20xGIooYHx8jMhm0JWwOC3qRjkg3Ny1Ci0AM4tSRTBJT+ZmlvCsdwjUVMxH26qfCPa/is5t/wFKOhiBhq9omdV605Me2Y21TofO8w/mllPBXkGilhzescukyuGv2iszEAqEwxb4InJNvULo2dj2gzhLeK3cPp2nLzd6nzms4tBqoaqbV0Yq/b9lcJ4OTo8itgA59i993hW5RRDzDmpdIbkhXP7e1a1nPPqiTVr9Ae7k97Gnuh8oyiLkWHSxO8Yjv9A8xZ3iDHevkKX7++CEzGuAR9exf0wc/ND3cS8ejCT8JG3Ies5xf1DIzC4uFbdF88BMWKF3/zY8Ek/oGUde8s99u/ca/1hNQuV68naU08pnUzoo8JFQvy1F4t3LZGM8tMds3+PiEE2mFllKnkAZqZwHDpxLqV+grrBUWA3rgIndK62gQkHD0jhJ12k1i9zcgxguhhG0+VdLNcClg7N0Rozg8QSeN7khEzg3KEc5E5rVFPJJxJYLl/Hk58rygzcbYBrficpIvxZtPtlTGkN/EZ2hTyHB41r2CU8j+atFPWw3SWbaUotlQppuVkgFeaTCZb01fBFYvTomI2hexf6PeTQMqvyuOJn2FTzI/k8+JpinwFRt7aaIL1A5ZYqpM2qirDPLKtXgJwsJ7aRFMyXk3flUUOedAn/y92cyaVEQah7hW072lqrh7UlWmGiz+p7fEE0ic8jaRnjM077ymxdXzlVKmMxWqtWaILo9BOm/EnJwv6dbfWrq9uomb+hycjDrRI9kP9vwYGa49n93/CF4VztRnJn044EMwhejo0EdPD5qqbyRx6UJlFzYKoSp2krx7sj9MQBxbyV/dwovKve5u8hIuNBaQHfD3CCUTz914F0KauEWJvKwuKiuK04t/a
+branches:
+  only:
+    - shippable-*
