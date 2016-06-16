@@ -1,0 +1,37 @@
+version: 1.0.{build}
+branches:
+  only:
+  - /^appveyor-.*$/
+clone_script:
+- cmd: >-
+    appveyor DownloadFile https://www.ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+
+    echo %APPVEYOR_BUILD_FOLDER% | sed "s&\\\\&/&g" > output.txt
+
+    set /p APPVEYOR_BUILD_DIRECTORY=<output.txt
+
+    tar -xf ffmpeg-snapshot.tar.bz2 --strip=1 -C %APPVEYOR_BUILD_DIRECTORY% ffmpeg
+install:
+- cmd: >-
+    set MSYSTEM=MINGW64
+
+    set CHERE_INVOKING=enabled_from_arguments
+
+    C:\msys64\usr\bin\bash --login -c 'pacman -S --noconfirm mingw-w64-x86_64-{yasm,x264,x265,opus,lame,libvpx,twolame}'
+build_script:
+- cmd: >-
+    echo %MSYSTEM%
+
+    echo %CHERE_INVOKING%
+
+    C:\msys64\usr\bin\bash --login -c './configure --enable-gpl --enable-nonfree --enable-libx264 --enable-libx265 --enable-libopus --enable-libmp3lame --enable-libvpx --enable-libtwolame --prefix=C:/projects/$APPVEYOR_PROJECT_NAME/target'
+
+    C:\msys64\usr\bin\bash --login -c 'make -j3'
+    
+    C:\msys64\usr\bin\bash --login -c 'make install'
+artifacts:
+- path: ffmpeg_g.exe
+- path: ffprobe_g.exe
+- path: ffprobe.exe
+- path: ffmpeg.exe
+- path: target
