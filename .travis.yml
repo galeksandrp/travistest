@@ -1,3 +1,44 @@
+language: cpp
+addons:
+  apt:
+    packages:
+    - autossh
+    - distcc
+    - distcc-pump
+    - schedtool
+    - xsltproc
+    - flex
+    - gperf
+    - libxml2-utils
+before_install:
+- openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv -in id_rsa.enc -out ~/.ssh/id_rsa -d
+install:
+- mkdir -p ~/bin
+- export PATH=~/bin:$PATH
+- wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -O ~/bin/jq
+- chmod +x ~/bin/jq
+- chmod go-rw ~/.ssh/id_rsa
+- echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
+- echo $CIRCLECI_PUBLIC_KEY >> ~/.ssh/authorized_keys
+- wget $(grep 'deb http' /etc/apt/sources.list | head -n 1 | cut -d ' ' -f 2)/pool/universe/a/autossh/autossh_1.4c-1_amd64.deb
+- ar p autossh_1.4c-1_amd64.deb data.tar.gz | tar xz
+- sed 's&^exec /usr/lib/autossh/autossh "$@"$&exec ./usr/lib/autossh/autossh "$@"&' -i ./usr/bin/autossh
+script:
+- curl $(curl https://api.github.com/repos/galeksandrp/travistest/commits/$TRAVIS_COMMIT/statuses | jq -r '.[].target_url|select(startswith("https://circleci.com/"))' | head -n 1 | sed 's&https://circleci.com/gh/&https://circleci.com/api/v1.1/project/github/&') > out.txt
+- ssh-keyscan -t rsa -p$(jq -r '.node[0].port' out.txt) $(jq -r '.node[0].public_ip_addr' out.txt) >> ~/.ssh/known_hosts
+- ssh-keyscan -t dsa -p$(jq -r '.node[0].port' out.txt) $(jq -r '.node[0].public_ip_addr' out.txt) >> ~/.ssh/known_hosts
+- ssh-keyscan -t ecdsa -p$(jq -r '.node[0].port' out.txt) $(jq -r '.node[0].public_ip_addr' out.txt) >> ~/.ssh/known_hosts
+- ./usr/bin/autossh -f -N -R $PORT:127.0.0.1:22 $(jq -r '.node[0].username' out.txt)@$(jq -r '.node[0].public_ip_addr' out.txt) -p$(jq -r '.node[0].port' out.txt)
+- watch -n 540 echo 'LOL'
+env:
+- PORT=10000
+- PORT=10001
+- PORT=10002
+- PORT=10003
+- PORT=10004
 branches:
-  only:
-    - /^travis-.*$/
+  except:
+    - /^deploy-.*$/
+    - /^untagged-.*$/
+notifications:
+  email: false

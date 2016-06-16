@@ -1,0 +1,9 @@
+dependencies:
+  override:
+    - echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
+    - echo $PUBLIC_KEY | sudo tee /root/.ssh/authorized_keys
+    - echo $TRAVIS_PUBLIC_KEY >> ~/.ssh/authorized_keys
+    - echo $TRAVIS_PUBLIC_KEY | sudo tee /root/.ssh/authorized_keys
+test:
+  override:
+    - watch -n 540 echo 'LOL'
