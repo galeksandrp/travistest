@@ -1,0 +1,26 @@
+version: 1.0.{build}
+branches:
+  only:
+  - /^appveyor-.*$/
+clone_script:
+- cmd: git clone -q --branch=maint-0.2.8 --depth=1 https://git.torproject.org/tor.git C:\projects\travistest
+install:
+- cmd: >-
+    set MSYSTEM=MINGW64
+
+    set CHERE_INVOKING=enabled_from_arguments
+
+    C:\msys64\usr\bin\bash --login -c 'pacman -S --noconfirm mingw-w64-x86_64-libevent'
+build_script:
+- cmd: >-
+    echo %MSYSTEM%
+
+    echo %CHERE_INVOKING%
+
+    C:\msys64\usr\bin\bash --login -c './autogen.sh'
+
+    C:\msys64\usr\bin\bash --login -c './configure'
+
+    C:\msys64\usr\bin\bash --login -c 'mingw32-make -j3'
+artifacts:
+- path: src\or\tor.exe
