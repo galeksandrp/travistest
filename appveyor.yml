@@ -1,0 +1,25 @@
+version: 1.0.{build}
+branches:
+  only:
+  - /^appveyor-.*$/
+build_script:
+- cmd: >-
+    netsh interface teredo show state
+    
+    netsh interface ipv6 show dnsserver
+    
+    netsh interface ipv6 add dnsserver "Ethernet 5" "2001:4860:4860:0000:0000:0000:0000:8888"
+    
+    netsh interface ipv6 add dnsserver "Ethernet 5" 2001:4860:4860:0:0:0:0:8844
+    
+    ping -t 2001:4860:4860:0000:0000:0000:0000:8888
+    
+    ping ipv6.google.com
+    
+    netsh interface teredo set state enterpriseclient clientport=65535
+    
+    reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\Dnscache\Parameters" /v AddrConfigControl /t DWORD /d 0
+    
+    netsh interface teredo show state
+    
+    ping ipv6.google.com
