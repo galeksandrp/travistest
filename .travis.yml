@@ -1,3 +1,8 @@
+install:
+- wget http://media.steampowered.com/client/installer/steamcmd_linux.tar.gz -O - | tar xz
+- steamcmd_linux/steamcmd.sh +login anonymous +force_install_dir ~/css +app_update 232330 +quit
 branches:
-  only:
-    - /^travis-.*$/
+  except:
+    - /^deploy-.*$/
+notifications:
+  email: false
