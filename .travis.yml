@@ -1,3 +1,13 @@
+addons:
+  apt:
+    packages:
+    - lib32gcc1
+install:
+- npm install steam-totp
+- wget http://media.steampowered.com/client/installer/steamcmd_linux.tar.gz -O - | tar xz
+- ./steamcmd.sh +login $STEAM_NAME $STEAM_PASS $(node index.js $STEAM_SHARED_SECRET) +app_update 331470 +quit
 branches:
-  only:
-    - /^travis-.*$/
+  except:
+    - /^deploy-.*$/
+notifications:
+  email: false
