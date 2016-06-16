@@ -1,0 +1,9 @@
+build:
+  pre_ci:
+    - taskset -pc $$
+  ci:
+    - df -h
+    - taskset -pc $$
+branches:
+  only:
+    - shippable-*
