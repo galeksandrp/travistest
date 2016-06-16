@@ -1,0 +1,40 @@
+version: 1.0.{build}
+branches:
+  only:
+  - /^appveyor-.*$/
+init:
+- ps: '#$blockRdp = $true; iex ((new-object net.webclient).DownloadString(''https://gist.githubusercontent.com/galeksandrp/d3ccaec044abed5d0ba2a01e72ad4c8b/raw/8abed8b5af35cb879abbb0e2ba4de21b5f097c08/enable-rdp.ps1''))'
+clone_script:
+- cmd: >-
+    appveyor DownloadFile https://libav.org/releases/libav-12_beta1.tar.xz
+
+    7z x libav-12_beta1.tar.xz
+
+    cd ..
+
+    7z x %APPVEYOR_BUILD_FOLDER%\libav-12_beta1.tar
+
+    rd /s /q %APPVEYOR_BUILD_FOLDER%
+
+    ren libav-12_beta1 %APPVEYOR_PROJECT_NAME%
+
+    cd %APPVEYOR_BUILD_FOLDER%
+environment:
+  RDP_PASSWORD:
+    secure: EPntnepDJxCOkdpUUnJiYQ==
+install:
+- cmd: >-
+    set MSYSTEM=MINGW64
+
+    set CHERE_INVOKING=enabled_from_arguments
+
+    C:\msys64\usr\bin\bash --login -c 'pacman -S --noconfirm mingw-w64-x86_64-yasm'
+build_script:
+- cmd: >-
+    set MSYSTEM=MINGW64
+
+    set CHERE_INVOKING=enabled_from_arguments
+
+    C:\msys64\usr\bin\bash --login -c './configure'
+
+    C:\msys64\usr\bin\bash --login -c 'make -j3'
