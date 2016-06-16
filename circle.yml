@@ -1,0 +1,8 @@
+test:
+  override:
+    - df -h
+    - taskset -pc $$
+general:
+  branches:
+    only:
+      - /circle-.*/
