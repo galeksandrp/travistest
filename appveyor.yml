@@ -1,0 +1,31 @@
+version: 1.0.{build}
+branches:
+  only:
+  - /^appveyor-.*$/
+configuration: Release
+init:
+- ps: '#$blockRdp = $true; iex ((new-object net.webclient).DownloadString(''https://gist.githubusercontent.com/galeksandrp/d3ccaec044abed5d0ba2a01e72ad4c8b/raw/8abed8b5af35cb879abbb0e2ba4de21b5f097c08/enable-rdp.ps1''))'
+clone_script:
+- cmd: >-
+    git clone --depth=1 https://github.com/Jessecar96/SteamDesktopAuthenticator.git %APPVEYOR_BUILD_FOLDER%
+
+    git rev-list --tags --max-count=1 > output.txt
+
+    set /p GIT_TAG=<output.txt
+
+    git checkout %GIT_TAG%
+environment:
+  RDP_PASSWORD:
+    secure: EPntnepDJxCOkdpUUnJiYQ==
+install:
+- cmd: >-
+    git submodule update --init --recursive
+
+    nuget restore "Steam Desktop Authenticator"
+
+    nuget restore lib\SteamAuth\SteamAuth
+build:
+  project: Steam Desktop Authenticator\Steam Desktop Authenticator.sln
+  verbosity: minimal
+artifacts:
+- path: Steam Desktop Authenticator\bin\Release\Steam Desktop Authenticator.exe
