@@ -5,25 +5,26 @@ install:
 - git remote add private https://bitbucket.org/galeksandrp/zkp.git
 - git fetch private
 - git checkout private/master
-- cd $HOME
-- wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v1.1/zyxel_keenetics_gpl_v.1.00_4_D0_161111.tar.bz2 -O - | tar xj zyxel_keenetics_gpl_v.1.00_4_D0_161111/dl
-- cd $TRAVIS_BUILD_DIR
+- wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v1.1/zyxel_keenetics_gpl_v.1.00_4_D0_161111.tar.bz2 -O - | tar xj --strip=1 zyxel_keenetics_gpl_v.1.00_4_D0_161111/dl
 script:
 - ./configure.sh keenetic
+- make
 before_deploy:
   - cd $TRAVIS_BUILD_DIR
-  - export COMMIT=$(git describe --abbrev=40 --always)
-  - export TAG=$(git describe --always)
-  - git checkout $TRAVIS_COMMIT
-  - echo version > $COMMIT
+  - echo version > $(git describe --abbrev=40 --always)
   - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
-  - git tag deploy-$TAG || true
+  - git tag deploy-$(git describe --always) $TRAVIS_COMMIT || true
   - git push --tags
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   skip_cleanup: true
-  file: $COMMIT
+  file: 
+  - $(git describe --abbrev=40 --always)
+  - bin/*.bin
+  - bin/Kimage.lzma
+  - bin/Rimage.squashfs
+  file_glob: true
   overwrite: true
   on:
     all_branches: true
