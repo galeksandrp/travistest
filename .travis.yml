@@ -6,11 +6,13 @@ install:
 - git fetch private
 - git checkout private/master
 - wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v1.1/zyxel_keenetics_gpl_v.1.00_4_D0_161111.tar.bz2 -O - | tar xj --strip=1 zyxel_keenetics_gpl_v.1.00_4_D0_161111/dl
+- mv .git ~
 script:
 - ./configure.sh keenetic
 - make
 before_deploy:
   - cd $TRAVIS_BUILD_DIR
+  - mv ~/.git .
   - echo version > $(git describe --abbrev=40 --always)
   - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
   - git tag deploy-$(git describe --always) $TRAVIS_COMMIT || true
