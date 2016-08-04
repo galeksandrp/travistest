@@ -6,6 +6,7 @@ install:
 - git fetch private
 - git checkout private/master
 - wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v1.1/zyxel_keenetics_gpl_v.1.00_4_D0_161111.tar.bz2 -O - | tar xj --strip=1 zyxel_keenetics_gpl_v.1.00_4_D0_161111/dl
+- wget https://galeksandrp:$BITBUCKET_TOKEN@bitbucket.org/galeksandrp/zkp/downloads/linux-2.6.23-rt.tar.bz2 -O dl/linux-2.6.23-rt.tar.bz2
 - mv .git ~
 script:
 - ./configure.sh keenetic
