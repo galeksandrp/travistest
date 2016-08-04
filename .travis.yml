@@ -14,16 +14,18 @@ script:
 before_deploy:
   - cd $TRAVIS_BUILD_DIR
   - mv ~/.git .
-  - echo version > $(git describe --abbrev=40 --always)
+  - export COMMIT=$(git describe --abbrev=40 --always)
+  - echo version > $COMMIT
   - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
   - git tag deploy-$(git describe --always) $TRAVIS_COMMIT || true
-  - git push --tags
+  - git push origin deploy-$(git describe --always)
+  - echo $TRAVIS_COMMIT > .git/HEAD
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   skip_cleanup: true
   file: 
-  - $(git describe --abbrev=40 --always)
+  - $COMMIT
   - bin/*.bin
   - bin/Kimage.lzma
   - bin/Rimage.squashfs
@@ -34,5 +36,6 @@ deploy:
 branches:
   except:
     - /^deploy-.*$/
+    - /^untagged-.*$/
 notifications:
   email: false
