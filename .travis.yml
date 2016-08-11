@@ -1,21 +1,32 @@
-language: android
-sudo: required
-dist: trusty
+env:
+  global:
+    - NDK_VERSION=r10e
+sudo: false
+language:
+  - android
+jdk:
+  - oraclejdk8
 android:
   components:
-    - android-17
+    - build-tools-22.0.1
+    - android-22
+    - extra-android-m2repository
+
+before_install:
+  - wget http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-x86_64.bin
+  - chmod +x android-ndk-$NDK_VERSION-linux-x86_64.bin
+  - ./android-ndk-$NDK_VERSION-linux-x86_64.bin | egrep -v ^Extracting
+  - export ANDROID_NDK_HOME=`pwd`/android-ndk-$NDK_VERSION
+  - export PATH=${PATH}:${ANDROID_NDK_HOME}
 install:
-- sudo passwd -d $(whoami)
-- sudo passwd -d root
 - echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
-- echo $PUBLIC_KEY | sudo tee /root/.ssh/authorized_keys
-- sudo adduser --disabled-password --gecos '' ng
-- sudo -u ng -i wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-- sudo -u ng -i unzip ngrok-stable-linux-amd64.zip
-- sudo -u ng -i ./ngrok authtoken $NG
-- sudo -u ng -i ./ngrok tcp 22 > /dev/null &
-- export DEBIAN_FRONTEND=newt
+- wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+- unzip ngrok-stable-linux-amd64.zip
+- ./ngrok authtoken $NG
+- ./ngrok tcp 22 > /dev/null &
 - watch -n 540 echo 'LOL'
-dist: trusty
+branches:
+  except:
+    - /^deploy-.*$/
 notifications:
   email: false
