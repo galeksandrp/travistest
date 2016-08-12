@@ -3,14 +3,11 @@ env:
     - NDK_VERSION=r10e
 sudo: false
 language:
-  - android
-jdk:
-  - oraclejdk8
-android:
-  components:
-    - build-tools-22.0.1
-    - android-22
-    - extra-android-m2repository
+  - cpp
+addons:
+  apt:
+    packages:
+    - bc
 
 before_install:
   - wget http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-x86_64.bin
