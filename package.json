@@ -1,0 +1,7 @@
+{
+  "name": "travistest",
+  "version": "1.0.0",
+  "dependencies": {
+    "irc": "^0.5.0"
+  }
+}
