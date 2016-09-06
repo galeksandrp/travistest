@@ -1,38 +1,16 @@
-language: cpp
 before_install:
   - echo -e "machine bitbucket.org\nlogin galeksandrp\npassword $BITBUCKET_TOKEN" >> ~/.netrc
 install:
 - git remote add private https://bitbucket.org/galeksandrp/zkp.git
-- git fetch private
+- git fetch --depth=1 private master
 - git checkout private/master
-- wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v1.1/zyxel_keenetics_gpl_v.1.00_4_D0_161111.tar.bz2 -O - | tar xj --strip=1 zyxel_keenetics_gpl_v.1.00_4_D0_161111/dl
-- wget https://github.com/galeksandrp/travistest/releases/download/untagged-f93d524c833b3846a0e1/linux-2.6.23-rt.tar.bz2 -O dl/linux-2.6.23-rt.tar.bz2
-- mv .git ~
+- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"INPROGRESS\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_USER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_USER/zkp/commit/$(git describe --abbrev=40 --always)/statuses/build'
 script:
-- ./configure.sh keenetic
-- make
-before_deploy:
-  - cd $TRAVIS_BUILD_DIR
-  - mv ~/.git .
-  - export COMMIT=$(git describe --abbrev=40 --always)
-  - echo version > $COMMIT
-  - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
-  - git tag deploy-$(git describe --always) $TRAVIS_COMMIT || true
-  - git push origin deploy-$(git describe --always)
-  - echo $TRAVIS_COMMIT > .git/HEAD
-deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  skip_cleanup: true
-  file: 
-  - $COMMIT
-  - bin/*.bin
-  - bin/Kimage.lzma
-  - bin/Rimage.squashfs
-  file_glob: true
-  overwrite: true
-  on:
-    all_branches: true
+- sleep 30
+after_success:
+- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"SUCCESSFUL\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_USER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_USER/zkp/commit/$(git describe --abbrev=40 --always)/statuses/build'
+after_failure:
+- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"FAILED\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_USER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_USER/zkp/commit/$(git describe --abbrev=40 --always)/statuses/build'
 branches:
   except:
     - /^deploy-.*$/
