@@ -1,24 +1,18 @@
 language: cpp
-before_install:
-  - echo -e "machine bitbucket.org\nlogin galeksandrp\npassword $BITBUCKET_TOKEN" >> ~/.netrc
 install:
-- git remote add private https://bitbucket.org/galeksandrp/zkp.git
+- git remote add private https://github.com/samyk/pwnat.git
 - git fetch private
 - git checkout private/master
-- wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v1.1/zyxel_keenetics_gpl_v.1.00_4_D0_161111.tar.bz2 -O - | tar xj --strip=1 zyxel_keenetics_gpl_v.1.00_4_D0_161111/dl
-- wget https://github.com/galeksandrp/travistest/releases/download/untagged-f93d524c833b3846a0e1/linux-2.6.23-rt.tar.bz2 -O dl/linux-2.6.23-rt.tar.bz2
-- mv .git ~
 script:
-- ./configure.sh keenetic
-- make
+- make -j3
 before_deploy:
-  - cd $TRAVIS_BUILD_DIR
-  - mv ~/.git .
   - export COMMIT=$(git describe --abbrev=40 --always)
+  - export SHORT_COMMIT=$(git describe --always)
+  - tar cfz ~/pwnat-$SHORT_COMMIT.tar.gz .
   - echo version > $COMMIT
   - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
-  - git tag deploy-$(git describe --always) $TRAVIS_COMMIT || true
-  - git push origin deploy-$(git describe --always)
+  - git tag deploy-pwnat-$SHORT_COMMIT $TRAVIS_COMMIT || true
+  - git push origin deploy-pwnat-$SHORT_COMMIT -f
   - echo $TRAVIS_COMMIT > .git/HEAD
 deploy:
   provider: releases
@@ -26,10 +20,7 @@ deploy:
   skip_cleanup: true
   file: 
   - $COMMIT
-  - bin/*.bin
-  - bin/Kimage.lzma
-  - bin/Rimage.squashfs
-  file_glob: true
+  - $HOME/pwnat-$SHORT_COMMIT.tar.gz
   overwrite: true
   on:
     all_branches: true
