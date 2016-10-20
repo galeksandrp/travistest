@@ -1,16 +1,16 @@
 before_install:
   - echo -e "machine bitbucket.org\nlogin galeksandrp\npassword $BITBUCKET_TOKEN" >> ~/.netrc
 install:
-- git remote add private https://bitbucket.org/galeksandrp/zkp.git
-- git fetch --depth=1 private master
-- git checkout private/master
-- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"INPROGRESS\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_USER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_USER/zkp/commit/$(git describe --abbrev=40 --always)/statuses/build'
+- git remote add private https://bitbucket.org/$BITBUCKET_REPO_SLUG.git
+- git fetch --depth=50 private
+- git checkout -qf $BITBUCKET_COMMIT
+- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"INPROGRESS\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_SLUG/commit/$(git describe --abbrev=40 --always)/statuses/build'
 script:
 - sleep 30
 after_success:
-- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"SUCCESSFUL\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_USER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_USER/zkp/commit/$(git describe --abbrev=40 --always)/statuses/build'
+- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"SUCCESSFUL\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_SLUG/commit/$(git describe --abbrev=40 --always)/statuses/build'
 after_failure:
-- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"FAILED\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_USER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_USER/zkp/commit/$(git describe --abbrev=40 --always)/statuses/build'
+- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"FAILED\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_SLUG/commit/$(git describe --abbrev=40 --always)/statuses/build'
 branches:
   except:
     - /^deploy-.*$/
