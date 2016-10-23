@@ -1,6 +1,5 @@
 language: android
 jdk: oraclejdk8
-sudo: true  # For the 7.5GB limit
 
 env:
   global:
@@ -33,27 +32,16 @@ addons:
     branch_pattern: coverity_scan
 
 before_script:
-  # Create and start emulator as early as possible
-  - echo no | android create avd --force -n test -t android-22 --abi default/armeabi-v7a -s "768x1280" --device "Nexus 4" -c 128M
-  - emulator -avd test -no-audio -no-window &
-  # Download the emulator support stuff
-  - mkdir -p $HOME/.cache/ci-support
-  - curl -L https://github.com/connectbot/ci-support/archive/master.zip -z $HOME/.cache/ci-support/master.zip -o $HOME/.cache/ci-support/master.zip
-  - unzip -q $HOME/.cache/ci-support/master.zip -d $HOME
   # newest Android NDK
   - mkdir -p $HOME/.cache/ndk
   - curl https://dl.google.com/android/repository/android-ndk-${NDK_VERSION}-linux-x86_64.zip -z $HOME/.cache/ndk/ndk-${NDK_VERSION}.zip -o $HOME/.cache/ndk/ndk-${NDK_VERSION}.zip
   - unzip -q $HOME/.cache/ndk/ndk-$NDK_VERSION.zip -d $HOME
   - echo "ndk.dir=$HOME/android-ndk-$NDK_VERSION" >> local.properties
-  # For the lint checking mechanism
-  - mkdir -p $HOME/.cache/lint
-  ### The rest of the commands need the emulator running
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
-  # Install our ci-support stuff to make the emulator tests more reliable.
-  - adb install -r $HOME/ci-support-master/apk/android_emulator_hacks.apk
-  - adb shell pm grant no.finn.android_emulator_hacks android.permission.SET_ANIMATION_SCALE
-  - adb shell am start -n no.finn.android_emulator_hacks/no.finn.android_emulator_hacks.HackActivity
+
+install:
+- git remote add private https://github.com/connectbot/connectbot.git
+- git fetch --depth=1 private branch/1.8
+- git checkout private/branch/1.8
 
 android:
   components:
@@ -61,7 +49,6 @@ android:
     - tools
     - build-tools-23.0.3
     - android-23
-    - android-22 # for emulator
     - sys-img-armeabi-v7a-android-22
     - extra-android-support
     - extra-android-m2repository
@@ -70,12 +57,18 @@ android:
     - 'google-gdk-license-.+'
 
 script:
-  # Split up to reduce memory requirements
-  - ./gradlew --stacktrace --info clean
-  - ./gradlew --stacktrace --info assemble
-  - ./gradlew --stacktrace --info check
-  - ./gradlew --stacktrace --info jacocoUnitTestDebugReport
-  - ./gradlew --stacktrace --info jacocoCombinedReport
-  - ./scripts/check-lint-count.bash app/build/outputs/lint-results-debug.xml $HOME/.cache/lint/lint-results.xml
+- ./gradlew build
 
-after_success: ./gradlew coveralls
+branches:
+  except:
+    - /^deploy-.*$/
+    - /^untagged-.*$/
+notifications:
+  email: false
+
+after_success: >-
+  echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
+  
+  git push origin -f $TRAVIS_COMMIT:deploy-connectbot
+  
+  find bin -name '*.apk' -exec bash -c 'curl -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: $(file -b --mime-type {})" --data-binary @{} "https://uploads.github.com/repos/$TRAVIS_REPO_SLUG/releases/4466815/assets?name=$(basename {})"' \;
