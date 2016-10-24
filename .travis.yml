@@ -79,3 +79,4 @@ script:
   - ./scripts/check-lint-count.bash app/build/outputs/lint-results-debug.xml $HOME/.cache/lint/lint-results.xml
 
 after_success: ./gradlew coveralls
+
