@@ -1,0 +1,1 @@
+﻿Install-ChocolateyZipPackage -PackageName "$env:chocolateyPackageName" -Url64bit $(cat "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)\url.txt") -UnzipLocation "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)"
