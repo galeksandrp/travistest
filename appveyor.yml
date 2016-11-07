@@ -4,4 +4,4 @@ branches:
   - /^appveyor-.*$/
 build_script:
 - cmd: >-
-    dism
+    webpicmd
