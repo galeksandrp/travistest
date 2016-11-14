@@ -1,0 +1,24 @@
+version: 1.0.{build}
+branches:
+  only:
+  - /^appveyor-.*$/
+configuration: Release
+init:
+- ps: '#$blockRdp = $true; iex ((new-object net.webclient).DownloadString(''https://gist.githubusercontent.com/galeksandrp/d3ccaec044abed5d0ba2a01e72ad4c8b/raw/8abed8b5af35cb879abbb0e2ba4de21b5f097c08/enable-rdp.ps1''))'
+environment:
+  RDP_PASSWORD:
+    secure: EPntnepDJxCOkdpUUnJiYQ==
+build_script:
+- cmd: >-
+    mkdir bin
+
+    echo "Hello world" > bin\hello.txt
+
+    cd choco.portable
+
+    echo https://ci.appveyor.com/api/buildjobs/%APPVEYOR_JOB_ID%/artifacts/bin.zip> tools\url.txt
+
+    choco pack
+artifacts:
+- path: bin
+- path: '**\*.nupkg'
