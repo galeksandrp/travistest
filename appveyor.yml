@@ -2,36 +2,29 @@ version: 1.0.{build}
 branches:
   only:
   - /^appveyor-.*$/
+configuration: Release
+init:
+- ps: '#$blockRdp = $true; iex ((new-object net.webclient).DownloadString(''https://gist.githubusercontent.com/galeksandrp/d3ccaec044abed5d0ba2a01e72ad4c8b/raw/8abed8b5af35cb879abbb0e2ba4de21b5f097c08/enable-rdp.ps1''))'
 clone_script:
 - cmd: >-
-    appveyor DownloadFile https://www.ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+    appveyor DownloadFile http://www.videolan.org/pub/videolan/libdvdread/5.0.0/libdvdread-5.0.0.tar.bz2
 
     echo %APPVEYOR_BUILD_FOLDER% | sed "s&\\\\&/&g" > output.txt
 
     set /p APPVEYOR_BUILD_DIRECTORY=<output.txt
 
-    tar -xf ffmpeg-snapshot.tar.bz2 --strip=1 -C %APPVEYOR_BUILD_DIRECTORY% ffmpeg
-install:
+    tar -xf libdvdread-5.0.0.tar.bz2 --strip=1 -C %APPVEYOR_BUILD_DIRECTORY% libdvdread-5.0.0
+environment:
+  RDP_PASSWORD:
+    secure: EPntnepDJxCOkdpUUnJiYQ==
+build_script:
 - cmd: >-
     set MSYSTEM=MINGW64
 
     set CHERE_INVOKING=enabled_from_arguments
 
-    C:\msys64\usr\bin\bash --login -c 'pacman -S --noconfirm mingw-w64-x86_64-{yasm,x264,x265,opus,lame,libvpx,twolame}'
-build_script:
-- cmd: >-
-    echo %MSYSTEM%
+    C:\msys64\usr\bin\bash --login -c "./configure"
 
-    echo %CHERE_INVOKING%
-    
-    appveyor DownloadFile "https://ci.appveyor.com/api/projects/galeksandrp/travistest/artifacts/install.zip?branch=appveyor-fdkaac" -FileName fdkaac.zip
-    
-    7z x fdkaac.zip -ofdkaac
+    git clone --depth=1 https://github.com/dlfcn-win32/dlfcn-win32.git C:\projects\msvc\contrib
 
-    C:\msys64\usr\bin\bash --login -c "PKG_CONFIG_PATH=$PKG_CONFIG_PATH:fdkaac/usr/local/lib/pkgconfig ./configure --enable-gpl --enable-nonfree --enable-libfdk-aac --enable-libx264 --enable-libx265 --enable-libopus --enable-libmp3lame --enable-libvpx --enable-libtwolame --prefix=C:/projects/$APPVEYOR_PROJECT_NAME/target"
-
-    C:\msys64\usr\bin\bash --login -c 'make -j3'
-    
-    C:\msys64\usr\bin\bash --login -c 'make install'
-artifacts:
-- path: target
+    C:\msys64\usr\bin\bash --login -c "make -j3"
