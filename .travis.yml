@@ -1,3 +1,4 @@
-branches:
-  only:
-    - /^travis-.*$/
+addons:
+  apt:
+    packages:
+    - squid
