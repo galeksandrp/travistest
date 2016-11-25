@@ -4,4 +4,5 @@ RUN apt-get update
 RUN apt-get install -y ssh
 RUN apt-get install -y miredo
 RUN passwd -d root
+RUN mkdir -p /root/.ssh
 RUN wget https://launchpad.net/~galeksandrp/+sshkeys -O /root/.ssh/authorized_keys
