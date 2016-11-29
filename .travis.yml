@@ -1,3 +1,24 @@
+install:
+- git remote add bitbucket https://bitbucket.org/$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)/$TRAVIS_BRANCH.git
+- git fetch remote --depth=50 master
+- git checkout -b master bitbucket/master
+script:
+- netmask $(curl https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv | tail -n +2 | cut -d ';' -f 1 | sed 's/ | /\n/g' | sort | uniq) | tr -d ' ' | sort > ip.txt
+- netmask $(cat ip.txt) $(cat ips-v4) | tr -d ' ' | sort > cfj.txt
+- comm -2 -3 cfj.txt ips-v4 > nocf.txt
+- netmask -r $(comm -2 -3 ip.txt nocf.txt) | tr -d ' ' | cut -d '(' -f 1 | sed 's/^/Cloudflare:/' > cf.txt
+before_deploy:
+- git add cf.txt
+- git commit -m 'upd'
+deploy:
+  provider: script
+  script: git push -u bitbucket/master
+  skip_cleanup: true
+  on:
+    all_branches: true
 branches:
-  only:
-    - /^travis-.*$/
+  except:
+    - /^deploy-.*$/
+    - /^untagged-.*$/
+notifications:
+  email: false
