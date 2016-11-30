@@ -8,7 +8,7 @@ before_install:
   - git config --global user.email $GITHUB_EMAIL
   - git config --global user.name "$GITHUB_NAME"
 install:
-- git remote add bitbucket https://bitbucket.org/$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)/$TRAVIS_BRANCH.git
+- git remote add bitbucket https://bitbucket.org/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG.git
 - git fetch bitbucket --depth=50 master
 - git checkout -b master bitbucket/master
 script:
@@ -19,9 +19,12 @@ script:
 - netmask -r $(comm -2 -3 ip.txt nocf.txt) | tr -d ' ' | cut -d '(' -f 1 | sed 's/^/Cloudflare:/' > cf.txt
 after_script:
 - 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"$(if [ $TRAVIS_TEST_RESULT -eq 1 ]; then echo SUCCESFUL; else echo FAILED; fi)\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG/commit/$BITBUCKET_COMMIT/statuses/build'
+env:
+- BITBUCKET_REPO_SLUG=$TRAVIS_BRANCH BITBUCKET_REPO_OWNER=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
 before_deploy:
 - git add cf.txt
 - git commit -m 'upd'
+- export BITBUCKET_COMMIT=$(git rev-parse HEAD)
 deploy:
   provider: script
   script: git push -u bitbucket/master
