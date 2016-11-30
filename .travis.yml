@@ -7,6 +7,7 @@ before_install:
   - echo -e "machine bitbucket.org\nlogin galeksandrp\npassword $BITBUCKET_TOKEN" >> ~/.netrc
   - git config --global user.email $GITHUB_EMAIL
   - git config --global user.name "$GITHUB_NAME"
+  - git config --global push.default simple
 install:
 - git remote add bitbucket https://bitbucket.org/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG.git
 - git fetch bitbucket --depth=50 master
@@ -27,7 +28,7 @@ before_deploy:
 - export BITBUCKET_COMMIT=$(git rev-parse HEAD)
 deploy:
   provider: script
-  script: git push -u bitbucket/master
+  script: git push -u bitbucket master
   skip_cleanup: true
   on:
     all_branches: true
