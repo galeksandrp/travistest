@@ -1,0 +1,51 @@
+From 32fa5e705a02251549d68a89cd94d65a254adb27 Mon Sep 17 00:00:00 2001
+From: Alexander Georgievskiy <galeksandrp@gmail.com>
+Date: Wed, 4 Nov 2020 12:44:54 +0300
+Subject: [PATCH] Use CMake PPTP ctrl link fix
+
+---
+ PKGBUILD | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/PKGBUILD b/PKGBUILD
+index af525bb..d8a28db 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -20,7 +20,8 @@ source=("accel-ppp::git+$url"
+ 	'accel-pppd.service'
+ 	'dictionary.abills'
+ 	'dictionary.accel_ipoe'
+-        'shaper.patch')
++        'shaper.patch'
++	'0001-CMake-PPTP-ctrl-link-fix.patch::https://github.com/galeksandrp/accel-ppp/commit/patch-1.patch')
+ 
+ _pkgname=accel-ppp
+ 
+@@ -35,6 +36,8 @@ prepare() {
+         # Fix error build tc shaper:
+         patch -p1 <../shaper.patch
+ 	
++	patch -p1 <../0001-CMake-PPTP-ctrl-link-fix.patch
++
+ 	sed -i 's|RUNTIME DESTINATION sbin|RUNTIME DESTINATION bin|' \
+ 	"accel-pppd/CMakeLists.txt"
+ 
+@@ -56,7 +59,7 @@ build() {
+ 		-DLOG_FILE=TRUE \
+ 		-DLOG_PGSQL=FALSE \
+ 		-DSHAPER=TRUE \
+-		-DRADIUS=TRUE \
++		-DRADIUS=FALSE \
+ 		-DNETSNMP=FALSE \
+ 		-DLUA=5.3 \
+ 		-DLUA_INCLUDE_DIR="/usr/include" \
+@@ -90,4 +93,5 @@ md5sums=('SKIP'
+          '2cc98daa5fbd5b1163e5613e49fc9ef4'
+          '4e0d4fc5975ea8794ea286e8fbfa56cd'
+          '7caeb22558376885258f649ff8b07b18'
+-         'c203b966d62f3b04bf413f7b46af4212')
++         'c203b966d62f3b04bf413f7b46af4212'
++		 'SKIP')
+-- 
+2.29.2
+
