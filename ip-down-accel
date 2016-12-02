@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+PPP_INTERFACE="$1"
+
+echo "$PPP_INTERFACE ip-down"
+iptables -t mangle -D FORWARD -i $PPP_INTERFACE -j MARK --set-mark 7368816
+iptables -t filter -D FORWARD -i $PPP_INTERFACE -j ACCEPT
