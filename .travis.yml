@@ -1,5 +1,7 @@
-script
+script:
 - wget https://www.kinopoisk.ru/user/4253158/votes/list/export/xls/
 branches:
   only:
     - /^travis-.*$/
+notifications:
+  email: false
