@@ -1,7 +1,6 @@
 script:
-- wget https://www.kinopoisk.ru/user/4253158/votes/list/export/xls/
-branches:
-  only:
-    - /^travis-.*$/
+- 'wget --header "Cookie: PHPSESSID=$HE_PHPSESSID" --post-data "f_user=$GITHUB_NAME&f_pass=$HE_PASS" https://ipv6.he.net/certification/login.php'
+- 'wget --header "Cookie: PHPSESSID=$HE_PHPSESSID" --post-data "input=$(cat ipv6traceroute.txt)&submit=Submit" https://ipv6.he.net/certification/daily.php?test=traceroute'
+- 'wget --header "Cookie: PHPSESSID=$HE_PHPSESSID" --post-data "input=$(cat ipv6whois.txt)&submit=Submit" https://ipv6.he.net/certification/daily.php?test=whois'
 notifications:
   email: false
