@@ -1,0 +1,29 @@
+FROM archlinux AS archlinux-updated
+RUN pacman -Syu --noconfirm
+
+FROM archlinux-updated AS archlinux-sudo
+RUN pacman -Syu --noconfirm sudo
+RUN sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+RUN grep '^%wheel ALL=(ALL) NOPASSWD: ALL' /etc/sudoers || echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+# ng
+
+FROM archlinux-sudo AS archlinux-ng
+RUN useradd -G wheel -m ng
+WORKDIR /home/ng
+
+FROM archlinux-ng AS archlinux-ng-toolchain
+RUN pacman -Syu --noconfirm base-devel
+
+# yay
+
+FROM archlinux-ng-toolchain AS archlinux-yay-toolchain
+RUN pacman -Syu --noconfirm git
+RUN sudo -u ng git clone https://aur.archlinux.org/yay.git
+WORKDIR /home/ng/yay
+RUN sudo -u ng makepkg -s --noconfirm
+
+FROM archlinux-ng
+COPY --from=archlinux-yay-toolchain /home/ng/yay/*.pkg* /root/pkg/
+RUN pacman -U --noconfirm /root/pkg/*.pkg*
+RUN sudo -u ng gpg --search-keys galeksandrp || echo 'keyserver keys.gnupg.net' >> /home/ng/.gnupg/gpg.conf
