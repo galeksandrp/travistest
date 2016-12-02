@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+
+  xl2tpd:
+    image: galeksandrp/travistest:docker-arch-xl2tpd
+    ports:
+      - 1701:1701/udp
+    volumes:
+      - ./chap-secrets:/etc/ppp/chap-secrets:ro
+      - ./chap-secrets:/etc/ppp/pap-secrets:ro
+    devices:
+      - /dev/ppp
+    cap_add:
+      - NET_ADMIN
+
+  librespeed:
+    image: adolfintel/speedtest

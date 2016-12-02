@@ -1,0 +1,36 @@
+#login
+lcp-echo-interval 10
+lcp-echo-failure 2
+noipx
+
+ms-dns 8.8.8.8
+ms-dns 8.8.4.4
+
+nomppe
+nomppe-40
+nomppe-128
+nomppe-stateful
+
+#refuse-pap
+#refuse-chap
+#refuse-mschap
+
+require-pap
+require-chap
+require-mschap
+
+#require-mppe
+require-mschap-v2
+
+nodefaultroute
+proxyarp
+
+#bsdcomp
+#deflate
+#accomp
+#noccp
+#nopcomp
+#nopredictor1
+#novj
+#novjccomp
+#debug 7
