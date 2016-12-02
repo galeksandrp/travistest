@@ -1,5 +1,5 @@
 script: >
-  curl --header 'Content-Type:application/json' --header 'Accept: application/json' --request PATCH --data "{\"sha\":\"$(curl https://api.github.com/repos/EFForg/https-everywhere/git/refs/heads/master | jq -r '.object.sha')\"}" https://$GITHUB_NAME:$GITHUB_PASS@api.github.com/repos/$GITHUB_NAME/https-everywhere/git/refs/heads/master
+  curl --header 'Content-Type:application/json' --header 'Accept: application/json' --request PATCH --data "{\"sha\":\"$(curl https://api.github.com/repos/EFForg/https-everywhere/git/refs/heads/master | jq -r '.object.sha')\"}" https://$GITHUB_NAME:$GITHUB_TOKEN@api.github.com/repos/$GITHUB_NAME/https-everywhere/git/refs/heads/master
 env:
 - GITHUB_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
 notifications:
