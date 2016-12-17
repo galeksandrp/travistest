@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: galeksandrp/travistest:docker-offlineimap
+    steps:
+      - checkout
+      - run: echo -e "machine gitlab.com\nlogin $GITLAB_NAME\npassword $GITLAB_TOKEN" >> ~/.netrc
+      - run: git remote add gitlab https://gitlab.com/$GITHUB_NAME/2833.git
+      - run: git fetch gitlab $BRANCH
+      - run: git worktree add -b $BRANCH ~/mail gitlab/$BRANCH
+      - run: sed -i -e "s/OFFLINEIMAP_EMAIL/$EMAIL/" -e "s/OFFLINEIMAP_PASSWORD/$EMAIL_PASSWORD/" ./.offlineimaprc
+      - run: git fetch gitlab offlineimap
+      - run: git worktree add -b offlineimap ~/logs gitlab/offlineimap
+      - run: |
+          TERM=xterm watch -n 540 echo 'LOL' &
+          offlineimap -c ./.offlineimaprc &> ~/logs/$EMAIL.log
+      - run:
+          command: git add $EMAIL.log
+          working_directory: ~/logs
+      - run:
+          command: git commit -m 'Upd'
+          working_directory: ~/logs
+      - run:
+          command: git push gitlab offlineimap
+          working_directory: ~/logs
+      - run:
+          command: git add .
+          working_directory: ~/mail
+      - run:
+          command: git commit -m 'Upd'
+          working_directory: ~/mail
+      - run:
+          command: git push gitlab $BRANCH
+          working_directory: ~/mail
