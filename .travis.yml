@@ -1,8 +1,38 @@
+language: python
 install:
-- npm install -g dredd
-- npm install
+- echo -e "machine gitlab.com\nlogin $GITLAB_NAME\npassword $GITLAB_TOKEN" >> ~/.netrc
+- pip install offlineimap
+- git remote add gitlab https://gitlab.com/$GITLAB_NAME/2833.git
+- git fetch gitlab $BRANCH
+- git worktree add -b $BRANCH ~/mail gitlab/$BRANCH
+- sed -i -e "s/OFFLINEIMAP_EMAIL/$EMAIL/" -e "s/OFFLINEIMAP_PASSWORD/$EMAIL_PASSWORD/"
+  ./.offlineimaprc
+before_script:
+- git fetch gitlab offlineimap
+- git worktree add -b offlineimap ~/logs gitlab/offlineimap
 script:
-- node app.js &
-- dredd api-description.apib http://127.0.0.1:3000
+- travis_wait 120 sleep infinity &
+- offlineimap -c ./.offlineimaprc &> ~/logs/$EMAIL.log
+after_script:
+- cd ~/logs
+- git add $EMAIL.log
+- git commit -m 'Upd'
+- git fetch gitlab offlineimap
+- git rebase gitlab/offlineimap
+- git push gitlab offlineimap
+before_deploy:
+- cd ~/mail
+- git -c core.autocrlf=false add .
+- git -c core.autocrlf=false commit -m 'Upd' > /dev/null
+deploy:
+  provider: script
+  script: git push gitlab $BRANCH
+  on:
+    all_branches: true
 notifications:
   email: false
+env:
+  matrix:
+  - secure: UhHs45tgSBO709lGaOhiyGKHIpzp7DpvOegfrCB3Uy1PL1J9WTV/VlttHgXvke/fiq5NJpJACVG/rdJz40oH5WP0fAssMrhp3BBFPa22oUbwr8uopWL+38AoD8EJX9SuOoewbVT4oUMo+Y3Jv8I8lmDfZnuEiiXSCQmH4p2FlduZVeEi9PE1Fmf3LUCdam5zDOGNp0Env11iqOFsiklgmz/g48yOh5oBTafThsKV0u858P3LgnZ5F9+yiWAT/8G/Md1a9owKTXXgjdnoYWhxzgSbIjA+vDSRNshtDuaLv/zFOEv8zOrHiBezRdM9ZLVRgbAwRQjwIe3ZApYfh+nyX3A3HFMv3UUeeFTiXVNErrpTvhZtMCkJ1Y4JQWqJXzBasUl0RUGg681BUKNn142n61HDg7b1oPI28H3EU8rDc3/tMdqC4dBZDOFpO/rJbxqRUChx6ZWIPVO2fpsPwIxb2BbxOoNmmWX1PdlcFO3YdOhuH0H5BlbpgSFEip3aRZBp7Ud1f+KX/qqxbsBEO3ZD/ROM/IS8TZXbqIgxlzsPTkxr2PeTAL/J3mAWANK764rFnhH/yP2z3lbSDArazCN8CX9G8sT+TooOPVqdk7+Kjj4B4xij9ym5qt7+M7LermKfQRoMl9tbbIb4XCw2vmiKvpnGbSFTMHc2BgxegrB4T+w=
+  - secure: ogfQOfA9XZBZRj0nEyAvuF75zFKm/Yu1njlg4P0B8OjJWZAv61Pw/fogD4XnZX03b4UhatYBhhkzikMwBmSIffLaaN4grp5Cy2vA/cAl/iQO5rWz7Vy7MXGdQEROSbSPkXua5Ieptm90HrDGESEybV2EST7Iz6XwH016P+1fwxxS5JpdrxYSyounvqrW1Y1fdvpupf69nKRsQB8OAcqmlmMfszXf9c8ggLUDWzqGr3nXuLYNUrnMul4EihuwVkjuI92czE/zwkGGfW4MiOrUsTzEo2ulCky/ES2MoGKizXrs/3i+8jGPnd14cJg45H3tczckterf7ptEWOH8/htdQGtHja7GaK/Dx2rMR2PJypxr3ocY5cNCBKSJN3/K+CtTJz2JHEdCSDbmx7LrxRVL+9xcHgkXzC8VMvGxPIRB/3zPRE1yWkj9KyTc1P4xqDXSjXSQO+zeGlynJSExFjKxbt+gifRDCz78Bs73W4wAmgiG7CEie7f2Q1WNRoJ7IGtWf2iRITs6r/mMhfNDwOdu510f3WybtyVYwvzM2A2g3WJCip539uvNAyhplh8AO23ha0Ngv7d8L0YalR1EoKmMT9Nwo0x3aNTZlP3Vby79sZxNrR8SBi6y6um+07+oSggu6YXebEedUlqJhdzFfvcp8wN1Uzd2V+Q9y6+1P2vaN4A=
+  - secure: X5g+wUlzxIk1G3bsgs17feBrJlEyLY5VbZV27Tg73lRv9iY9QL3UbepXvqlzz9owkYv9NpuHJhP2kdm3U5+wWSNmUhu4R4QaVs1qA7bQp1rme+Shc/qqS/qJXFkCEbOOykiXZtwTHDvyLYgak949XEPgMvTZB9SdhZuF4stFZWbUoH0xkWZKwzmOTOuHsdX/4cHApdbXzHUPs53Z1jIJx0Hc82sZG3jsRLUaWOs4QnyDNOa0+bz9b1CfgW8ZmWDbGcTWYLp0dQ2mAXPGw87G8/ynu0HNnGoPLxVfn+szMRvovi5mQQKqviKFyOX1o0aSrblq8aEB8wkJiK16+4emwRPlp7mOEBmqNwroOVu30ppIc8Tg78jgUaHTLbNvTeeinLOl1R08rjwJ06gblzPqVo6CxHlKzx+KiWN+FPifMuQSMxRiHanjcyr7QQm5jODs2g0CyW2AimYO0XY6M5vFqoacyba+yfVZ4oix3/S6tiM0VulEGFvI9QJGykjQliwF/Cqpsz0R6nyTq3gchv4wq3RT7aC5EmfpQy0OzwC/cL/C22MDDP2Vt0ItXwYYTSGrKYpIlyyV/vApOeVDM23reM7zBDP/67/cdoxf1ARTx6pggIkZwVoE7ulwiLuGgil5CzuJJ+QoSQxmuG7sQxV2HJ0vOr6nAJccZqiDUDut9vE=
