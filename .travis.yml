@@ -1,0 +1,8 @@
+install:
+- npm install -g dredd
+- npm install
+script:
+- node app.js &
+- dredd api-description.apib http://127.0.0.1:3000
+notifications:
+  email: false
