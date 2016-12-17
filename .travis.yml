@@ -1,8 +1,5 @@
-install:
-- npm install -g dredd
-- npm install
 script:
-- node app.js &
-- dredd api-description.apib http://127.0.0.1:3000
+  - curl -d '{"source_name":"docker-arch"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
+  - curl -d '{"source_name":"docker-arch-yay"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
 notifications:
   email: false
