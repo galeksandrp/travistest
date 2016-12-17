@@ -1,0 +1,12 @@
+addons:
+  apt:
+    packages:
+    - openvpn
+sudo: required
+script:
+- ping -c 4 192.168.1.60
+notifications:
+  email: false
+before_install:
+- openssl aes-256-cbc -K $encrypted_d546f3f190be_key -iv $encrypted_d546f3f190be_iv
+  -in client.ovpn.enc -out client.ovpn -d
