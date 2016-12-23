@@ -3,6 +3,7 @@ jdk:
   - oraclejdk8
 android:
   components:
+    - build-tools-23.0.0
     - android-22
 before_install:
 - git remote add upstream https://github.com/bpellin/keepassdroid.git
