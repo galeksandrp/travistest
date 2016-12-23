@@ -15,6 +15,8 @@ install:
 - ./android-ndk-$NDK_VERSION-linux-x86_64.bin | egrep -v ^Extracting
 - export ANDROID_NDK_HOME=`pwd`/android-ndk-$NDK_VERSION
 - export PATH=${PATH}:${ANDROID_NDK_HOME}
+script:
+- ./gradlew build -x lint
 env:
   global:
     - NDK_VERSION=r10e
