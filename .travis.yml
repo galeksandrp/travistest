@@ -2,6 +2,8 @@ env:
   global:
     - NDK_VERSION=r10e
 language: android
+jdk:
+  - oraclejdk8
 android:
   components:
   - extra-android-m2repository
