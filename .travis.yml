@@ -5,7 +5,11 @@ before_install:
 - git checkout upstream/master
 - pip install --user fabric
 - pip install --user py-androidbuild
+- pip install --user android2po
+- pip install --user termcolor
 - echo "sdk_dir = $ANDROID_HOME" > .fabricrc
+- echo "deploy_host = travis@localhost$TRAVIS_BUILD_DIR" >> .fabricrc
+- echo "deploy_dir = $TRAVIS_BUILD_DIR" >> .fabricrc
 script:
 - fab build
 notifications:
