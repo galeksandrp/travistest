@@ -1,7 +1,31 @@
+env:
+  global:
+    - NDK_VERSION=r10e
 language: android
-before_install:
-- git remote add upstream https://github.com/AdAway/AdAway.git
-- git fetch --depth=1 upstream master
-- git checkout upstream/master
+android:
+  components:
+  - extra-android-m2repository
+  - platform-tools
+  - tools
+  - extra-android-support
+install:
+- git remote add private https://github.com/AdAway/AdAway.git
+- git fetch --depth=1 private master
+- git checkout private/master
+- wget https://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-x86_64.bin
+- chmod +x android-ndk-$NDK_VERSION-linux-x86_64.bin
+- ./android-ndk-$NDK_VERSION-linux-x86_64.bin | egrep -v ^Extracting
+- export ANDROID_NDK_HOME=`pwd`/android-ndk-$NDK_VERSION
+- export PATH=${PATH}:${ANDROID_NDK_HOME}:/usr/local/android-sdk/build-tools/23.0.1
+script:
+- cd AdAway
+- ndk-build
+- cd $TRAVIS_BUILD_DIR
+- ./gradlew renameExecutables
+- ./gradlew build
+branches:
+  except:
+    - /^deploy-.*$/
+    - /^untagged-.*$/
 notifications:
   email: false
