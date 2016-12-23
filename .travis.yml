@@ -5,6 +5,7 @@ before_install:
 - git checkout upstream/master
 - pip install --user fabric
 - pip install --user py-androidbuild
+- echo "sdk_dir = $ANDROID_HOME" > .fabricrc
 script:
 - fab build
 notifications:
