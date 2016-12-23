@@ -9,9 +9,11 @@ android:
   - tools
   - tools
   - build-tools-23.0.3
+  - build-tools-24.0.3
   - extra-android-m2repository
   - platform-tools
   - android-23
+  - android-25
   - extra-android-support
 install:
 - git remote add private https://github.com/AdAway/AdAway.git
