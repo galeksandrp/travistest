@@ -13,6 +13,6 @@ before_install:
 - git fetch --depth=1 upstream master
 - git checkout upstream/master
 script:
-- ./gradlew build -x lint
+- ./gradlew build -x lint -x test
 notifications:
   email: false
