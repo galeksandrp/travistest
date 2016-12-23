@@ -12,5 +12,7 @@ before_install:
 - git remote add upstream https://gitlab.com/fdroid/fdroidclient.git
 - git fetch --depth=1 upstream master
 - git checkout upstream/master
+script:
+- ./gradlew build -x lint
 notifications:
   email: false
