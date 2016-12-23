@@ -1,6 +1,6 @@
 language: android
 before_install:
-- git remote add upstream https://github.com/AdAway/AdAway.git
+- git remote add upstream https://github.com/miracle2k/android-autostarts.git
 - git fetch --depth=1 upstream master
 - git checkout upstream/master
 notifications:
