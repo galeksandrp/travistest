@@ -5,5 +5,14 @@ before_install:
 - git remote add upstream https://github.com/bpellin/keepassdroid.git
 - git fetch --depth=1 upstream master
 - git checkout upstream/master
+install:
+- wget https://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-x86_64.bin
+- chmod +x android-ndk-$NDK_VERSION-linux-x86_64.bin
+- ./android-ndk-$NDK_VERSION-linux-x86_64.bin | egrep -v ^Extracting
+- export ANDROID_NDK_HOME=`pwd`/android-ndk-$NDK_VERSION
+- export PATH=${PATH}:${ANDROID_NDK_HOME}
+env:
+  global:
+    - NDK_VERSION=r10e
 notifications:
   email: false
