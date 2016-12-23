@@ -1,5 +1,7 @@
-branches:
-  only:
-    - /^travis-.*$/
+language: android
+before_install:
+- git remote add upstream https://github.com/AdAway/AdAway.git
+- git fetch --depth=1 upstream master
+- git checkout upstream/master
 notifications:
   email: false
