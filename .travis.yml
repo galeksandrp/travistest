@@ -1,6 +1,6 @@
 language: android
 jdk:
-  - oraclejdk7
+  - oraclejdk8
 before_install:
 - git remote add upstream https://github.com/bpellin/keepassdroid.git
 - git fetch --depth=1 upstream master
