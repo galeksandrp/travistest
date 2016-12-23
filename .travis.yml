@@ -1,4 +1,8 @@
 language: android
+addons:
+  apt:
+    packages:
+    - fabric
 before_install:
 - git remote add upstream https://github.com/miracle2k/android-autostarts.git
 - git fetch --depth=1 upstream master
