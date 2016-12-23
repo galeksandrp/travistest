@@ -1,4 +1,6 @@
 language: android
+jdk:
+  - oraclejdk8
 before_install:
 - git  remote add upstream https://github.com/google/google-authenticator-android.git
 - git fetch --depth=1 upstream master
