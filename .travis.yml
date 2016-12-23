@@ -1,6 +1,10 @@
 language: android
 jdk:
   - oraclejdk8
+android:
+  components:
+    - build-tools-25.0.0
+    - android-24
 before_install:
 - git remote add upstream https://gitlab.com/fdroid/fdroidclient.git
 - git fetch --depth=1 upstream master
