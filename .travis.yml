@@ -33,7 +33,7 @@ deploy:
   api_key: $GITHUB_TOKEN
   skip_cleanup: true
   file: 
-  - project/build/apk/*.apk
+  - app/build/outputs/apk/*.apk
   file_glob: true
   overwrite: true
   on:
