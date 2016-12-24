@@ -7,8 +7,8 @@ android:
     - android-22
 before_install:
 - git remote add upstream https://github.com/bpellin/keepassdroid.git
-- git fetch --depth=1 upstream master
-- git checkout upstream/master
+- git fetch --depth=1 upstream --tags
+- git checkout $(git tag --sort=-v:refname | head -1)
 install:
 - wget https://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-x86_64.bin
 - chmod +x android-ndk-$NDK_VERSION-linux-x86_64.bin
@@ -17,8 +17,26 @@ install:
 - export PATH=${PATH}:${ANDROID_NDK_HOME}
 script:
 - ./gradlew build -x lint
+before_deploy:
+  - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
+  - echo $TRAVIS_COMMIT > .git/HEAD
+  - git push origin -f deploy-$TRAVIS_BRANCH
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  skip_cleanup: true
+  file: 
+  - project/build/apk/*.apk
+  file_glob: true
+  overwrite: true
+  on:
+    all_branches: true
 env:
   global:
     - NDK_VERSION=r10e
+branches:
+  except:
+    - /^deploy-.*$/
+    - /^untagged-.*$/
 notifications:
   email: false
