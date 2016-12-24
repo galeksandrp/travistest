@@ -26,6 +26,7 @@ script:
 before_deploy:
   - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
   - echo $TRAVIS_COMMIT > .git/HEAD
+  - git tag deploy-$TRAVIS_BRANCH
   - git push origin -f deploy-$TRAVIS_BRANCH
 deploy:
   provider: releases
