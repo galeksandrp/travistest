@@ -12,21 +12,28 @@ android:
     - build-tools-23.0.0
     - android-22
 before_install:
+- openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv
+  -in my-release-key.keystore.enc -out my-release-key.keystore -d
 - git remote add upstream https://github.com/bpellin/keepassdroid.git
 - git fetch --depth=1 upstream --tags -q
 - git checkout $(git tag --sort=-v:refname -l 'v*' | head -1)
+- git cherry-pick $TRAVIS_COMMIT --strategy=recursive -X theirs -n || true
 install:
 - wget https://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-x86_64.bin
 - chmod +x android-ndk-$NDK_VERSION-linux-x86_64.bin
 - ./android-ndk-$NDK_VERSION-linux-x86_64.bin | egrep -v ^Extracting
 - export ANDROID_NDK_HOME=`pwd`/android-ndk-$NDK_VERSION
 - export PATH=${PATH}:${ANDROID_NDK_HOME}
+- echo "RELEASE_STORE_FILE=$TRAVIS_BUILD_DIR/my-release-key.keystore" > gradle.properties
+- echo "RELEASE_STORE_PASSWORD=$KEYSTORE_PASS" >> gradle.properties
+- echo "RELEASE_KEY_ALIAS=alias_name" >> gradle.properties
+- echo "RELEASE_KEY_PASSWORD=$KEYSTORE_PASS" >> gradle.properties
 script:
 - ./gradlew build -x lint
 before_deploy:
   - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
   - echo $TRAVIS_COMMIT > .git/HEAD
-  - git tag deploy-$TRAVIS_BRANCH || true
+  - git tag -f deploy-$TRAVIS_BRANCH
   - git push origin -f deploy-$TRAVIS_BRANCH
 deploy:
   provider: releases
