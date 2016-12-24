@@ -8,7 +8,7 @@ android:
 before_install:
 - git remote add upstream https://github.com/bpellin/keepassdroid.git
 - git fetch --depth=1 upstream --tags
-- git checkout $(git tag --sort=-v:refname | head -1)
+- git checkout $(git tag --sort=-v:refname -l 'v*' | head -1)
 install:
 - wget https://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-x86_64.bin
 - chmod +x android-ndk-$NDK_VERSION-linux-x86_64.bin
