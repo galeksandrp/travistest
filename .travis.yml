@@ -13,7 +13,7 @@ android:
     - android-22
 before_install:
 - git remote add upstream https://github.com/bpellin/keepassdroid.git
-- git fetch --depth=1 upstream --tags
+- git fetch --depth=1 upstream --tags -q
 - git checkout $(git tag --sort=-v:refname -l 'v*' | head -1)
 install:
 - wget https://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-x86_64.bin
@@ -26,7 +26,7 @@ script:
 before_deploy:
   - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
   - echo $TRAVIS_COMMIT > .git/HEAD
-  - git tag deploy-$TRAVIS_BRANCH
+  - git tag deploy-$TRAVIS_BRANCH || true
   - git push origin -f deploy-$TRAVIS_BRANCH
 deploy:
   provider: releases
