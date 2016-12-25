@@ -1,7 +1,6 @@
-addons:
-  apt:
-    packages:
-    - fdroidserver
+language: python
+install:
+- pip install --user fdroidserver
 script:
 - mkdir repo
 - wget https://github.com/galeksandrp/Lightning-Browser/releases/download/deploy-7a3c7e0/app-lightningPlus-release-signed-aligned.apk
