@@ -2,11 +2,13 @@ language: python
 python:
 - "3.6"
 install:
-- pip install fdroidserver
+  - pip install pyyaml
+  - pip install pyasn1
+  - git clone --depth=1 https://gitlab.com/fdroid/fdroidserver.git
+  - export PATH="$PWD/fdroidserver:$PATH"
+  - touch config.py
 script:
-- mkdir repo
 - wget https://github.com/galeksandrp/Lightning-Browser/releases/download/deploy-7a3c7e0/app-lightningPlus-release-signed-aligned.apk
-- cd ..
 - fdroid update -c
 - fdroid update
 notifications:
