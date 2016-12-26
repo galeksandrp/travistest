@@ -2,6 +2,9 @@ language: python
 python:
 - "3.6"
 cache: pip
+before_install:
+- openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv
+  -in my-release-key.keystore.enc -out my-release-key.keystore -d
 install:
   - pip install clint
   - pip install GitPython
@@ -17,6 +20,8 @@ install:
   - git clone --depth=1 https://gitlab.com/fdroid/fdroidserver.git
   - export PATH="$PWD/fdroidserver:$PATH"
   - touch config.py
+  - echo "keystorepass = \"$KEYSTORE_PASS\"" >> config.py
+  - echo "keypass = \"$KEYSTORE_PASS\"" >> config.py
 script:
 - wget https://github.com/galeksandrp/Lightning-Browser/releases/download/deploy-7a3c7e0/app-lightningPlus-release-signed-aligned.apk
 - fdroid update -c
