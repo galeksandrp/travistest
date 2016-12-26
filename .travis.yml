@@ -12,6 +12,7 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv
   -in my-release-key.keystore.enc -out my-release-key.keystore -d
 install:
+  - python --version
   - easy_install3 --user pip
   - pip3 install --user clint
   - pip3 install --user GitPython
