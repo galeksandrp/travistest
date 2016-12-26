@@ -8,19 +8,23 @@ addons:
       - deadsnakes
     packages:
       - python3.5
+      - python3.5-dev
+android:
+  components:
+    - build-tools-23.0.0
 cache: pip
 before_install:
 - openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv
   -in my-release-key.keystore.enc -out my-release-key.keystore -d
 install:
-  - alias python=python3.5
-  - echo 'alias python=python3.5' >> ~/.bashrc
+  - mkdir -p ~/bin
+  - ln -s /usr/bin/python3.5 ~/bin/python3
   - wget https://bootstrap.pypa.io/get-pip.py
   - python3.5 get-pip.py --user
   - pip3 install --user clint
   - pip3 install --user GitPython
   - pip3 install --user mwclient
-  - echo pip3 install --user paramiko
+  - pip3 install --user paramiko
   - pip3 install --user Pillow
   - pip3 install --user 'apache-libcloud >= 0.14.1'
   - pip3 install --user pyasn1
@@ -33,10 +37,14 @@ install:
   - touch config.py
   - echo "keystorepass = \"$KEYSTORE_PASS\"" >> config.py
   - echo "keypass = \"$KEYSTORE_PASS\"" >> config.py
+  - chmod 0600 config.py
 script:
 - mkdir repo
 - cd repo
-- wget https://github.com/galeksandrp/Lightning-Browser/releases/download/deploy-7a3c7e0/app-lightningPlus-release-signed-aligned.apk
+- wget $(curl https://api.github.com/repos/galeksandrp/Lightning-Browser/releases/latest | jq -r '.assets[]|select(.name=="app-lightningPlus-release-signed-aligned.apk").browser_download_url')
+- wget $(curl https://api.github.com/repos/galeksandrp/orbot/releases/latest | jq -r '.assets[]|select(.name=="Orbot-signed-aligned.apk").browser_download_url')
+- wget $(curl https://api.github.com/repos/galeksandrp/droidwall/releases/latest | jq -r '.assets[]|select(.name=="MainActivity-release.apk").browser_download_url')
+- wget $(curl https://api.github.com/repos/galeksandrp/hackerskeyboard/releases/latest | jq -r '.assets[]|select(.name=="hackerskeyboard-release.apk").browser_download_url')
 - cd ..
 - fdroid update -c
 - fdroid update
