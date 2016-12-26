@@ -1,11 +1,11 @@
 language: android
 sudo: false
-dist: trusty
+jdk:
+  - oraclejdk8
 addons:
   apt:
     packages:
       - python3
-      - python3-pip
       - python3-setuptools
 cache: pip
 before_install:
