@@ -20,7 +20,7 @@ install:
   - pip3 install --user clint
   - pip3 install --user GitPython
   - pip3 install --user mwclient
-  - pip3 install --user paramiko
+  - echo pip3 install --user paramiko
   - pip3 install --user Pillow
   - pip3 install --user 'apache-libcloud >= 0.14.1'
   - pip3 install --user pyasn1
