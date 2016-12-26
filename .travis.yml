@@ -31,7 +31,7 @@ before_deploy:
 - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
 deploy:
   provider: script
-  script: 'git add . && git rm -f config.py && git commit -m "Push" && git push -f origin HEAD:gh-pages'
+  script: 'git checkout -b gh-pages && git add . && git rm -f config.py && git commit -m "Push" && git push -f origin gh-pages'
   skip_cleanup: true
   on:
     all_branches: true
