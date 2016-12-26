@@ -2,8 +2,17 @@ language: python
 python:
 - "3.6"
 install:
-  - pip install pyyaml
+  - pip install clint
+  - pip install GitPython
+  - pip install mwclient
+  - pip install paramiko
+  - pip install Pillow
+  - pip install apache-libcloud >= 0.14.1
   - pip install pyasn1
+  - pip install pyasn1-modules
+  - pip install PyYAML
+  - pip install requests < 2.11
+  - pip install docker-py == 1.9.0
   - git clone --depth=1 https://gitlab.com/fdroid/fdroidserver.git
   - export PATH="$PWD/fdroidserver:$PATH"
   - touch config.py
