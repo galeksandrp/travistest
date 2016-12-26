@@ -29,7 +29,7 @@ script:
 - fdroid update
 deploy:
   provider: script
-  script: 'git add . && git rm config.py && git commit -m "Push" && git push -f origin HEAD:gh-pages'
+  script: 'git add . && git rm -f config.py && git commit -m "Push" && git push -f origin HEAD:gh-pages'
   skip_cleanup: true
   on:
     all_branches: true
