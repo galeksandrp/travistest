@@ -24,14 +24,17 @@ install:
   - echo "keystorepass = \"$KEYSTORE_PASS\"" >> config.py
   - echo "keypass = \"$KEYSTORE_PASS\"" >> config.py
 script:
+- mkdir repo
+- cd repo
 - wget https://github.com/galeksandrp/Lightning-Browser/releases/download/deploy-7a3c7e0/app-lightningPlus-release-signed-aligned.apk
+- cd ..
 - fdroid update -c
 - fdroid update
 before_deploy:
 - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
 deploy:
   provider: script
-  script: 'git checkout -b gh-pages && git add . && git rm -f config.py && git commit -m "Push" && git push -f origin gh-pages'
+  script: 'git checkout -b gh-pages && git add . && git commit -m "Push" && git push -f origin gh-pages'
   skip_cleanup: true
   on:
     all_branches: true
