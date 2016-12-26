@@ -1,12 +1,12 @@
 language: android
+sudo: false
 dist: trusty
-jdk:
-  - oraclejdk8
 addons:
   apt:
     packages:
       - python3
       - python3-pip
+      - oracle-java8-installer
 cache: pip
 before_install:
 - openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv
