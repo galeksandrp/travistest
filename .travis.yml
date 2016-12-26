@@ -1,23 +1,21 @@
-language: python
+language: android
 sudo: false
-python:
-- "3.6"
 cache: pip
 before_install:
 - openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv
   -in my-release-key.keystore.enc -out my-release-key.keystore -d
 install:
-  - pip install clint
-  - pip install GitPython
-  - pip install mwclient
-  - pip install paramiko
-  - pip install Pillow
-  - pip install 'apache-libcloud >= 0.14.1'
-  - pip install pyasn1
-  - pip install pyasn1-modules
-  - pip install PyYAML
-  - pip install 'requests < 2.11'
-  - pip install 'docker-py == 1.9.0'
+  - pip3 install --user clint
+  - pip3 install --user GitPython
+  - pip3 install --user mwclient
+  - pip3 install --user paramiko
+  - pip3 install --user Pillow
+  - pip3 install --user 'apache-libcloud >= 0.14.1'
+  - pip3 install --user pyasn1
+  - pip3 install --user pyasn1-modules
+  - pip3 install --user PyYAML
+  - pip3 install --user 'requests < 2.11'
+  - pip3 install --user 'docker-py == 1.9.0'
   - git clone --depth=1 https://gitlab.com/fdroid/fdroidserver.git
   - export PATH="$PWD/fdroidserver:$PATH"
   - touch config.py
