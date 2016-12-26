@@ -1,6 +1,8 @@
 language: android
 sudo: false
 dist: trusty
+jdk:
+  - oraclejdk8
 addons:
   apt:
     packages:
