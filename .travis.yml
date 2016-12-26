@@ -26,5 +26,11 @@ script:
 - wget https://github.com/galeksandrp/Lightning-Browser/releases/download/deploy-7a3c7e0/app-lightningPlus-release-signed-aligned.apk
 - fdroid update -c
 - fdroid update
+deploy:
+  provider: script
+  script: 'git add . && git rm config.py && git commit -m "Push" && git push -f origin HEAD:gh-pages'
+  skip_cleanup: true
+  on:
+    all_branches: true
 notifications:
   email: false

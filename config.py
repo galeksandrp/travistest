@@ -101,7 +101,7 @@ repo_keyalias = "alias_name"
 # be specified here. There is no need to do this, as the public key can and
 # will be retrieved from the keystore when needed. However, specifying it
 # manually can allow some processing to take place without access to the
-# keystore.
+# keystore.s
 # repo_pubkey = "..."
 
 # The keystore to use for release keys when building. This needs to be
