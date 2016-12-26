@@ -27,6 +27,8 @@ script:
 - wget https://github.com/galeksandrp/Lightning-Browser/releases/download/deploy-7a3c7e0/app-lightningPlus-release-signed-aligned.apk
 - fdroid update -c
 - fdroid update
+before_deploy:
+- echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
 deploy:
   provider: script
   script: 'git add . && git rm -f config.py && git commit -m "Push" && git push -f origin HEAD:gh-pages'
