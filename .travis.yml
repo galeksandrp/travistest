@@ -13,7 +13,6 @@ before_install:
   -in my-release-key.keystore.enc -out my-release-key.keystore -d
 install:
   - easy_install3 --user pip
-  - pip --version
   - pip3 install --user clint
   - pip3 install --user GitPython
   - pip3 install --user mwclient
