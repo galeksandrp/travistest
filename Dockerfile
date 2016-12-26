@@ -5,8 +5,7 @@ RUN apt-get install -y wget
 RUN apt-get install -y unzip
 RUN apt-get install -y ssh
 RUN passwd -d root
-RUN mkdir -p /root/.ssh
-RUN wget https://launchpad.net/~galeksandrp/+sshkeys -O /root/.ssh/authorized_keys
+COPY authorized_keys /root/.ssh/authorized_keys
 RUN adduser --disabled-password --gecos '' ng
 USER ng
 WORKDIR /home/ng
