@@ -11,6 +11,8 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv
   -in my-release-key.keystore.enc -out my-release-key.keystore -d
 install:
+  - alias python=python3
+  - echo 'alias python=python3' >> ~/.bashrc
   - wget https://bootstrap.pypa.io/3.2/get-pip.py
   - python3 get-pip.py --user
   - pip3 install --user clint
