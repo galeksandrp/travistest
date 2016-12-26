@@ -1,0 +1,34 @@
+language: android
+# set up the vm for android compilation
+android:
+  components:
+    - build-tools-21.0.1
+    - platform-tools
+    - android-14
+    - android-16
+    - android-17
+    - extra-android-support
+addons:
+  apt:
+    packages:
+      - nodejs
+      - npm
+before_install:
+  # Set up android build environment
+  - git submodule update --init --recursive
+  # Setup and run the grunt task to optimize the www submodule
+  - npm install -g grunt-cli
+  - cd assets/www/xp/
+  - npm install
+  - grunt android
+  - cd ../../..
+script:
+  - ant release
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  skip_cleanup: true
+  file: 
+  - bin/MantisCI-release.apk
+  on:
+    all_branches: true
