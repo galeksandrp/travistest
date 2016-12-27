@@ -41,20 +41,22 @@ install:
 script:
 - mkdir repo
 - cd repo
-- wget $(curl https://api.github.com/repos/galeksandrp/Lightning-Browser/releases/latest | jq -r '.assets[]|select(.name=="app-lightningPlus-release-signed-aligned.apk").browser_download_url')
-- wget $(curl https://api.github.com/repos/galeksandrp/orbot/releases/latest | jq -r '.assets[]|select(.name=="Orbot-signed-aligned.apk").browser_download_url')
-- wget $(curl https://api.github.com/repos/galeksandrp/droidwall/releases/latest | jq -r '.assets[]|select(.name=="MainActivity-release.apk").browser_download_url')
-- wget $(curl https://api.github.com/repos/galeksandrp/hackerskeyboard/releases/latest | jq -r '.assets[]|select(.name=="hackerskeyboard-release.apk").browser_download_url')
+- $TRAVIS_BUILD_DIR/script.sh > $TRAVIS_BUILD_DIR/nginx_app.conf
 - cd ..
 - fdroid update -c
 - fdroid update
 before_deploy:
-- echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
+- cd repo
+- rm *.apk
+- mv $TRAVIS_BUILD_DIR/{Procfile,nginx_app.conf} .
+- echo '{}' > composer.json
 deploy:
-  provider: script
-  script: 'git checkout -b gh-pages && git add repo && git commit -m "Push" && git push -f origin gh-pages'
+  provider: heroku
+  api_key:
+    secure: $HEROKU_TOKEN
   skip_cleanup: true
   on:
     all_branches: true
+  app: droidrepo
 notifications:
   email: false
