@@ -1,5 +1,12 @@
-branches:
-  only:
-    - /^travis-.*$/
+services:
+- docker
+script:
+- docker run ubuntu bash --version
+- docker run alpine bash --version
+- docker run centos bash --version
+- docker run debian bash --version
+- docker run fedora bash --version
+- docker run oraclelinux bash --version
+- docker run opensuse bash --version
 notifications:
   email: false
