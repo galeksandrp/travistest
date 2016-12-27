@@ -1,12 +1,7 @@
 services:
 - docker
 script:
-- docker run amazonlinux bash --version
-- docker run cirros bash --version
-- docker run mageia bash --version
-- docker run crux bash --version
-- docker run photon bash --version
-- docker run sourcemage bash --version
-- docker run clearlinux bash --version
+- docker run ros bash --version
+- docker run zoobab/openwrt-15.05.1-x86-64-rootfs bash --version
 notifications:
   email: false
