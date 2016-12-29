@@ -10,25 +10,21 @@ before_install:
   - git config --global push.default simple
 install:
 - git remote add bitbucket https://bitbucket.org/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG.git
-- git fetch bitbucket --depth=50 master
-- git checkout -b master bitbucket/master
+- git fetch bitbucket --depth=50 z-i
+- git checkout -b z-i bitbucket/z-i
 script:
-- netmask $(curl https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv | tail -n +2 | cut -d ';' -f 1 | sed 's/ | /\n/g' | sort | uniq) | tr -d ' ' | sort > ip.txt
-- wget https://www.cloudflare.com/ips-v4
-- netmask $(cat ip.txt) $(cat ips-v4) | tr -d ' ' | sort > cfj.txt
-- comm -2 -3 cfj.txt ips-v4 > nocf.txt
-- netmask -r $(comm -2 -3 ip.txt nocf.txt) | tr -d ' ' | cut -d '(' -f 1 | sed 's/^/Cloudflare:/' > cf.txt
+- curl https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv | cut -d ';' -f 2 | grep -v '*' | xargs -n1 -i bash -c 'nslookup {} > /dev/null || echo {}' > domains.eml
 after_script:
 - 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"$(if [ $TRAVIS_TEST_RESULT -eq 1 ]; then echo SUCCESSFUL; else echo FAILED; fi)\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG/commit/$BITBUCKET_COMMIT/statuses/build'
 env:
-- BITBUCKET_REPO_SLUG=$TRAVIS_BRANCH BITBUCKET_REPO_OWNER=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
+- BITBUCKET_REPO_SLUG=travistest BITBUCKET_REPO_OWNER=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
 before_deploy:
 - git add cf.txt
 - git commit -m 'upd'
 - export BITBUCKET_COMMIT=$(git rev-parse HEAD)
 deploy:
   provider: script
-  script: git push -u bitbucket master
+  script: git push -u bitbucket z-i
   skip_cleanup: true
   on:
     all_branches: true
