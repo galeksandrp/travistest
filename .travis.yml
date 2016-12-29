@@ -18,7 +18,7 @@ after_script:
 env:
 - BITBUCKET_REPO_SLUG=bitbuckettest BITBUCKET_REPO_OWNER=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
 before_deploy:
-- git add cf.txt
+- git add domains.eml
 - git commit -m 'upd'
 - export BITBUCKET_COMMIT=$(git rev-parse HEAD)
 deploy:
