@@ -6,7 +6,7 @@ before_install:
 install:
 - git remote add bitbucket https://bitbucket.org/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG.git
 - git fetch bitbucket --depth=50 z-i
-- git checkout -b z-i bitbucket/z-i
+- git checkout -B z-i bitbucket/z-i
 script:
 - curl https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv | cut -d ';' -f 2 | grep -v '*' | xargs -n1 -i bash -c 'nslookup {} > /dev/null || echo {}' > domains.eml
 after_script:
