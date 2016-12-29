@@ -1,3 +1,7 @@
+addons:
+  apt:
+    packages:
+    - dnsutils
 before_install:
   - echo -e "machine bitbucket.org\nlogin galeksandrp\npassword $BITBUCKET_TOKEN" >> ~/.netrc
   - git config --global user.email $GITHUB_EMAIL
