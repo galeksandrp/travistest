@@ -37,7 +37,7 @@ model {
             release {
                 minifyEnabled = false
                 proguardFiles.add(file('proguard-rules.txt'))
-                signingConfig $("android.signingConfigs.release")
+                signingConfig $.android.signingConfigs.get("release")
             }
         }
     }
