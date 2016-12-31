@@ -19,7 +19,7 @@ install:
     
     C:\msys64\usr\bin\bash --login -c 'pacman -Syu --noconfirm'
 
-    C:\msys64\usr\bin\bash --login -c 'pacman -S --noconfirm mingw-w64-x86_64-{yasm,x264,x265,opus,lame,libvpx,twolame}'
+    C:\msys64\usr\bin\bash --login -c 'pacman -S --noconfirm mingw-w64-x86_64-{yasm,x264,x265,opus,lame,libvpx,twolame,fdk-aac}'
 build_script:
 - cmd: >-
     echo %MSYSTEM%
