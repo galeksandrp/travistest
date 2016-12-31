@@ -17,14 +17,14 @@ install:
 
     set CHERE_INVOKING=enabled_from_arguments
 
-    C:\msys64\usr\bin\bash --login -c 'pacman -S --noconfirm mingw-w64-x86_64-{yasm,x264,x265,opus,lame,libvpx,twolame}'
+    C:\msys64\usr\bin\bash --login -c 'pacman -S --noconfirm mingw-w64-x86_64-{yasm,x264,x265,opus,lame,libvpx,twolame,fdk-aac}'
 build_script:
 - cmd: >-
     echo %MSYSTEM%
 
     echo %CHERE_INVOKING%
 
-    C:\msys64\usr\bin\bash --login -c './configure --enable-gpl --enable-nonfree --enable-libx264 --enable-libx265 --enable-libopus --enable-libmp3lame --enable-libvpx --enable-libtwolame --prefix=C:/projects/$APPVEYOR_PROJECT_NAME/target'
+    C:\msys64\usr\bin\bash --login -c './configure --enable-gpl --enable-nonfree --enable-libx264 --enable-libx265 --enable-libopus --enable-libmp3lame --enable-libvpx --enable-libtwolame --enable-libfdk_aac --prefix=C:/projects/$APPVEYOR_PROJECT_NAME/target'
 
     C:\msys64\usr\bin\bash --login -c 'make -j3'
     
