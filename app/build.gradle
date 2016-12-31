@@ -25,7 +25,7 @@ model {
         }
         
         signingConfigs {
-            create('release') {
+            {
                 storeFile RELEASE_STORE_FILE
                 storePassword RELEASE_STORE_PASSWORD
                 keyAlias RELEASE_KEY_ALIAS
