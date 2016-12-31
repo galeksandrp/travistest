@@ -26,7 +26,7 @@ build_script:
 
     echo %CHERE_INVOKING%
 
-    C:\msys64\usr\bin\bash --login -c './configure --enable-gpl --enable-nonfree --enable-libx264 --enable-libx265 --enable-libopus --enable-libmp3lame --enable-libvpx --enable-libtwolame --prefix=C:/projects/$APPVEYOR_PROJECT_NAME/target'
+    C:\msys64\usr\bin\bash --login -c './configure --enable-gpl --enable-nonfree --enable-libx264 --enable-libx265 --enable-libopus --enable-libmp3lame --enable-libvpx --enable-libtwolame --enable-libfdk_aac --prefix=C:/projects/$APPVEYOR_PROJECT_NAME/target'
 
     C:\msys64\usr\bin\bash --login -c 'make -j3'
     
