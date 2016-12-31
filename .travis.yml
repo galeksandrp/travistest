@@ -24,12 +24,12 @@ install:
 - ./android-ndk-$NDK_VERSION-linux-x86_64.bin | egrep -v ^Extracting
 - export ANDROID_NDK_HOME=`pwd`/android-ndk-$NDK_VERSION
 - export PATH=${PATH}:${ANDROID_NDK_HOME}
-- echo "RELEASE_STORE_FILE=$TRAVIS_BUILD_DIR/my-release-key.keystore" > gradle.properties
+- echo "RELEASE_STORE_FILE=../my-release-key.keystore" > gradle.properties
 - echo "RELEASE_STORE_PASSWORD=$KEYSTORE_PASS" >> gradle.properties
 - echo "RELEASE_KEY_ALIAS=alias_name" >> gradle.properties
 - echo "RELEASE_KEY_PASSWORD=$KEYSTORE_PASS" >> gradle.properties
 script:
-- ./gradlew build -x lint
+- ./gradlew assembleRelease -x lint
 before_deploy:
   - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
   - echo $TRAVIS_COMMIT > .git/HEAD
