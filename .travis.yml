@@ -13,7 +13,7 @@ install:
 - git checkout -B z-i bitbucket/z-i
 script:
 - watch -n540 echo upd &
-- curl https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv | cut -d ';' -f 2 | grep -v '*' | xargs -n1 -P 2 -i bash -c 'nslookup {} > /dev/null || echo {}' > domains.eml
+- curl https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv | cut -d ';' -f 2 | sort | uniq | grep -v '*' | xargs -n1 -P 2 -i bash -c 'nslookup {} > /dev/null || echo {}' > domains.eml
 after_script:
 - 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"$(if [ $TRAVIS_TEST_RESULT -eq 1 ]; then echo SUCCESSFUL; else echo FAILED; fi)\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG/commit/$BITBUCKET_COMMIT/statuses/build'
 env:
