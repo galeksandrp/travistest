@@ -8,10 +8,34 @@ android:
     - build-tools-25.0.0
     - android-24
     - extra-android-m2repository
+addons:
+  apt:
+    sources:
+    - git-core
+    packages:
+    - git
 before_install:
+- openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv
+  -in my-release-key.keystore.enc -out my-release-key.keystore -d
 - git remote add upstream https://gitlab.com/fdroid/fdroidclient.git
-- git fetch --depth=1 upstream master
-- git checkout upstream/master
+- git fetch --depth=1 upstream --tags -q
+- git checkout $(git tag --sort=-v:refname -l 'v*' | head -1)
+- git cherry-pick $TRAVIS_COMMIT --strategy=recursive -X theirs -n || true
+before_deploy:
+  - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
+  - echo $TRAVIS_COMMIT > .git/HEAD
+  - git tag -f deploy-$TRAVIS_BRANCH
+  - git push origin -f deploy-$TRAVIS_BRANCH
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  skip_cleanup: true
+  file: 
+  - app/build/outputs/apk/*.apk
+  file_glob: true
+  overwrite: true
+  on:
+    all_branches: true
 script:
 - ./gradlew build -x lint -x test
 notifications:
