@@ -9,3 +9,15 @@ do
   wget $URL
   echo "location /${APKS[$i]} {return $URL;}"
 done
+
+declare -A APKS2=(['keepassdroid']='app-flavor1-release.apk'
+['adaway']='AdAway-release.apk'
+['fdroid']='app-release.apk'
+['authenticator']='AuthenticatorApp-playStore-release.apk')
+
+for i in ${!APKS2[@]}
+do
+  URL=$(curl https://api.github.com/repos/galeksandrp/travistest/releases/tags/deploy-$i | jq -r ".assets[]|select(.name==\"${APKS2[$i]}\").browser_download_url")
+  wget $URL
+  echo "location /${APKS2[$i]} {return $URL;}"
+done
