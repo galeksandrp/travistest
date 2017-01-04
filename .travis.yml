@@ -5,13 +5,45 @@ android:
   components:
     - tools
     - tools
-    - build-tools-25.0.1
-    - android-25
+    - build-tools-24.0.2
+    - android-24
+    - extra-android-m2repository
+addons:
+  apt:
+    sources:
+    - git-core
+    packages:
+    - git
 before_install:
-- git  remote add upstream https://github.com/google/google-authenticator-android.git
-- git fetch --depth=1 upstream master
-- git checkout upstream/master
-script:
-- ./gradlew build -x lint
+- openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv
+  -in my-release-key.keystore.enc -out my-release-key.keystore -d
+- git remote add upstream https://github.com/dkhmelenko/TravisClient-Android.git
+- git fetch --depth=1 upstream --tags -q
+- git checkout $(git tag --sort=-v:refname -l 'v*' | grep '^v[0-9.]*$' | head -1)
+- git cherry-pick $TRAVIS_COMMIT --strategy=recursive -X theirs -n || true
+- echo "RELEASE_STORE_FILE=../my-release-key.keystore" > gradle.properties
+- echo "RELEASE_STORE_PASSWORD=$KEYSTORE_PASS" >> gradle.properties
+- echo "RELEASE_KEY_ALIAS=alias_name" >> gradle.properties
+- echo "RELEASE_KEY_PASSWORD=$KEYSTORE_PASS" >> gradle.properties
+- chmod +x ./gradlew
+before_deploy:
+  - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
+  - echo $TRAVIS_COMMIT > .git/HEAD
+  - git tag -f deploy-$TRAVIS_BRANCH
+  - git push origin -f deploy-$TRAVIS_BRANCH
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  skip_cleanup: true
+  file: 
+  - app/build/outputs/apk/*.apk
+  file_glob: true
+  overwrite: true
+  on:
+    all_branches: true
+branches:
+  except:
+    - /^deploy-.*$/
+    - /^untagged-.*$/
 notifications:
   email: false
