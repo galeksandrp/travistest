@@ -1,0 +1,34 @@
+version: 1.0.{build}
+branches:
+  only:
+  - /^appveyor-.*$/
+configuration: Release
+init:
+- ps: '#$blockRdp = $true; iex ((new-object net.webclient).DownloadString(''https://gist.githubusercontent.com/galeksandrp/d3ccaec044abed5d0ba2a01e72ad4c8b/raw/8abed8b5af35cb879abbb0e2ba4de21b5f097c08/enable-rdp.ps1''))'
+clone_script:
+- cmd: >-
+    echo machine bitbucket.org >> %USERPROFILE%\_netrc
+
+    echo login galeksandrp >> %USERPROFILE%\_netrc
+
+    echo password %BITBUCKET_TOKEN% >> %USERPROFILE%\_netrc
+
+    C:\msys64\usr\bin\bash --login -c "ln -s $USERPROFILE/_netrc ~/.netrc"
+
+    git clone --depth=1 https://bitbucket.org/galeksandrp/eclipse.git %APPVEYOR_BUILD_FOLDER%
+environment:
+  RDP_PASSWORD:
+    secure: EPntnepDJxCOkdpUUnJiYQ==
+  BITBUCKET_TOKEN:
+    secure: sLkQ6+velVU8kgYTJ7kE01FNZaXowvaMDTF3el9+qFA=
+build_script:
+- cmd: >-
+    set MSYSTEM=MINGW64
+
+    set CHERE_INVOKING=enabled_from_arguments
+
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+    git fetch origin
+
+    C:\msys64\usr\bin\bash --login -c "git ls-remote --heads origin | grep -v 'refs/heads/qt' | grep -v 'refs/heads/master' | cut -d '/' -f 3 | xargs -n1 -i bash -c 'mkdir {} && git --work-tree={} checkout origin/{} -- . && cd {} && g++ -O0 -g3 -Wall -c -fmessage-length=0 -o src/{}.o src/{}.cpp && g++ -o {}.exe src/{}.o && cd .. && echo OK {} || echo FAIL {}'"
