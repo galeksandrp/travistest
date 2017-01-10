@@ -31,4 +31,8 @@ build_script:
 
     git fetch origin
 
-    C:\msys64\usr\bin\bash --login -c "git ls-remote --heads origin | grep -v 'refs/heads/qt' | grep -v 'refs/heads/master' | cut -d '/' -f 3 | xargs -n1 -i bash -c 'mkdir {} && git --work-tree={} checkout origin/{} -- . && cd {} && g++ -O0 -g3 -Wall -c -fmessage-length=0 -o src/{}.o src/{}.cpp && g++ -o {}.exe src/{}.o && cd .. && echo OK {} || echo FAIL {}'"
+    set PATH=C:\Qt\5.5\mingw492_32\bin;C:\Qt\Tools\mingw482_32\bin;%PATH%
+
+    set QTDIR=C:\Qt\5.5\mingw492_32
+
+    "C:\Program Files\Git\usr\bin\bash" --login -c "git ls-remote --heads origin | grep 'refs/heads/qt5-' | cut -d '/' -f 3 | xargs -n1 -i bash -c 'mkdir {} && git --work-tree={} checkout origin/{} -- . && cd {} && C:/Qt/5.5/mingw492_32/bin/qmake.exe *.pro -spec win32-g++ && C:/Qt/Tools/mingw482_32/bin/mingw32-make.exe qmake_all && C:/Qt/Tools/mingw482_32/bin/mingw32-make.exe && cd .. && echo OK {} || echo FAIL {}'"
