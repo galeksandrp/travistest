@@ -1,3 +1,4 @@
+language: python
 addons:
   apt:
     packages:
@@ -11,15 +12,18 @@ install:
 - git remote add bitbucket https://bitbucket.org/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG.git
 - git fetch bitbucket --depth=50 z-i
 - git checkout -B z-i bitbucket/z-i
+- pip install https://github.com/galeksandrp/tldextract/archive/patch-1.tar.gz#egg=tldextract
 script:
 - watch -n540 echo upd &
-- curl https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv | cut -d ';' -f 2 | sort | uniq | grep -v '*' | xargs -n1 -P 2 -i bash -c 'nslookup {} > /dev/null || echo {}' > domains.eml
+- curl https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv | cut -d ';' -f 2 | sort | uniq | grep '^[a-zA-Z.-]*$' > domains.txt
+- tldextract -d $(cat domains.txt) | sort | uniq > checked.txt
+- comm -12 domains.txt checked.txt | xargs -n1 -P 150 -i bash -c 'nslookup {} | grep -q NXDOMAIN && echo {}' > nxdomain.txt
 after_script:
 - 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"$(if [ $TRAVIS_TEST_RESULT -eq 1 ]; then echo SUCCESSFUL; else echo FAILED; fi)\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG/commit/$BITBUCKET_COMMIT/statuses/build'
 env:
-- BITBUCKET_REPO_SLUG=bitbuckettest BITBUCKET_REPO_OWNER=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
+- BITBUCKET_REPO_SLUG=cf BITBUCKET_REPO_OWNER=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
 before_deploy:
-- git add domains.eml
+- git add checked.txt nxdomain.txt
 - git commit -m 'upd'
 - export BITBUCKET_COMMIT=$(git rev-parse HEAD)
 deploy:
