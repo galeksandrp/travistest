@@ -1,6 +1,6 @@
-FROM ubuntu
-RUN sed 's&http://archive.ubuntu.com/ubuntu/&mirror://mirrors.ubuntu.com/mirrors.txt&' -i /etc/apt/sources.list
-RUN apt-get update
-RUN whoami
-RUN uname -a
-RUN taskset -p -c $$
+FROM galeksandrp/travistest:docker-netams-common
+WORKDIR /root/billing/webadmin
+RUN sed 's/nohup //' -i webadmin-startup.sh
+RUN sed 's/ 2> $LOGFILE > $LOGFILE &//' -i webadmin-startup.sh
+EXPOSE 8080
+CMD ./webadmin-startup.sh
