@@ -1,6 +1,7 @@
-FROM ubuntu
-RUN sed 's&http://archive.ubuntu.com/ubuntu/&mirror://mirrors.ubuntu.com/mirrors.txt&' -i /etc/apt/sources.list
+FROM gcc
+RUN sed 's&http://deb.debian.org/debian&http://httpredir.debian.org/debian&' -i /etc/apt/sources.list
 RUN apt-get update
-RUN whoami
-RUN uname -a
-RUN taskset -p -c $$
+RUN git clone http://git.stg.codes/stg.git
+RUN cd stg/projects/stargazer
+RUN git checkout stg-2.409
+RUN ./build
