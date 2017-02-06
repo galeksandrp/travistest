@@ -1,3 +1,10 @@
-branches:
-  only:
-    - /^travis-.*$/
+script:
+- |
+  curl -H "Authorization: Bearer $(curl -d "refresh_token=$GOOGLE_REFRESH_TOKEN&client_id=$GOOGLE_CLIENT_ID&client_secret=$GOOGLE_CLIENT_SECRET&grant_type=refresh_token" 'https://www.googleapis.com/oauth2/v4/token' | jq -r '.access_token')" "https://content.googleapis.com/drive/v2/files?q=%270B-K-JRGBnmG3c1daZXU5Tzl6cTQ%27%20in%20parents&fields=items(title)&key=$GOOGLE_KEY" | jq -r '.items[].title' > files.txt
+- git diff
+- sort files.txt -o sorted.txt
+- |
+  curl -H "Authorization: OAuth $YANDEX_TOKEN" 'https://cloud-api.yandex.net/v1/disk/resources?path=disk%3A%2F%D0%97%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B8&fields=_embedded.items.name&limit=1000' | jq -r '._embedded.items[].name' | sort > files.txt
+  comm -23 sorted.txt files.txt
+notifications:
+  email: false
