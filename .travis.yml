@@ -1,10 +1,10 @@
 script:
-- curl https://api.github.com/users/galeksandrp/repos > lol.txt
+- curl https://api.github.com/users/$GITHUB_NAME/repos > lol.txt
 - mkdir ~/bin
 - wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -O ~/bin/jq
 - chmod +x ~/bin/jq
 - cat lol.txt | jq -r '.[]|select(.fork)|.clone_url' | xargs -n1 git clone --depth=50 --branch=master
-= echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
+- echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
 - cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "cd {} && git remote add upstream $(curl https://api.github.com/repos/$GITHUB_NAME/{} | jq -r '.parent.clone_url') && git fetch --depth=50 upstream master && git push upstream/master:master"
 notifications:
   email: false
