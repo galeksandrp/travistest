@@ -6,7 +6,7 @@ addons:
     - git
 script:
 - |
-  curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user/repos > lol.txt
+  curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user/repos?page={1..5} > lol.txt
 - mkdir ~/bin
 - wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -O ~/bin/jq
 - chmod +x ~/bin/jq
