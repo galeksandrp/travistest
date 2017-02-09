@@ -1,14 +1,19 @@
+addons:
+  apt:
+    sources:
+    - git-core
+    packages:
+    - git
 script:
 - |
   curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user/repos > lol.txt
 - mkdir ~/bin
 - wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -O ~/bin/jq
 - chmod +x ~/bin/jq
-- cat lol.txt | jq -r '.[]|select(.fork)|.clone_url' | xargs -n1 git clone --branch=master
-- git config --global push.default simple
+- cat lol.txt | jq -r '.[]|select(.fork)|.clone_url' | xargs -n1 -i bash -c 'git clone --depth=50 --branch=$(cat lol.txt | jq -r ".[]|select(.clone_url==\"{}\")|.default_branch") {}'
 - export GITHUB_NAME=$(cat lol.txt | jq -r '.[1].owner.login')
 - echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
 - |
-  cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "cd {} && git remote add upstream \$(curl -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/$GITHUB_NAME/{} | jq -r '.parent.clone_url') && git fetch upstream master && git push origin upstream/master:master"
+  cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "BRANCH=\$(cat lol.txt | jq -r '.[]|select(.name==\"{}\")|.default_branch') && cd {} && git remote add upstream \$(curl -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/$GITHUB_NAME/{} | jq -r '.parent.clone_url') && git fetch --depth=50 upstream \$BRANCH && git push origin upstream/\$BRANCH:\$BRANCH"
 notifications:
   email: false
