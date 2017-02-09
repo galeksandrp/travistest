@@ -8,6 +8,7 @@ script:
 - git config --global push.default simple
 - export GITHUB_NAME=$(cat lol.txt | jq -r '.[1].owner.login')
 - echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
-- cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "cd {} && git remote add upstream \$(curl -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/$GITHUB_NAME/{} | jq -r '.parent.clone_url') && git fetch upstream master && git push origin upstream/master:master"
+- |
+  cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "cd {} && git remote add upstream \$(curl -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/$GITHUB_NAME/{} | jq -r '.parent.clone_url') && git fetch upstream master && git push origin upstream/master:master"
 notifications:
   email: false
