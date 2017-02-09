@@ -3,10 +3,10 @@ script:
 - mkdir ~/bin
 - wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -O ~/bin/jq
 - chmod +x ~/bin/jq
-- cat lol.txt | jq -r '.[]|select(.fork)|.clone_url' | xargs -n1 git clone --depth=50 --branch=master
+- cat lol.txt | jq -r '.[]|select(.fork)|.clone_url' | xargs -n1 git clone --branch=master
 - git config --global push.default simple
 - echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
-- cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c 'cd {} && git remote add upstream $(curl https://api.github.com/repos/galeksandrp/{} | jq -r ".parent.clone_url") && git fetch --depth=50 upstream master && git push origin upstream/master:master'
+- cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c 'cd {} && git remote add upstream $(curl https://api.github.com/repos/galeksandrp/{} | jq -r ".parent.clone_url") && git fetch upstream master && git push origin upstream/master:master'
 notifications:
   email: false
 env:
