@@ -1,7 +1,7 @@
 FROM ubuntu
 RUN sed 's&http://archive.ubuntu.com/ubuntu/&mirror://mirrors.ubuntu.com/mirrors.txt&' -i /etc/apt/sources.list
 RUN apt-get update
-RUN apt-get install -y lib32gcc1
+RUN apt-get install -y wget lib32gcc1
 RUN mkdir -p ~/steamcmd
 WORKDIR ~/steamcmd
 RUN wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz -O - | tar xz
