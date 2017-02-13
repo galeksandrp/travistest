@@ -6,7 +6,7 @@ install:
 - cvs --version
 script:
 - rsync -av rsync://$GITHUB_REPO.cvs.sourceforge.net/cvsroot/$GITHUB_REPO/\* $GITHUB_REPO
-- touch ~/.subversion/servers
+- mkdir -p ~/.subversion
 - echo 'store-plaintext-passwords = no' >> ~/.subversion/servers
 - svn co --username=guest --password="" http://cvs2svn.tigris.org/svn/cvs2svn/trunk cvs2svn-trunk
 - mkdir cvs2git-tmp
