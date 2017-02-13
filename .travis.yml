@@ -10,7 +10,7 @@ script:
 - echo -e '[global]\nstore-plaintext-passwords = no' >> ~/.subversion/servers
 - svn co --username=guest --password="" http://cvs2svn.tigris.org/svn/cvs2svn/trunk cvs2svn-trunk
 - mkdir cvs2git-tmp
-- cvs2svn-trunk/cvs2git --blobfile=cvs2git-tmp/git-blob.dat --dumpfile=cvs2git-tmp/git-dump.dat --username=cvs2git $GITHUB_REPO/$GITHUB_REPO
+- cvs2svn-trunk/cvs2git --blobfile=cvs2git-tmp/git-blob.dat --dumpfile=cvs2git-tmp/git-dump.dat --username=cvs2git -q $GITHUB_REPO/$GITHUB_REPO
 - git init --bare $GITHUB_REPO.git
 - cd $GITHUB_REPO.git
 - git fast-import --export-marks=../cvs2git-tmp/git-marks.dat <../cvs2git-tmp/git-blob.dat
