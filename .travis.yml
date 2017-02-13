@@ -29,8 +29,7 @@ deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   skip_cleanup: true
-  file: 
-  - *.tar.gz
+  file: "*.tar.gz"
   file_glob: true
   on:
     all_branches: true
