@@ -1,7 +1,7 @@
 script:
 - hg clone $HG_URL
 - cd $BITBUCKET_REPO
-- echo -e "machine bitbucket.org\nlogin $GITHUB_NAME\npassword $BITBUCKET_TOKEN" >> ~/.netrc
+- echo -e "[auth]\nbb.prefix = https://bitbucket.org\nbb.username = $GITHUB_NAME\nbb.password = $BITBUCKET_TOKEN" >> ~/.hgrc
 - hg push https://bitbucket.org/$GITHUB_NAME/$BITBUCKET_REPO
 branches:
   except:
