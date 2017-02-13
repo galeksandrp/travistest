@@ -24,6 +24,7 @@ script:
 - git push origin --tags
 before_deploy:
 - cd ~/git
+- git tag deploy-$GITHUB_REPO
 - git push origin -f deploy-$GITHUB_REPO
 deploy:
   provider: releases
