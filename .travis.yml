@@ -5,20 +5,35 @@ addons:
 install:
 - cvs --version
 script:
+- mkdir ~/git
+- mv .git ~/git
 - rsync -av rsync://$GITHUB_REPO.cvs.sourceforge.net/cvsroot/$GITHUB_REPO/\* $GITHUB_REPO
+- tar czf ~/git/${GITHUB_REPO}_$(date +%Y_%m_%d_%H_%M_%S).tar.gz $GITHUB_REPO
 - mkdir -p ~/.subversion
 - echo -e '[global]\nstore-plaintext-passwords = no' >> ~/.subversion/servers
 - svn co --username=guest --password="" http://cvs2svn.tigris.org/svn/cvs2svn/trunk cvs2svn-trunk
 - mkdir cvs2git-tmp
-- cvs2svn-trunk/cvs2git --blobfile=cvs2git-tmp/git-blob.dat --dumpfile=cvs2git-tmp/git-dump.dat --username=cvs2git -q $GITHUB_REPO/$GITHUB_REPO
+- cvs2svn-trunk/cvs2git --blobfile=cvs2git-tmp/git-blob.dat --dumpfile=cvs2git-tmp/git-dump.dat --username=cvs2git $ENCODING -q $GITHUB_REPO/$GITHUB_REPO
 - git init --bare $GITHUB_REPO.git
 - cd $GITHUB_REPO.git
 - git fast-import --export-marks=../cvs2git-tmp/git-marks.dat <../cvs2git-tmp/git-blob.dat
 - git fast-import --import-marks=../cvs2git-tmp/git-marks.dat <../cvs2git-tmp/git-dump.dat
-- git remote add https://github.com/$GITHUB_NAME/$GITHUB_REPO.git
+- git remote add origin https://github.com/$GITHUB_NAME/$GITHUB_REPO.git
 - echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
-- git push --all
-- git push --tags
+- git push origin --all
+- git push origin --tags
+before_deploy:
+- cd ~/git
+- git push origin -f deploy-$GITHUB_REPO
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  skip_cleanup: true
+  file: 
+  - *.tar.gz
+  file_glob: true
+  on:
+    all_branches: true
 branches:
   except:
     - /^deploy-.*$/
@@ -29,3 +44,4 @@ env:
   - GITHUB_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
   matrix:
   - GITHUB_REPO=abills
+  - GITHUB_REPO=lame ENCODING=--encoding=cp860
