@@ -3,7 +3,26 @@ branches:
   only:
   - /^appveyor-.*$/
 init:
+- cmd: >-
+    echo machine github.com >> %USERPROFILE%\_netrc
+
+    echo login %GITHUB_NAME% >> %USERPROFILE%\_netrc
+
+    echo password %GITHUB_TOKEN% >> %USERPROFILE%\_netrc
+
+    echo machine bitbucket.org >> %USERPROFILE%\_netrc
+
+    echo login galeksandrp >> %USERPROFILE%\_netrc
+
+    echo password %BITBUCKET_TOKEN% >> %USERPROFILE%\_netrc
+clone_script:
 - ps: '$blockRdp = $true; iex ((new-object net.webclient).DownloadString(''https://gist.githubusercontent.com/galeksandrp/d3ccaec044abed5d0ba2a01e72ad4c8b/raw/8abed8b5af35cb879abbb0e2ba4de21b5f097c08/enable-rdp.ps1''))'
 environment:
   RDP_PASSWORD:
     secure: EPntnepDJxCOkdpUUnJiYQ==
+  BITBUCKET_TOKEN:
+    secure: sLkQ6+velVU8kgYTJ7kE01FNZaXowvaMDTF3el9+qFA=
+  GITHUB_NAME:
+    secure: DdC4DSiH5w+95F8KQf9rgA==
+  GITHUB_TOKEN:
+    secure: dMLyYySke41py1Cb1s+8rY/WLSIMMhLVwsAMLZLOt5FBfY3HokH+yUgRvq/LieUD
