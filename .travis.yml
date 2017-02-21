@@ -13,6 +13,7 @@ script:
   curl -u $(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1):$BITBUCKET_TOKEN $(jq -r '.next' tmp.txt) > tmp.txt
   cat tmp.txt | jq -r '.values[]|.name' >> files.txt
   done
+- sort files.txt -o files.txt
 - comm -23 sorted.txt files.txt
 notifications:
   email: false
