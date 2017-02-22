@@ -1,0 +1,24 @@
+version: '2.1'
+services:
+  jserver:
+    image: galeksandrp/travistest:docker-netams-jserver
+    command: >-
+      bash -c 'sed -e "s&db.sql.mysql.url=jdbc:mysql://localhost/netams4&db.sql.mysql.url=jdbc:mysql://mysql/netams4&" -e "s/db.sql.mysql.password=/db.sql.mysql.password=123456/" -e "s/rpc.listen.host=localhost/rpc.listen.host=jserver/" -i ../netams4.properties && ./jserver-startup.sh'
+    depends_on:
+      mysql:
+        condition: service_healthy
+  webadmin:
+    image: galeksandrp/travistest:docker-netams-webadmin
+    command: >-
+      bash -c 'sed -e "s&db.sql.mysql.url=jdbc:mysql://localhost/netams4&db.sql.mysql.url=jdbc:mysql://mysql/netams4&" -e "s/db.sql.mysql.password=/db.sql.mysql.password=123456/" -e "s/rpc.listen.host=localhost/rpc.listen.host=jserver/" -i ../netams4.properties && ./webadmin-startup.sh'
+    links:
+      - jserver
+    ports:
+      - "8080:8080"
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: netams4
+    healthcheck:
+      test: "mysql -p123456 -e 'SHOW DATABASES' | grep netams4"
