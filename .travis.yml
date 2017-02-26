@@ -1,12 +1,14 @@
 language: cpp
 before_install:
-  - echo -e "machine bitbucket.org\nlogin galeksandrp\npassword $BITBUCKET_TOKEN" >> ~/.netrc
+- openssl aes-256-cbc -K $encrypted_4543f1aef2eb_key -iv $encrypted_4543f1aef2eb_iv -in id_rsa.enc -out ~/.ssh/id_rsa -d
 install:
+- chmod go-rw ~/.ssh/id_rsa
+- echo -e "machine bitbucket.org\nlogin galeksandrp\npassword $BITBUCKET_TOKEN" >> ~/.netrc
 - git remote add private https://bitbucket.org/galeksandrp/zkp.git
 - git fetch private
 - git checkout private/master
 - wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v1.1/zyxel_keenetics_gpl_v.1.00_4_D0_161111.tar.bz2 -O - | tar xj --strip=1 zyxel_keenetics_gpl_v.1.00_4_D0_161111/dl
-- wget https://github.com/galeksandrp/travistest/releases/download/untagged-f93d524c833b3846a0e1/linux-2.6.23-rt.tar.bz2 -O dl/linux-2.6.23-rt.tar.bz2
+- git archive --format=tar.gz --prefix=linux-2.6.23-rt/ --remote=git@bitbucket.org:galeksandrp/linux-2.6.23-rt.git master | gunzip | bzip2 > dl/linux-2.6.23-rt.tar.bz2
 - mkdir ~/git
 - mv .git ~/git
 script:
