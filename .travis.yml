@@ -19,7 +19,8 @@ script:
 - tldextract -d $(cat domains.txt) | sort | uniq > checked.txt
 - comm -12 domains.txt checked.txt | xargs -n1 -P 150 -i bash -c 'nslookup {} | grep -q NXDOMAIN && echo {}' > nxdomain.txt
 after_script:
-- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"$(if [ $TRAVIS_TEST_RESULT -eq 1 ]; then echo SUCCESSFUL; else echo FAILED; fi)\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG/commit/$BITBUCKET_COMMIT/statuses/build'
+- |
+  curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"$(if [ $TRAVIS_TEST_RESULT -eq 1 ]; then echo SUCCESSFUL; else echo FAILED; fi)\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG/commit/$BITBUCKET_COMMIT/statuses/build
 env:
 - BITBUCKET_REPO_SLUG=cf BITBUCKET_REPO_OWNER=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
 before_deploy:
