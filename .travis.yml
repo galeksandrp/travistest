@@ -1,21 +1,17 @@
-env:
-  global:
-    - NDK_VERSION=r10e
-sudo: false
-language:
-  - cpp
+language: cpp
 addons:
   apt:
     packages:
-    - bc
-
-before_install:
-  - wget http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-x86_64.bin
-  - chmod +x android-ndk-$NDK_VERSION-linux-x86_64.bin
-  - ./android-ndk-$NDK_VERSION-linux-x86_64.bin | egrep -v ^Extracting
-  - export ANDROID_NDK_HOME=`pwd`/android-ndk-$NDK_VERSION
-  - export PATH=${PATH}:${ANDROID_NDK_HOME}
+    - nano
 install:
+- echo -e "machine bitbucket.org\nlogin galeksandrp\npassword $BITBUCKET_TOKEN" >> ~/.netrc
+- git remote add private https://bitbucket.org/galeksandrp/zkp.git
+- git fetch private
+- git checkout private/master
+- wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v1.1/zyxel_keenetics_gpl_v.1.00_4_D0_161111.tar.bz2 -O - | tar xj --strip=1 zyxel_keenetics_gpl_v.1.00_4_D0_161111/dl
+- mkdir ~/git
+- mv .git ~/git
+- ./configure.sh keenetic
 - echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
 - wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
 - unzip ngrok-stable-linux-amd64.zip
