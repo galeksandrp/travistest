@@ -14,6 +14,9 @@ install:
 script:
 - ./configure.sh keenetic
 - make
+- mkdir docs
+- make target/sdk/install
+- make target/imagebuilder/install
 before_deploy:
   - cd $TRAVIS_BUILD_DIR
   - mv ~/git/.git .
@@ -30,6 +33,7 @@ deploy:
   file: 
   - $COMMIT
   - bin/*.bin
+  - bin/*.tar.bz2
   - bin/Kimage.lzma
   - bin/Rimage.squashfs
   file_glob: true
