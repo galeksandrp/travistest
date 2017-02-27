@@ -1,15 +1,5 @@
-FROM ubuntu:trusty
-RUN sed 's&http://archive.ubuntu.com/ubuntu/&mirror://mirrors.ubuntu.com/mirrors.txt&' -i /etc/apt/sources.list
-RUN apt-get update && apt-get install -y wget bzip2 make gcc g++ libncurses5-dev zlib1g-dev gawk bison flex unzip patch subversion autoconf python
-RUN adduser --disabled-password --gecos "" ubuntu
-USER ubuntu
-WORKDIR /home/ubuntu
-RUN wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v-oss/zyxel_keenetics_gpl_v.1.00_4_d0.tar_.bz2 -O - | tar xj && yes "Yes" | zyxel_keenetics_gpl_v.1.00_4_D0/zyxel_keenetics_gpl_v.1.00_4_D0.lnx && rm zyxel_keenetics_gpl_v.1.00_4_D0 -rf
-COPY prereq-build.mk.patch /home/ubuntu/
-WORKDIR /home/ubuntu/zyxel_keenetics_gpl_v.1.00_4_D0_161111/include
-RUN patch < /home/ubuntu/prereq-build.mk.patch
-WORKDIR /home/ubuntu/zyxel_keenetics_gpl_v.1.00_4_D0_161111
-RUN ./configure.sh keenetic
-RUN make tools/install
-RUN make toolchain/install
-RUN make clean
+FROM gcc:6.1
+RUN sed 's&http://deb.debian.org/debian&http://httpredir.debian.org/debian&' -i /etc/apt/sources.list
+RUN apt-get update && apt-get install -y wget bzip2
+RUN wget https://github.com/galeksandrp/travistest/releases/download/untagged-f93d524c833b3846a0e1/OpenWrt-SDK-keenetic-for-Linux-x86_64.tar.bz2 -O - | tar xj
+WORKDIR /root/OpenWrt-SDK-keenetic-for-Linux-x86_64
