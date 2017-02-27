@@ -10,5 +10,6 @@ WORKDIR /home/ubuntu/zyxel_keenetics_gpl_v.1.00_4_D0_161111/include
 RUN patch < /home/ubuntu/prereq-build.mk.patch
 WORKDIR /home/ubuntu/zyxel_keenetics_gpl_v.1.00_4_D0_161111
 RUN ./configure.sh keenetic
-RUN make
+RUN make tools/install
+RUN make toolchain/install
 RUN make clean
