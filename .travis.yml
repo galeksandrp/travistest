@@ -4,14 +4,15 @@ addons:
     packages:
     - nano
 install:
-- echo -e "machine bitbucket.org\nlogin galeksandrp\npassword $BITBUCKET_TOKEN" >> ~/.netrc
-- git remote add private https://bitbucket.org/galeksandrp/zkp.git
-- git fetch private
-- git checkout private/master
-- wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v1.1/zyxel_keenetics_gpl_v.1.00_4_D0_161111.tar.bz2 -O - | tar xj --strip=1 zyxel_keenetics_gpl_v.1.00_4_D0_161111/dl
+- wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v-oss/zyxel_keenetics_gpl_v.1.00_4_d0.tar_.bz2 -O - | tar xj
+- yes "Yes" | zyxel_keenetics_gpl_v.1.00_4_D0/zyxel_keenetics_gpl_v.1.00_4_D0.lnx
+- cd zyxel_keenetics_gpl_v.1.00_4_D0_161111/include
+- patch < ../prereq-build.mk.patch
+- cd ..
 - mkdir ~/git
 - mv .git ~/git
 - ./configure.sh keenetic
+- cd ~
 - echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
 - wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
 - unzip ngrok-stable-linux-amd64.zip
