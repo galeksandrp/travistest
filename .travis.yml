@@ -7,7 +7,7 @@ install:
 - wget https://github.com/galeksandrp/zyxel-keenetic-packages/releases/download/v-oss/zyxel_keenetics_gpl_v.1.00_4_d0.tar_.bz2 -O - | tar xj
 - yes "Yes" | zyxel_keenetics_gpl_v.1.00_4_D0/zyxel_keenetics_gpl_v.1.00_4_D0.lnx
 - cd zyxel_keenetics_gpl_v.1.00_4_D0_161111/include
-- patch < ../prereq-build.mk.patch
+- patch < ../../prereq-build.mk.patch
 - cd ..
 - mkdir ~/git
 - mv .git ~/git
