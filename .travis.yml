@@ -10,7 +10,7 @@ install:
 - patch < ../../prereq-build.mk.patch
 - cd ..
 - mkdir ~/git
-- mv .git ~/git
+- mv ../.git ~/git
 - ./configure.sh keenetic
 - cd ~
 - echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
