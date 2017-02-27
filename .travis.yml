@@ -4,7 +4,15 @@ install:
 - git remote add private https://bitbucket.org/galeksandrp/xml.git
 - git fetch --depth=1 private master
 - git checkout private/master
+- export BITBUCKET_COMMIT=$(git rev-parse private/master)
+- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"INPROGRESS\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG/commit/$BITBUCKET_COMMIT/statuses/build'
 script:
 - xmllint --xpath '//FixedDownloadUrl/text()' xml.xml | sed 's/http/\nhttp/g' | xargs -n1 -i bash -c 'RESP=$(curl -f -s -I {}) || echo $RESP | grep Location || echo {}'
+after_success:
+- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"SUCCESSFUL\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG/commit/$BITBUCKET_COMMIT/statuses/build'
+after_failure:
+- 'curl -H "Content-Type: application/json" -X POST -d "{\"state\": \"FAILED\",\"key\": \"BAMBOO-PROJECT-X\",\"name\": \"Travis CI Build #$TRAVIS_BUILD_NUMBER\",\"url\": \"https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID\",\"description\": \"Built with $TRAVIS_COMMIT\"}" https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG/commit/$BITBUCKET_COMMIT/statuses/build'
 notifications:
   email: false
+env:
+- BITBUCKET_REPO_SLUG=bitbuckettest BITBUCKET_REPO_OWNER=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
