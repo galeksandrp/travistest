@@ -32,3 +32,5 @@ build_script:
     git fetch origin
 
     C:\msys64\usr\bin\bash --login -c "git ls-remote --heads origin | grep -v 'refs/heads/qt' | grep -v 'refs/heads/master' | cut -d '/' -f 3 | xargs -n1 -i bash -c 'mkdir {} && git --work-tree={} checkout origin/{} -- . && cd {} && g++ -O0 -g3 -Wall -c -fmessage-length=0 -o src/{}.o src/{}.cpp && g++ -o {}.exe src/{}.o && cd .. && echo OK {} || echo FAIL {}'"
+    
+    C:\msys64\usr\bin\bash --login -c "git ls-remote --heads origin | grep -v 'refs/heads/qt' | grep -v 'refs/heads/master' | grep -v 'refs/heads/ci-' | cut -d '/' -f 3 | xargs -n1 -i bash -c \"cd {} && BITBUCKET_REPO_OWNER=$(echo $APPVEYOR_REPO_NAME | cut -d '/' -f 2) curl -X POST https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads --form files=@{}.exe\""
