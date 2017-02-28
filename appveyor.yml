@@ -15,7 +15,7 @@ clone_script:
 
     C:\msys64\usr\bin\bash --login -c "ln -s $USERPROFILE/_netrc ~/.netrc"
 
-    git clone --depth=1 https://bitbucket.org/galeksandrp/eclipse.git %APPVEYOR_BUILD_FOLDER%
+    git clone https://bitbucket.org/galeksandrp/eclipse.git %APPVEYOR_BUILD_FOLDER%
 environment:
   RDP_PASSWORD:
     secure: EPntnepDJxCOkdpUUnJiYQ==
@@ -27,10 +27,7 @@ build_script:
 
     set CHERE_INVOKING=enabled_from_arguments
 
-    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-
-    git fetch origin
-
     C:\msys64\usr\bin\bash --login -c "git ls-remote --heads origin | grep -v 'refs/heads/qt' | grep -v 'refs/heads/master' | grep -v 'refs/heads/ci-' | cut -d '/' -f 3 | xargs -n1 -i bash -c 'mkdir {} && git --work-tree={} checkout origin/{} -- . && cd {} && g++ -O0 -g3 -Wall -c -fmessage-length=0 -o src/{}.o src/{}.cpp && g++ -o {}.exe src/{}.o && cd .. && echo OK {} || echo FAIL {}'"
-    
-    C:\msys64\usr\bin\bash --login -c "git ls-remote --heads origin | grep -v 'refs/heads/qt' | grep -v 'refs/heads/master' | grep -v 'refs/heads/ci-' | cut -d '/' -f 3 | xargs -n1 -i bash -c \"cd {} && BITBUCKET_REPO_OWNER=$(echo $APPVEYOR_REPO_NAME | cut -d '/' -f 2) BITBUCKET_REPO_SLUG=eclipse curl -X POST https://$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads --form files=@{}.exe\""
+deploy_script:
+- cmd: >-
+    C:\msys64\usr\bin\bash --login -c "git ls-remote --heads origin | grep -v 'refs/heads/qt' | grep -v 'refs/heads/master' | grep -v 'refs/heads/ci-' | cut -d '/' -f 3 | BITBUCKET_REPO_OWNER=$(echo $APPVEYOR_REPO_NAME | cut -d '/' -f 1) BITBUCKET_REPO_SLUG=eclipse xargs -n1 -i bash -c ""cd {} && curl -X POST https://\$BITBUCKET_REPO_OWNER:$BITBUCKET_TOKEN@api.bitbucket.org/2.0/repositories/\${BITBUCKET_REPO_OWNER}/\${BITBUCKET_REPO_SLUG}/downloads --form files=@{}.exe"""
