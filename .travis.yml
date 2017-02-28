@@ -1,5 +1,5 @@
-branches:
-  only:
-    - /^travis-.*$/
+script:
+- git clone https://bitbucket.org/galeksandrp/eclipse.git
+- git filter-branch --tree-filter "find -type f -not -path './.git/*' -exec bash -c 'file -b --mime-encoding "{}" | grep -v 'utf-8' && iconv -f WINDOWS-1251 -t UTF-8 \"{}\" > tmp && mv tmp \"{}\"' \;" -- --all | grep "' was rewritten" | sed "s&Ref '\(.*\)' was rewritten&git --no-pager diff refs/original/\1 \1&" > ../git.sh
 notifications:
   email: false
