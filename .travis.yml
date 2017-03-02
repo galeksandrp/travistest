@@ -13,6 +13,6 @@ script:
 - export GITHUB_NAME=$(cat lol.txt | jq -r '.[1].owner.login' | head -1)
 - echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
 - |
-  cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "git clone \$(curl -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/$GITHUB_NAME/{} | jq -r '.parent.clone_url') && cp -Rf .git/refs/remotes/origin/* .git/refs/heads/ && cat .git/packed-refs | grep ' refs/remotes/origin/' | sed 's& refs/remotes/origin/& refs/heads/&' >> .git/packed-refs && git remote add fork https://github.com/$GITHUB_NAME/{}.git && git push fork --all && git push fork --tags ; cd .. && rm -rf {}"
+  cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "git clone \$(curl -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/$GITHUB_NAME/{} | jq -r '.parent.clone_url') && cp -Rf .git/refs/remotes/origin/* .git/refs/heads/ ; cat .git/packed-refs | grep ' refs/remotes/origin/' | sed 's& refs/remotes/origin/& refs/heads/&' >> .git/packed-refs && git remote add fork https://github.com/$GITHUB_NAME/{}.git && git push fork --all && git push fork --tags ; cd .. && rm -rf {}"
 notifications:
   email: false
