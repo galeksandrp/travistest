@@ -6,18 +6,13 @@ addons:
     - git
 script:
 - |
-  curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user/repos?page=1 > lol.txt
+  curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user/repos?page=2 > lol.txt
 - mkdir ~/bin
 - wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -O ~/bin/jq
 - chmod +x ~/bin/jq
-- |
-  cat lol.txt | jq -r '.[]|select(.fork)|.full_name' | xargs -n1 -i bash -c "git clone \$(curl -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/{} | jq -r '.parent.clone_url')"
 - export GITHUB_NAME=$(cat lol.txt | jq -r '.[1].owner.login' | head -1)
 - echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
-- cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c 'cd {} && cp -Rf .git/refs/remotes/origin/* .git/refs/heads/'
-- cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "cd {} && cat .git/packed-refs | grep ' refs/remotes/origin/' | sed 's& refs/remotes/origin/& refs/heads/&' >> .git/packed-refs"
-- cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "cd {} && git remote add fork https://github.com/$GITHUB_NAME/{}.git"
-- cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "cd {} && git push fork --all"
-- cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "cd {} && git push fork --tags"
+- |
+  cat lol.txt | jq -r '.[]|select(.fork)|.name' | xargs -n1 -i bash -c "git clone \$(curl -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/$GITHUB_NAME/{} | jq -r '.parent.clone_url') && cp -Rf .git/refs/remotes/origin/* .git/refs/heads/ && cat .git/packed-refs | grep ' refs/remotes/origin/' | sed 's& refs/remotes/origin/& refs/heads/&' >> .git/packed-refs && git remote add fork https://github.com/$GITHUB_NAME/{}.git && git push fork --all && git push fork --tags ; cd .. && rm -rf {}"
 notifications:
   email: false
