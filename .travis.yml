@@ -1,3 +1,6 @@
+sudo: required
+services:
+  - docker
 install:
 - sudo passwd -d $(whoami)
 - sudo passwd -d root
