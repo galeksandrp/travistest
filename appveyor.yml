@@ -16,11 +16,7 @@ init:
 
     echo password %BITBUCKET_TOKEN% >> %USERPROFILE%\_netrc
     
-    echo %GIT_NAME%
-    
     git config --global user.name "%GIT_NAME%"
-    
-    git config --global user.name
     
     git config --global user.email %GIT_EMAIL%
 clone_script:
