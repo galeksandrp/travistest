@@ -8,6 +8,8 @@ skip_tags: true
 os: Visual Studio 2015
 shallow_clone: true
 clone_depth: 1
+clone_script:
+- cmd: git clone -q --depth=1 https://github.com/PurpleI2P/i2pd.git %APPVEYOR_BUILD_FOLDER%
 init:
 - cmd: >-
     mkdir \projects\instdir
@@ -36,14 +38,6 @@ environment:
   #   cmake: -DSSL_EAY=/mingw32/lib/libssl.a -DLIB_EAY=/mingw32/lib/libcrypto.a
   - type: shared
     variant: Release
-  - type: static
-    msvc: 12
-    x64: 1
-    variant: RelWithDebInfo
-  - type: static
-    msvc: 14
-    variant: RelWithDebInfo
-    cmake: -DWITH_PCH=ON
   # - type: static
   #   msvc: 12
   # - type: shared
