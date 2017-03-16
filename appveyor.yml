@@ -1,23 +1,19 @@
 version: 1.0.{build}
 pull_requests:
   do_not_increment_build_number: true
-branches:
-  only:
-  - openssl
 skip_tags: true
 os: Visual Studio 2015
+shallow_clone: true
+clone_depth: 1
+clone_script:
+- cmd: git clone -q --depth=1 https://github.com/PurpleI2P/i2pd.git %APPVEYOR_BUILD_FOLDER%
 init:
 - cmd: >-
     mkdir \projects\instdir
-
     rem Appveyor has win32 openssl pre-installed that is picked up erroneously even for 64-bit. Cleaning the mess... Should happen before restoring cache.
-
     rem Might consider passing OPENSSL_ROOT_DIR
-
     if exist \OpenSSL-Win32 rmdir /S /Q \OpenSSL-Win32
-
     if exist \OpenSSL-Win64 rmdir /S /Q \OpenSSL-Win64
-
     if exist \OpenSSL rmdir /S /Q \OpenSSL
 environment:
   BOOST_ROOT: C:\Libraries\boost_1_59_0
@@ -34,14 +30,6 @@ environment:
   #   cmake: -DSSL_EAY=/mingw32/lib/libssl.a -DLIB_EAY=/mingw32/lib/libcrypto.a
   - type: shared
     variant: Release
-  - type: static
-    msvc: 12
-    x64: 1
-    variant: RelWithDebInfo
-  - type: static
-    msvc: 14
-    variant: RelWithDebInfo
-    cmake: -DWITH_PCH=ON
   # - type: static
   #   msvc: 12
   # - type: shared
@@ -110,9 +98,7 @@ install:
   )
 - cmd: >-
     rem cinst nasm
-
     cd \projects
-
     if not exist nasm-2.11.08-installer.exe curl --silent --location --remote-name http://www.nasm.us/pub/nasm/releasebuilds/2.11.08/win32/nasm-2.11.08-installer.exe
 
     nasm-2.11.08-installer.exe /S
@@ -156,9 +142,7 @@ cache:
 build_script:
 - cmd: >-
     mkdir \projects\build
-
     rem FIXME use fixup_bundle in cmake
-
     rem msbuild i2pd.sln /p:Configuration=Release
 
     if defined variant ( set cmake_extra=-DCMAKE_BUILD_TYPE=%variant% && set "cmake_build=--config %variant%" )
