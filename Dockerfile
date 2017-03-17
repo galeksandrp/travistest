@@ -1,6 +1,8 @@
-FROM ubuntu
-RUN sed 's&http://archive.ubuntu.com/ubuntu/&mirror://mirrors.ubuntu.com/mirrors.txt&' -i /etc/apt/sources.list
-RUN apt-get update
-RUN whoami
-RUN uname -a
-RUN taskset -p -c $$
+FROM alpine
+RUN apk add --update alpine-sdk
+RUN adduser -D ng -G abuild
+RUN mkdir -p /var/cache/distfiles/
+RUN chown -R ng:abuild /var/cache/distfiles/
+USER ng
+WORKDIR /home/ng
+CMD abuild-keygen -n -a && abuild checksum && abuild -r
