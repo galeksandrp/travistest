@@ -36,4 +36,4 @@ build_script:
     
     %SYSTEMDRIVE%\msys64\usr\bin\bash --login -c "make DESTDIR=mingw64 install"
 artifacts:
-- mingw64
+- path: mingw64
