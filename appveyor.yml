@@ -19,6 +19,6 @@ build_script:
     
     C:\msys64\usr\bin\bash --login -c "sed 's&$(INSTALL_BIN) -s $(INSTALL_OBJS) $(BINDIR)&$(INSTALL_BIN) -s bin/* $(BINDIR)&' -i Makefile.Linux"
     
-    C:\msys64\usr\bin\bash --login -c "make DESTDIR=mingw64 prefix=mingw64 install -f Makefile.Linux"
+    C:\msys64\usr\bin\bash --login -c "make DESTDIR=mingw64 prefix=/mingw64 install -f Makefile.Linux"
 artifacts:
 - path: mingw64
