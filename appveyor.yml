@@ -18,7 +18,7 @@ build_script:
 - cmd: >-
     C:\msys64\usr\bin\bash --login -c "./autogen.sh"
 
-    C:\msys64\usr\bin\bash --login -c "./configure --prefix=mingw64/"
+    C:\msys64\usr\bin\bash --login -c "./configure --prefix=$PWD/mingw64"
 
     C:\msys64\usr\bin\bash --login -c 'make -j3'
     
