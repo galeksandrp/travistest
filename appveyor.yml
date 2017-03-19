@@ -18,6 +18,10 @@ build_script:
 - cmd: >-
     cd build\msys
 
-    C:\msys64\usr\bin\bash --login -c 'cmake -G "MSYS Makefiles" ../../source'
+    C:\msys64\usr\bin\bash --login -c "cmake -G 'MSYS Makefiles' -DCMAKE_INSTALL_PREFIX:PATH=/mingw64 ../../source"
 
-    C:\msys64\usr\bin\bash --login -c 'make -j3'
+    C:\msys64\usr\bin\bash --login -c "make -j3"
+    
+    C:\msys64\usr\bin\bash --login -c "make DESTDIR=mingw64 install"
+artifacts:
+- path: mingw64
