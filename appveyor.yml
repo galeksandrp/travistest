@@ -30,9 +30,10 @@ build_script:
 - cmd: >-
     %SYSTEMDRIVE%\msys64\usr\bin\bash --login -c "./autogen.sh"
 
-    %SYSTEMDRIVE%\msys64\usr\bin\bash --login -c "./configure --disable-wallet --disable-tests --with-boost-libdir=/mingw64/lib --with-boost-system=boost_system-mt --with-boost-filesystem=boost_filesystem-mt --with-boost-program-options=boost_program_options-mt --with-boost-thread=boost_thread-mt --with-boost-chrono=boost_chrono-mt --with-boost-unit-test-framework=boost_unit_test_framework-mt"
+    %SYSTEMDRIVE%\msys64\usr\bin\bash --login -c "./configure --disable-wallet --disable-tests --with-boost-libdir=/mingw64/lib --with-boost-system=boost_system-mt --with-boost-filesystem=boost_filesystem-mt --with-boost-program-options=boost_program_options-mt --with-boost-thread=boost_thread-mt --with-boost-chrono=boost_chrono-mt --with-boost-unit-test-framework=boost_unit_test_framework-mt --prefix=/mignw64"
 
     %SYSTEMDRIVE%\msys64\usr\bin\bash --login -c "make -j3"
+    
+    %SYSTEMDRIVE%\msys64\usr\bin\bash --login -c "make DESTDIR=mingw64 install"
 artifacts:
-- path: DepotDownloader\bin\Release\DepotDownloader.exe
-- path: DepotDownloader\bin\Release
+- mingw64
