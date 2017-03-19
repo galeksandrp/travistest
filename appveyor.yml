@@ -23,8 +23,12 @@ build_script:
 
     set CHERE_INVOKING=enabled_from_arguments
 
-    C:\msys64\usr\bin\bash --login -c "./configure"
+    C:\msys64\usr\bin\bash --login -c "./configure --prefix=/mingw64"
 
     git clone --depth=1 https://github.com/dlfcn-win32/dlfcn-win32.git C:\projects\msvc\contrib
 
     C:\msys64\usr\bin\bash --login -c "make -j3"
+    
+    C:\msys64\usr\bin\bash --login -c "make DESTDIR=mingw64 install"
+artifacts:
+- path: mingw64
