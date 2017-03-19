@@ -20,8 +20,12 @@ build_script:
 
     C:\msys64\usr\bin\bash --login -c "./bootstrap"
 
-    C:\msys64\usr\bin\bash --login -c "./configure"
+    C:\msys64\usr\bin\bash --login -c "./configure --prefix=/mingw64"
 
     C:\msys64\usr\bin\bash --login -c "ls -la"
 
     C:\msys64\usr\bin\bash --login -c "make -j3"
+    
+    C:\msys64\usr\bin\bash --login -c "make DESTDIR=mingw64 install"
+artifacts:
+- path: mingw64
