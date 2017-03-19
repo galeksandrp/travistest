@@ -16,12 +16,12 @@ install:
     set CHERE_INVOKING=enabled_from_arguments
 build_script:
 - cmd: >-
-    C:\msys64\usr\bin\bash --login -c './autogen.sh'
+    C:\msys64\usr\bin\bash --login -c "./autogen.sh"
 
-    C:\msys64\usr\bin\bash --login -c './configure'
+    C:\msys64\usr\bin\bash --login -c "./configure --prefix=mingw64"
 
     C:\msys64\usr\bin\bash --login -c 'make -j3'
     
-    C:\msys64\usr\bin\bash --login -c 'make install DESTDIR=C:/projects/$APPVEYOR_PROJECT_NAME/install'
+    C:\msys64\usr\bin\bash --login -c 'make install DESTDIR=mingw64'
 artifacts:
-- path: install
+- path: mingw64
