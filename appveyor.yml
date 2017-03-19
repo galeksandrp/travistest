@@ -15,8 +15,8 @@ build_script:
 
     echo %CHERE_INVOKING%
 
-    C:\msys64\usr\bin\bash --login -c 'make -j3 EXE=.exe LDLIBS=-lwsock32'
+    C:\msys64\usr\bin\bash --login -c "make -j3 EXE=.exe LDLIBS=-lwsock32"
     
-    C:\msys64\usr\bin\bash --login -c 'make PREFIX=mingw64/usr/local install'
+    C:\msys64\usr\bin\bash --login -c "make PREFIX=mingw64/mingw64 install"
 artifacts:
 - path: mingw64
