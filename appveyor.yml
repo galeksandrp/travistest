@@ -15,9 +15,13 @@ install:
 
     set CHERE_INVOKING=enabled_from_arguments
 
-    C:\msys64\usr\bin\bash --login -c 'pacman -S --noconfirm mingw-w64-x86_64-yasm'
+    C:\msys64\usr\bin\bash --login -c "pacman -S --noconfirm mingw-w64-x86_64-yasm"
 build_script:
 - cmd: >-
-    C:\msys64\usr\bin\bash --login -c './configure'
+    C:\msys64\usr\bin\bash --login -c "./configure --prefix=mingw64"
 
-    C:\msys64\usr\bin\bash --login -c 'make -j3'
+    C:\msys64\usr\bin\bash --login -c "make -j3"
+    
+    C:\msys64\usr\bin\bash --login -c "make DESTDIR=mingw64 install"
+artifacts:
+- path: mingw64
