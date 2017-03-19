@@ -1,5 +1,4 @@
-FROM pritunl/archlinux
-RUN pacman -S --needed base-devel --noconfirm
+FROM base/devel
 RUN useradd ng -m
 USER ng
 CMD ["makepkg"]
