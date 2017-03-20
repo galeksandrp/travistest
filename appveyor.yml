@@ -16,7 +16,7 @@ build_script:
 
     set CHERE_INVOKING=enabled_from_arguments
 
-    C:\msys64\usr\bin\bash --login -c "pacman -S --noconfirm mingw-w64-x86_64-{libxml2,libpng,freetype}"
+    C:\msys64\usr\bin\bash --login -c "pacman -S --noconfirm mingw-w64-x86_64-{libxml2,libpng,freetype,libdvdread}"
 
     C:\msys64\usr\bin\bash --login -c "./bootstrap"
 
