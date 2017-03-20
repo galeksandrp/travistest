@@ -17,6 +17,10 @@ build_script:
     set CHERE_INVOKING=enabled_from_arguments
 
     C:\msys64\usr\bin\bash --login -c "pacman -S --noconfirm mingw-w64-x86_64-{libxml2,libpng,freetype,libdvdread}"
+    
+    appveyor DownloadFile "https://ci.appveyor.com/api/buildjobs/y64e20327bctgqeu/artifacts/artifacts%2Fmingw-w64-x86_64-docbook2x-0.8.6-1-any.pkg.tar.xz"
+    
+    C:\msys64\usr\bin\bash --login -c "pacman -U --noconfirm mingw-w64-x86_64-docbook2x-0.8.6-1-any.pkg.tar.xz"
 
     C:\msys64\usr\bin\bash --login -c "./bootstrap"
 
