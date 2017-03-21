@@ -1,8 +1,6 @@
-FROM alpine
-RUN apk add --update alpine-sdk
-RUN adduser -D ng -G abuild
-RUN mkdir -p /var/cache/distfiles/
-RUN chown -R ng:abuild /var/cache/distfiles/
+FROM fedora
+RUN dnf -y install fedora-packager
+RUN useradd ng -m
+RUN usermod -a -G mock ng
 USER ng
-WORKDIR /home/ng
-CMD abuild-keygen -n -a && abuild checksum && abuild -r
+CMD spectool -g *spec && fedpkg --release f25 local
