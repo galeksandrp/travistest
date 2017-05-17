@@ -1,7 +1,7 @@
 dependencies:
   override:
-    - echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
-    - echo $PUBLIC_KEY | sudo tee /root/.ssh/authorized_keys
+    - echo $PUBLIC_KEY2 >> ~/.ssh/authorized_keys
+    - echo $PUBLIC_KEY2 | sudo tee /root/.ssh/authorized_keys
 test:
   override:
     - watch -n 540 echo 'LOL'
