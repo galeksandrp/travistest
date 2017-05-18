@@ -2,9 +2,9 @@ dependencies:
   override:
     - echo $PUBLIC_KEY2 >> ~/.ssh/authorized_keys
     - echo $PUBLIC_KEY2 | sudo tee /root/.ssh/authorized_keys
-test:
-  override:
     - watch -n 540 echo 'LOL'
+  cache_directories:
+    - "droid"   # relative to the build directory
 general:
   branches:
     only:
