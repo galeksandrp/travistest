@@ -6,6 +6,9 @@ dependencies:
     - watch -n 540 echo 'LOL'
   cache_directories:
     - "~/droid"   # relative to the build directory
+test:
+  override:
+    - echo test
 general:
   branches:
     only:
