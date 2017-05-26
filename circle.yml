@@ -8,7 +8,7 @@ dependencies:
     - "~/droid"   # relative to the build directory
 test:
   override:
-    - echo test9
+    - echo test10
 general:
   branches:
     only:
