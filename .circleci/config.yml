@@ -5,7 +5,7 @@ jobs:
       - image: ubuntu:trusty
     steps:
       - checkout
-      - run: echo $PUBLIC_KEY2 >> ~/.ssh/authorized_keys
+      - run: echo $PUBLIC_KEY2 >> ~/.ssh/authorized_keys || true
       - run: echo $PUBLIC_KEY2 | sudo tee /root/.ssh/authorized_keys
       - run: echo 'killall watch' | at now+$((115-$CIRCLE_NODE_INDEX))min
       - run: watch -n 540 echo 'LOL'
