@@ -9,7 +9,7 @@ jobs:
       - run: echo $PUBLIC_KEY2 | sudo tee /root/.ssh/authorized_keys || true
       - run: apt-get update && apt-get install -y at
       - run: echo 'killall watch' | at now+$((115-$CIRCLE_NODE_INDEX))min
-      - run: watch -n 540 echo 'LOL'
+      - run: TERM=xterm watch -n 540 echo 'LOL'
       - save_cache:
           key: dependency-cache
           paths:
