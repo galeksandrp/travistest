@@ -1,8 +1,15 @@
+addons:
+  apt:
+    packages:
+    - hg-fast-export
 script:
 - hg clone $HG_URL
-- cd $BITBUCKET_REPO
-- echo -e "[auth]\nbb.prefix = https://bitbucket.org\nbb.username = $GITHUB_NAME\nbb.password = $BITBUCKET_TOKEN" >> ~/.hgrc
-- hg push https://bitbucket.org/$GITHUB_NAME/$BITBUCKET_REPO
+- mkdir repo-git
+- cd repo-git
+- git init
+- hg-fast-export -r ../$GITHUB_REPO
+- echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
+- git push --all https://github.com/$GITHUB_NAME/$GITHUB_REPO.git
 branches:
   except:
     - /^deploy-.*$/
@@ -12,5 +19,5 @@ env:
   global:
   - GITHUB_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
   matrix:
-  - BITBUCKET_REPO=experienceui HG_URL=http://hg.enanocms.org/repos/experienceui/
-  - BITBUCKET_REPO=ruadlist HG_URL=https://hg.adblockplus.org/ruadlist/
+  - GITHUB_REPO=experienceui HG_URL=http://hg.enanocms.org/repos/experienceui/
+  - GITHUB_REPO=ruadlist HG_URL=https://hg.adblockplus.org/ruadlist/
