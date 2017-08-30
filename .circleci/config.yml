@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: ubuntu:trusty
+      - image: galeksandrp/travistest:docker-build-android
     steps:
       - checkout
       - run: echo $PUBLIC_KEY2 >> ~/.ssh/authorized_keys || true
