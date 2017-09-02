@@ -37,8 +37,8 @@ before_install:
 before_deploy:
   - echo -e "machine github.com\nlogin galeksandrp\npassword $GITHUB_TOKEN" >> ~/.netrc
   - echo $TRAVIS_COMMIT > .git/HEAD
-  - git tag -f deploy-$TRAVIS_BRANCH
-  - git push origin -f deploy-$TRAVIS_BRANCH
+  - git tag -f v$(grep versionName app/build.gradle | cut -d '"' -f 2)-$TRAVIS_BRANCH-deploy
+  - git push origin -f v$(grep versionName app/build.gradle | cut -d '"' -f 2)-$TRAVIS_BRANCH-deploy
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
@@ -64,6 +64,7 @@ script:
 branches:
   except:
     - /^deploy-.*$/
+    - /^.*-deploy$/
     - /^untagged-.*$/
 notifications:
   email: false
