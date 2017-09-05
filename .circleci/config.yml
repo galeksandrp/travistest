@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: galeksandrp/travistest:docker-build-android-jdk7
+      - image: galeksandrp/travistest:docker-build-android-openjdk7
     steps:
       - checkout
       - run: echo $PUBLIC_KEY2 >> ~/.ssh/authorized_keys || true
