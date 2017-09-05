@@ -1,9 +1,12 @@
 script:
-- git remote add upstream $GIT_URL
+- git remote add upstream https://github.com/$GITHUB_UPSTREAM/$GITHUB_REPO.git
 - git fetch upstream
+- cd .git/refs/remotes/upstream/
+- for f in * ; do mv "$f" "$GITHUB_UPSTREAM-$f" ; done
+- cd $TRAVIS_BUILD_DIR
 - cp -Rf .git/refs/remotes/upstream/* .git/refs/heads/
 - rm -f .git/refs/heads/HEAD
-- cat .git/packed-refs | grep ' refs/remotes/upstream/' | sed 's& refs/remotes/upstream/& refs/heads/&' >> .git/packed-refs
+- cat .git/packed-refs | grep ' refs/remotes/upstream/' | sed "s& refs/remotes/upstream/& refs/heads/$GITHUB_UPSTREAM-&" >> .git/packed-refs
 - git remote add fork https://github.com/$GITHUB_NAME/$GITHUB_REPO.git
 - echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
 - git push fork --all
@@ -16,7 +19,19 @@ env:
   global:
   - GITHUB_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
   matrix:
-  - GITHUB_REPO=peerguardian GIT_URL=https://git.code.sf.net/p/peerguardian/code
-  - GITHUB_REPO=stg GIT_URL=http://git.stg.codes/stg.git
-  - GITHUB_REPO=orbot GIT_URL=https://git.torproject.org/orbot.git
-  - GITHUB_REPO=tor GIT_URL=https://git.torproject.org/tor.git
+  - GITHUB_REPO=android GITHUB_UPSTREAM=CyanogenMod
+  - GITHUB_REPO=android GITHUB_UPSTREAM=LineageOS
+  - GITHUB_REPO=android_frameworks_av GITHUB_UPSTREAM=CyanogenMod
+  - GITHUB_REPO=android_frameworks_av GITHUB_UPSTREAM=LineageOS
+  - GITHUB_REPO=android_hardware_ti_wpan GITHUB_UPSTREAM=CyanogenMod
+  - GITHUB_REPO=android_hardware_ti_wpan GITHUB_UPSTREAM=LineageOS
+  - GITHUB_REPO=android_frameworks_base GITHUB_UPSTREAM=CyanogenMod
+  - GITHUB_REPO=android_frameworks_base GITHUB_UPSTREAM=LineageOS
+  - GITHUB_REPO=android_external_sonivox GITHUB_UPSTREAM=CyanogenMod
+  - GITHUB_REPO=android_external_sonivox GITHUB_UPSTREAM=LineageOS
+  - GITHUB_REPO=android_device_samsung_cooper GITHUB_UPSTREAM=CyanogenMod
+  - GITHUB_REPO=android_device_samsung_cooper GITHUB_UPSTREAM=LineageOS
+  - GITHUB_REPO=android_system_media GITHUB_UPSTREAM=CyanogenMod
+  - GITHUB_REPO=android_system_media GITHUB_UPSTREAM=LineageOS
+  - GITHUB_REPO=android_external_bluetooth_bluedroid GITHUB_UPSTREAM=CyanogenMod
+  - GITHUB_REPO=android_external_bluetooth_bluedroid GITHUB_UPSTREAM=LineageOS
