@@ -14,6 +14,7 @@ install:
 - ./configure.sh keenetic
 - cd ~
 - echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
+- echo $PUBLIC_KEY_SMT >> ~/.ssh/authorized_keys
 - wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
 - unzip ngrok-stable-linux-amd64.zip
 - ./ngrok authtoken $NG
