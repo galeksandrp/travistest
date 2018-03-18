@@ -12,9 +12,9 @@ jobs:
       - run: sed -i -e "s/OFFLINEIMAP_EMAIL/$EMAIL/" -e "s/OFFLINEIMAP_PASSWORD/$EMAIL_PASSWORD/" ./.offlineimaprc
       - run: git fetch gitlab offlineimap
       - run: git worktree add -b offlineimap ~/logs gitlab/offlineimap
+      - run: remote_syslog -p 15551 -d logs2.papertrailapp.com --pid-file=/var/run/remote_syslog.pid ~/logs/$EMAIL.log
       - run: |
           TERM=xterm watch -n 540 echo 'LOL' &
-          remote_syslog -p 15551 -d logs2.papertrailapp.com --pid-file=/var/run/remote_syslog.pid ~/logs/$EMAIL.log
           offlineimap -c ./.offlineimaprc &> ~/logs/$EMAIL.log
       - run:
           command: git add $EMAIL.log
@@ -29,7 +29,7 @@ jobs:
           command: git add .
           working_directory: ~/mail
       - run:
-          command: git commit -m 'Upd'
+          command: git commit -m 'Upd' > /dev/null
           working_directory: ~/mail
       - run:
           command: git push gitlab $BRANCH
