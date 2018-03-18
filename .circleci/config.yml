@@ -14,6 +14,7 @@ jobs:
       - run: git worktree add -b offlineimap ~/logs gitlab/offlineimap
       - run: |
           TERM=xterm watch -n 540 echo 'LOL' &
+          remote_syslog -p 15551 -d logs2.papertrailapp.com --pid-file=/var/run/remote_syslog.pid ~/logs/$EMAIL.log
           offlineimap -c ./.offlineimaprc &> ~/logs/$EMAIL.log
       - run:
           command: git add $EMAIL.log
