@@ -1,34 +1,11 @@
 language: python
 install:
 - echo -e "machine gitlab.com\nlogin $GITLAB_NAME\npassword $GITLAB_TOKEN" >> ~/.netrc
-- pip install offlineimap
+- echo -e "machine galeksandrp.visualstudio.com\nlogin $VSTS_NAME\npassword $VSTS_TOKEN" >> ~/.netrc
 - git remote add gitlab https://gitlab.com/$GITLAB_NAME/2833.git
 - git fetch gitlab $BRANCH
-- git worktree add -b $BRANCH ~/mail gitlab/$BRANCH
-- sed -i -e "s/OFFLINEIMAP_EMAIL/$EMAIL/" -e "s/OFFLINEIMAP_PASSWORD/$EMAIL_PASSWORD/"
-  ./.offlineimaprc
-before_script:
-- git fetch gitlab offlineimap
-- git worktree add -b offlineimap ~/logs gitlab/offlineimap
 script:
-- travis_wait 120 sleep infinity &
-- offlineimap -c ./.offlineimaprc &> ~/logs/$EMAIL.log
-after_script:
-- cd ~/logs
-- git add $EMAIL.log
-- git commit -m 'Upd'
-- git fetch gitlab offlineimap
-- git rebase gitlab/offlineimap
-- git push gitlab offlineimap
-before_deploy:
-- cd ~/mail
-- git -c core.autocrlf=false add .
-- git -c core.autocrlf=false commit -m 'Upd' > /dev/null
-deploy:
-  provider: script
-  script: git push gitlab $BRANCH
-  on:
-    all_branches: true
+- git push https://galeksandrp.visualstudio.com/_git/2833 $BRANCH
 notifications:
   email: false
 env:
