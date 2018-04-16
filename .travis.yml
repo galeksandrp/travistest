@@ -3,10 +3,9 @@ install:
 - echo -e "machine gitlab.com\nlogin $GITLAB_NAME\npassword $GITLAB_TOKEN" >> ~/.netrc
 - echo -e "machine galeksandrp.visualstudio.com\nlogin $VSTS_NAME\npassword $VSTS_TOKEN" >> ~/.netrc
 - git remote add gitlab https://gitlab.com/$GITLAB_NAME/2833.git
-- git remote add vsts https://galeksandrp.visualstudio.com/_git/2833
 - git fetch gitlab $BRANCH
 script:
-- git push vsts $BRANCH
+- git push https://galeksandrp.visualstudio.com/_git/2833 gitlab/$BRANCH:$BRANCH
 notifications:
   email: false
 env:
