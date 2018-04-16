@@ -5,7 +5,8 @@ install:
 - git remote add gitlab https://gitlab.com/$GITLAB_NAME/2833.git
 - git fetch gitlab $BRANCH
 script:
-- git push https://galeksandrp.visualstudio.com/_git/2833 gitlab/$BRANCH:$BRANCH
+- git branch $BRANCH gitlab/$BRANCH
+- git push https://galeksandrp.visualstudio.com/_git/2833 $BRANCH
 notifications:
   email: false
 env:
