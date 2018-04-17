@@ -5,8 +5,8 @@ jobs:
       - image: galeksandrp/travistest:docker-offlineimap
     steps:
       - checkout
-      - run: echo -e "machine gitlab.com\nlogin $GITLAB_NAME\npassword $GITLAB_TOKEN" >> ~/.netrc
-      - run: git remote add gitlab https://gitlab.com/$GITHUB_NAME/2833.git
+      - run: echo -e "machine galeksandrp.visualstudio.com\nlogin $VSTS_NAME\npassword $VSTS_TOKEN" >> ~/.netrc
+      - run: git remote add gitlab https://galeksandrp.visualstudio.com/_git/2833
       - run: git fetch gitlab $BRANCH
       - run: git worktree add -b $BRANCH ~/mail gitlab/$BRANCH
       - run: sed -i -e "s/OFFLINEIMAP_EMAIL/$EMAIL/" -e "s/OFFLINEIMAP_PASSWORD/$EMAIL_PASSWORD/" ./.offlineimaprc
