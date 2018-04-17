@@ -10,6 +10,7 @@ install:
 - unzip ngrok-stable-linux-amd64.zip
 - ./ngrok authtoken $NG
 - ./ngrok tcp 22 > /dev/null &
+- ps aux
 - watch -n 540 echo 'LOL'
 branches:
   except:
