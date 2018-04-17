@@ -5,8 +5,6 @@ jobs:
       - image: galeksandrp/travistest:docker-build-android-openjdk8
     steps:
       - checkout
-      - run: echo $PUBLIC_KEY2 >> ~/.ssh/authorized_keys || true
-      - run: echo $PUBLIC_KEY2 | sudo tee /root/.ssh/authorized_keys || true
       - run: TERM=xterm watch -n 540 echo 'LOL'
 workflows:
   version: 2
