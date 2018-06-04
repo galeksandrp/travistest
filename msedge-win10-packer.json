@@ -1,0 +1,10 @@
+{
+  "builders": [{
+  "type": "virtualbox-ovf",
+  "source_path": "MSEdge - Win10.ova",
+  "communicator": "winrm",
+  "winrm_username": "IEUser",
+  "winrm_password": "Passw0rd!",
+  "shutdown_command": "shutdown \\s \\t 0"
+}]
+}
