@@ -1,0 +1,25 @@
+{
+  "builders": [{
+  "type": "virtualbox-ovf",
+  "source_path": "IE11 - Win7.ova",
+  "ssh_username": "IEUser",
+  "ssh_password": "Passw0rd!",
+  "shutdown_command": "shutdown /s /t 0"
+}],
+"provisioners": [
+        {
+            "type": "windows-shell",
+            "inline":[
+                "@\"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command \"iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))\" && SET \"PATH=%PATH%;%ALLUSERSPROFILE%\\chocolatey\\bin\""
+            ]
+        }
+    ],
+"post-processors": [
+    [
+      {
+        "type": "vagrant",
+        "keep_input_artifact": false
+      }
+    ]
+  ]
+}
