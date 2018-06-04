@@ -1,0 +1,14 @@
+sudo: required
+addons:
+  apt:
+    packages:
+      - linux-headers-4.4.0-101-generic
+      - virtualbox
+install:
+- wget https://releases.hashicorp.com/packer/1.2.4/packer_1.2.4_linux_amd64.zip
+- unzip packer_1.2.4_linux_amd64.zip -d ~/bin
+- chmod +x ~/bin/packer
+- wget -nv https://az792536.vo.msecnd.net/vms/VMBuild_20150916/VirtualBox/IE8/IE8.Win7.VirtualBox.zip
+- unzip IE8.Win7.VirtualBox.zip
+script:
+- packer build ie8-win7-packer.json

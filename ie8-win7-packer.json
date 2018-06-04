@@ -1,0 +1,14 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+  "builders": [{
+  "type": "virtualbox-ovf",
+  "source_path": "IE8 - Win7.ova",
+  "communicator": "winrm",
+  "winrm_username": "packer",
+  "winrm_password": "packer",
+  "shutdown_command": "shutdown \\s \\t 0"
+}]
+}
