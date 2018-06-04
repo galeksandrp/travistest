@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run: sudo apt-get update && sudo apt-get install -y linux-headers-4.4.0-96-generic virtualbox
+      - run: wget https://releases.hashicorp.com/packer/1.2.4/packer_1.2.4_linux_amd64.zip
+      - run: unzip packer_1.2.4_linux_amd64.zip -d ~/bin
+      - run: chmod +x ~/bin/packer
+      - run: wget -nv https://az792536.vo.msecnd.net/vms/VMBuild_20150916/VirtualBox/IE8/IE8.Win7.VirtualBox.zip
+      - run: unzip IE8.Win7.VirtualBox.zip
+      - run: packer build ie8-win7-packer.json
