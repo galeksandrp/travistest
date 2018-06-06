@@ -21,6 +21,6 @@ remotehost = imap.mail.ru
 remoteuser = OFFLINEIMAP_EMAIL
 remotepass = OFFLINEIMAP_PASSWORD
 createfolders = False
-readonly = true
+readonly = True
 nametrans = lambda folder: re.sub('\.', '^', folder)
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
