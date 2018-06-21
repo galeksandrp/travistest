@@ -1,0 +1,16 @@
+{
+  "builders": [{
+  "type": "virtualbox-ovf",
+  "source_path": "IE9 - Win7.ova",
+  "ssh_username": "IEUser",
+  "ssh_password": "Passw0rd!",
+  "shutdown_command": "shutdown /s /t 0"
+}],
+"post-processors": [
+    [
+      {
+        "type": "vagrant"
+      }
+    ]
+  ]
+}
