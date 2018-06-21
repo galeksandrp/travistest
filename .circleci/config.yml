@@ -4,10 +4,24 @@ jobs:
     machine: true
     steps:
       - checkout
+      - run: echo "export BRANCH=$(echo $CIRCLE_BRANCH | sed 's/^circle-//')" >> $BASH_ENV
       - run: sudo apt-get update && sudo apt-get install -y linux-headers-4.4.0-96-generic virtualbox
-      - run: wget https://releases.hashicorp.com/packer/1.2.4/packer_1.2.4_linux_amd64.zip
-      - run: unzip packer_1.2.4_linux_amd64.zip -d ~/bin
-      - run: chmod +x ~/bin/packer
-      - run: wget -nv https://az792536.vo.msecnd.net/vms/VMBuild_20150916/VirtualBox/IE8/IE8.Win7.VirtualBox.zip
-      - run: unzip IE8.Win7.VirtualBox.zip
-      - run: packer build ie8-win7-packer.json
+      - run: wget https://releases.hashicorp.com/vagrant/2.1.2/vagrant_2.1.2_x86_64.deb
+      - run: sudo dpkg -i vagrant_2.1.2_x86_64.deb
+      - run: wget https://aka.ms/ie8.win7.vagrant -O IE8.Win7.Vagrant.zip
+      - run: unzip IE8.Win7.Vagrant.zip
+      - run: rm IE8.Win7.Vagrant.zip
+      - run: vagrant box add upstream-$BRANCH 'IE8 - Win7.box'
+      - run: rm 'IE8 - Win7.box'
+      - run: vagrant up
+      - run: vagrant package
+      - run: >-
+          curl -H "Content-Type: application/json" -H "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" https://app.vagrantup.com/api/v1/boxes --data "{ \"box\": { \"username\": \"$GITHUB_NAME\", \"name\": \"$BRANCH\", \"is_private\": false } }"
+      - run: >-
+          curl -H "Content-Type: application/json" -H "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" https://app.vagrantup.com/api/v1/box/$GITHUB_NAME/$BRANCH/versions --data '{ "version": { "version": "2015.09.16" } }'
+      - run: >-
+          curl -H "Content-Type: application/json" -H "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" https://app.vagrantup.com/api/v1/box/$GITHUB_NAME/$BRANCH/version/2015.09.16/providers --data '{ "provider": { "name": "virtualbox" } }'
+      - run: >-
+          curl -X PUT --upload-file package.box $(curl -H "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" "https://app.vagrantup.com/api/v1/box/$GITHUB_NAME/$BRANCH/version/2015.09.16/provider/virtualbox/upload" | jq -r '.upload_path') || true
+      - run: >-
+          curl -H "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" https://app.vagrantup.com/api/v1/box/$GITHUB_NAME/$BRANCH/version/2015.09.16/release --request PUT
