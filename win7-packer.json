@@ -1,0 +1,38 @@
+{
+  "builders": [{
+  "name": "ie8-win7-packer",
+  "type": "virtualbox-ovf",
+  "source_path": "IE8 - Win7.ova",
+  "ssh_username": "IEUser",
+  "ssh_password": "Passw0rd!",
+  "shutdown_command": "shutdown /s /t 0"
+},{
+  "name": "ie9-win7-packer",
+  "type": "virtualbox-ovf",
+  "source_path": "IE9 - Win7.ova",
+  "ssh_username": "IEUser",
+  "ssh_password": "Passw0rd!",
+  "shutdown_command": "shutdown /s /t 0"
+},{
+  "name": "ie10-win7-packer",
+  "type": "virtualbox-ovf",
+  "source_path": "IE10 - Win7.ova",
+  "ssh_username": "IEUser",
+  "ssh_password": "Passw0rd!",
+  "shutdown_command": "shutdown /s /t 0"
+},{
+  "name": "ie11-win7-packer",
+  "type": "virtualbox-ovf",
+  "source_path": "IE11 - Win7.ova",
+  "ssh_username": "IEUser",
+  "ssh_password": "Passw0rd!",
+  "shutdown_command": "shutdown /s /t 0"
+}],
+"post-processors": [
+    [
+      {
+        "type": "vagrant"
+      }
+    ]
+  ]
+}
