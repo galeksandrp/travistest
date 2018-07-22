@@ -8,3 +8,15 @@ jobs:
       - run: |
           TERM=xterm watch -n 540 echo 'LOL' &
           curl https://developer.microsoft.com/en-us/microsoft-edge/api/tools/vms/ | jq -r '.[].software[].files[].url' | grep 'VirtualBox' | xargs -i bash -c 'FILENAME=$(echo {} | cut -d '/' -f5,8 | tr '/' '_') && curl -H "Authorization: OAuth $YANDEX_DISK_SECONDARY_TOKEN" -f "https://cloud-api.yandex.net:443/v1/disk/resources?path=app:/$FILENAME&fields=name" || curl {} | curl -X PUT -T - $(curl -H "Authorization: OAuth $YANDEX_DISK_SECONDARY_TOKEN" -f "https://cloud-api.yandex.net:443/v1/disk/resources/upload?path=app:/$FILENAME" | jq -r ".href")'
+      - run: |
+          TERM=xterm watch -n 540 echo 'LOL' &
+          curl http://aka.ms/ie6.xp.vagrant | grep -P -o 'https://[^"]+'
+      - run: |
+          TERM=xterm watch -n 540 echo 'LOL' &
+          curl http://aka.ms/ie8.xp.vagrant | grep -P -o 'https://[^"]+'
+      - run: |
+          TERM=xterm watch -n 540 echo 'LOL' &
+          curl http://aka.ms/ie7.vista.vagrant | grep -P -o 'https://[^"]+'
+      - run: |
+          TERM=xterm watch -n 540 echo 'LOL' &
+          curl http://aka.ms/ie10.win8.vagrant | grep -P -o 'https://[^"]+'
