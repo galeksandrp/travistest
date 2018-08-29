@@ -1,4 +1,10 @@
+env:
+  - LFS=/root/opt/lfs
+before_install:
+- PID=$(docker run -d --rm -ti -v$(pwd):/root/opt -w/root/opt galeksandrp/travistest:docker-pester-xenial sleep infinity)
+install:
+- curl http://www.linuxfromscratch.org/lfs/view/8.3-rc2/wget-list | wget --input-file=- --continue --directory-prefix=$LFS/sources
 script:
-- docker run --rm -ti -v$(pwd):/root/opt -w/root/opt galeksandrp/travistest:docker-pester-xenial pwsh -Command Invoke-Pester -EnableExit
+- docker exec killall bash
 notifications:
   email: false
