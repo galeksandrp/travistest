@@ -55,7 +55,7 @@ Describe 'Get-Versions' {
 	
 	Context 'gawk' {
 		It 'gawk version' {
-			[version]((gawk --version)[0] -replace '[^0-9.]') | Should -BeGreaterOrEqual ([version]'4.0.1')
+			[version](((gawk --version)[0] -split ',')[0] -replace '[^0-9.]') | Should -BeGreaterOrEqual ([version]'4.0.1')
 		}
 		
 		It '/usr/bin/awk is gawk' {
@@ -63,7 +63,7 @@ Describe 'Get-Versions' {
 		}
 		
 		It '/usr/bin/awk version' {
-			[version]((/usr/bin/awk --version)[0] -replace '[^0-9.]') | Should -BeGreaterOrEqual ([version]'4.0.1')
+			[version](((/usr/bin/awk --version)[0] -split ',')[0] -replace '[^0-9.]') | Should -BeGreaterOrEqual ([version]'4.0.1')
 		}
 	}
 	
