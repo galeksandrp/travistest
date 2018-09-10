@@ -1,12 +1,15 @@
 version: 1.0.{build}
-branches:
-  only:
-  - /^openvpn-.*$/
 environment:
   CLIENT_OVPN_SECRET:
-    secure: vY7Jr8z3G3cCY/ipTOsNvSJicodlIDj8hIXmxCoZCgs=
+    secure: irgtLRwTfMXByjgzmUN3toxIv1xhiXGXhmE8sVQ/PKw=
   OPENVPN_PASSWORD:
     secure: U4aH2bodfl5Tcb3+1sm3cubPd9sfzjDfcQUfTOhP7Lk=
+  DOMAIN_PASSWORD:
+    secure: nbq6iPPffGciS+7eCuyKHjJigAK1uMa0wh5bV3TdGwo=
+  DOMAIN_LOGIN:
+    secure: Q4A9DZowXnvD+w+/hbby5A==
+  DOMAIN:
+    secure: kps54NW2JZKCecVSOKvF1A==
 init:
 - ps: if ($env:APPVEYOR_REPO_COMMIT_MESSAGE -match '[ci rdp] ') {iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))}
 install:
@@ -25,7 +28,7 @@ install:
 
     echo %OPENVPN_PASSWORD%>> auth.txt
 - ps: >-
-    echo "echo>$env:TMP\client.ovpn.lock" | out-file "$env:PROGRAMFILES\OpenVPN\config\client_up.bat" -encoding UTF8
+    echo "echo>$env:TMP\client.ovpn.lock || true" | out-file "$env:PROGRAMFILES\OpenVPN\config\client_up.bat" -encoding UTF8
 
     start "$env:PROGRAMFILES\OpenVPN\bin\openvpn-gui" -argumentlist '--connect','client.ovpn'
 
@@ -33,5 +36,13 @@ install:
         Start-Sleep -Seconds 1
     }
 build_script:
-- cmd: >-
-    ping 192.168.1.60
+- ps: >-
+    $password = ConvertTo-SecureString "$env:DOMAIN_PASSWORD" -AsPlainText -Force
+
+    $credential = New-Object System.Management.Automation.PSCredential -ArgumentList "$env:DOMAIN_LOGIN", $password
+
+    Add-Computer -domainname "$env:DOMAIN" -credential $credential
+    
+    Restart-Computer
+on_finish:
+- ps: if ($env:APPVEYOR_REPO_COMMIT_MESSAGE -match '[ci rdp] ') {$blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))}
