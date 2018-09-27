@@ -1,3 +1,4 @@
-FROM ubuntu:trusty
-RUN sed 's&http://archive.ubuntu.com/ubuntu/&mirror://mirrors.ubuntu.com/mirrors.txt&' -i /etc/apt/sources.list
-RUN apt-get update && apt-get install -y bash-completion build-essential git
+FROM node:4.6.0
+RUN apt-get update && apt-get install -y jq
+RUN npm install -g bower
+RUN npm install -g grunt-cli
