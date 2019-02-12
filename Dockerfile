@@ -1,3 +1,2 @@
-FROM ubuntu:xenial
-RUN sed 's&http://archive.ubuntu.com/ubuntu/&mirror://mirrors.ubuntu.com/mirrors.txt&' -i /etc/apt/sources.list
-RUN apt-get update && apt-get install -y git build-essential cmake libncurses5-dev bison
+FROM mysql:5.7
+RUN wget https://github.com/galeksandrp/mysql-server/releases/download/v5.7.20-fix-mysql-5.7.20-deploy/mysqldump -O /usr/bin/mysqldump-tldr
