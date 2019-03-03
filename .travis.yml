@@ -1,24 +1,16 @@
-script:
+before_script:
 - |
   export GITHUB_REPOS_LAST_PAGE_NUMBER=$(curl -I -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user/repos?affiliation=owner \
   | grep '^Link: ' \
   | sed 's/,/\n/g' \
   | grep '>; rel="last"' \
   | grep -o '[0-9]')
-- |
-  seq 6 $GITHUB_REPOS_LAST_PAGE_NUMBER \
-  | xargs -n1 -i bash -c "curl -H 'Authorization: token $GITHUB_TOKEN' 'https://api.github.com/user/repos?affiliation=owner&page={}'" > github-repositories.json
 - echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
+script:
 - |
-  cat github-repositories.json \
-  | jq -r '.[].name' \
-  | xargs -n1 -P8 -i bash -c "git clone \$(jq -r '.[]|select(.name==\"{}\")|.clone_url' github-repositories.json)"
-- export GITHUB_NAME=$(cat github-repositories.json | jq -r '.[0].owner.login' | head -1)
-- |
-  cat github-repositories.json \
-  | jq -r '.[].name' \
-  | xargs -n1 -P8 -i bash -c "cd {} \
-  && test \$(git log --all --author=$GITHUB_EMAIL --oneline | wc -l) -eq 0 \
-  && curl -H 'Authorization: token $GITHUB_TOKEN' -H 'Accept: application/vnd.github.nightshade-preview+json' --data '{\"new_owner\": \"$GITHUB_NEW_OWNER\"}' https://api.github.com/repos/$GITHUB_NAME/{}/transfer"
+  seq 1 $GITHUB_REPOS_LAST_PAGE_NUMBER \
+  | xargs -n1 -i bash -c "curl -H 'Authorization: token $GITHUB_TOKEN' 'https://api.github.com/user/repos?affiliation=owner&page={}' > github-repositories-{}.json \
+  && . functions.sh \
+  && githubReposPageTransfer github-repositories-{}.json"
 notifications:
   email: false
