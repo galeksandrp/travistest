@@ -11,6 +11,6 @@ script:
   seq 1 $GITHUB_REPOS_LAST_PAGE_NUMBER \
   | xargs -n1 -i bash -c "curl -H 'Authorization: token $GITHUB_TOKEN' 'https://api.github.com/user/repos?affiliation=owner&page={}' > github-repositories-{}.json \
   && . functions.sh \
-  && githubReposPageTransfer github-repositories-{}.json"
+  && githubReposPage github-repositories-{}.json"
 notifications:
   email: false
