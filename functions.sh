@@ -1,21 +1,40 @@
 function githubRepoTransferUntouched {
 	GITHUB_REPO_NAME="$1"
+	GITHUB_REPO_API_URL=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").url" "$GITHUB_REPOS_PAGE")
 
 	test $(git log --all --author=$GITHUB_EMAIL --oneline | wc -l) -eq 0 \
 	&& echo -e "$GITHUB_REPO_NAME\t:untouched" \
 	&& curl -H "Authorization: token $GITHUB_TOKEN" \
 		-H 'Accept: application/vnd.github.nightshade-preview+json' \
 		--data "{\"new_owner\": \"$GITHUB_UNTOUCHED_OWNER\"}" \
-		https://api.github.com/repos/$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").owner.login" "$GITHUB_REPOS_PAGE")/$GITHUB_REPO_NAME/transfer
+		"$GITHUB_REPO_API_URL/transfer"
+}
+
+function githubRepoPullUpstream {
+	GITHUB_REPO_NAME="$1"
+	GITHUB_REPO_API_URL=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").url" "$GITHUB_REPOS_PAGE")
+	GITHUB_REPO_UPSTREAM_URL=$(curl -H "Authorization: token $GITHUB_TOKEN" \
+		"$GITHUB_REPO_API_URL" \
+	| jq -r '.parent.clone_url')
+	GITHUB_REPO_URL=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").clone_url" "$GITHUB_REPOS_PAGE")
+	
+	git clone "$GITHUB_REPO_UPSTREAM_URL" "$GITHUB_REPO_NAME" \
+	&& cd "$GITHUB_REPO_NAME" \
+	cp -Rf .git/refs/remotes/origin/* .git/refs/heads/ \
+	&& rm -f .git/refs/heads/HEAD \
+	&& cat .git/packed-refs \
+	| grep ' refs/remotes/origin/' \
+	| grep -v ' refs/remotes/origin/master' \
+	| sed 's& refs/remotes/origin/& refs/heads/&' >> .git/packed-refs \
+	&& git remote add fork "$GITHUB_REPO_URL" \
+	&& git push fork --all \
+	&& git push fork --tags
 }
 
 function githubRepoTransferMerged {
 	GITHUB_REPO_NAME="$1"
-	GITHUB_NAME=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").owner.login" "$GITHUB_REPOS_PAGE")
-
-	curl -H "Authorization: token $GITHUB_TOKEN" \
-		https://api.github.com/repos/$GITHUB_NAME/$GITHUB_REPO_NAME > "$WORKING_DIR/$GITHUB_REPO_NAME.json"
-	GITHUB_REPO_UPSTREAM_NAME=$(jq -r '.parent.owner.login' "$WORKING_DIR/$GITHUB_REPO_NAME.json")
+	GITHUB_REPO_API_URL=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").url" "$GITHUB_REPOS_PAGE")
+	GITHUB_REPO_URL=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").clone_url" "$GITHUB_REPOS_PAGE")
 	
 	GITHUB_REPO_COMMITS_HASH=$(git log --all --author=$GITHUB_EMAIL --pretty=format:"%H" \
 	| sort \
@@ -23,19 +42,23 @@ function githubRepoTransferMerged {
 	| sha256sum \
 	| head -c 64)
 	
-	git clone $(jq -r '.parent.clone_url' "$WORKING_DIR/$GITHUB_REPO_NAME.json") "/tmp/$GITHUB_REPO_NAME"
-	GITHUB_REPO_UPSTREAM_COMMITS_HASH=$(git -C "/tmp/$GITHUB_REPO_NAME" log --all --author=$GITHUB_EMAIL --pretty=format:"%H" \
+	git fetch --all
+	
+	GITHUB_REPO_UPSTREAM_COMMITS_HASH=$(git log --all --author=$GITHUB_EMAIL --pretty=format:"%H" \
 	| sort \
 	| uniq \
 	| sha256sum \
 	| head -c 64)
+	
+	githubRepoTransferUntouched "$GITHUB_REPO_NAME" \
+	&& return
 	
 	test $GITHUB_REPO_UPSTREAM_COMMITS_HASH = $GITHUB_REPO_COMMITS_HASH \
 	&& echo -e "$GITHUB_REPO_NAME\t:all my commits merged" \
 	&& curl -H "Authorization: token $GITHUB_TOKEN" \
 		-H 'Accept: application/vnd.github.nightshade-preview+json' \
 		--data "{\"new_owner\": \"$GITHUB_MERGED_OWNER\"}" \
-		https://api.github.com/repos/$GITHUB_NAME/$GITHUB_REPO_NAME/transfer
+		"$GITHUB_REPO_API_URL/transfer"
 }
 
 function githubReposPage {
@@ -43,15 +66,18 @@ function githubReposPage {
   export WORKING_DIR=$(dirname "$GITHUB_REPOS_PAGE")
 
   cat "$GITHUB_REPOS_PAGE" \
-  | jq -r '.[].name' \
+  | jq -r '.[]|select(.fork).name' \
+  | xargs -n1 -P8 -i bash -c ". \"$WORKING_DIR/functions.sh\" \
+  && githubRepoPullUpstream {} \
+  ; githubRepoTransferMerged {}"
+  
+  cat "$GITHUB_REPOS_PAGE" \
+  | jq -r '.[]|select(.fork==false).name' \
   | xargs -n1 -P8 -i bash -c "git clone \$(jq -r '.[]|select(.name==\"{}\").clone_url' '$GITHUB_REPOS_PAGE') \
   && . \"$WORKING_DIR/functions.sh\" \
   && cd {} \
-  && githubRepoTransferUntouched {} \
-  || (jq -e '.[]|select(.name==\"{}\").fork' '$GITHUB_REPOS_PAGE' > /dev/null \
-  && githubRepoTransferMerged {})"
+  && githubRepoTransferUntouched {}"
 
-  cat "$GITHUB_REPOS_PAGE" \
-  | jq -r '.[].name' \
-  | xargs -n1 -P8 -i bash -c "rm -r {}"
+  rm -r $(cat "$GITHUB_REPOS_PAGE" \
+  | jq -r '.[].name')
 }
