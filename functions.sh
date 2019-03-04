@@ -17,6 +17,7 @@ function githubRepoPullUpstream {
 		"$GITHUB_REPO_API_URL" \
 	| jq -r '.parent.clone_url')
 	GITHUB_REPO_URL=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").clone_url" "$GITHUB_REPOS_PAGE")
+	GITHUB_REPO_DEFAULT_BRANCH=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").default_branch" "$GITHUB_REPOS_PAGE")
 	
 	git clone "$GITHUB_REPO_UPSTREAM_URL" "$GITHUB_REPO_NAME" \
 	&& cd "$GITHUB_REPO_NAME" \
@@ -24,7 +25,7 @@ function githubRepoPullUpstream {
 	&& rm -f .git/refs/heads/HEAD \
 	&& cat .git/packed-refs \
 	| grep ' refs/remotes/origin/' \
-	| grep -v ' refs/remotes/origin/master' \
+	| grep -v " refs/remotes/origin/$GITHUB_REPO_DEFAULT_BRANCH" \
 	| sed 's& refs/remotes/origin/& refs/heads/&' >> .git/packed-refs \
 	&& git remote add fork "$GITHUB_REPO_URL" \
 	&& git push fork --all \
