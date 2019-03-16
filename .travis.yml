@@ -1,6 +1,6 @@
 env:
-  - GITHUB_OWNER=$GITHUB_NAME-backup
-  - GITHUB_OWNER=$GITHUB_NAME-merged
+  - GITHUB_OWNER=$GITHUB_LOGIN-backup
+  - GITHUB_OWNER=$GITHUB_LOGIN-merged
 before_script:
 - |
   export GITHUB_REPOS_LAST_PAGE_NUMBER=$(curl -I -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/users/$GITHUB_OWNER/repos \
@@ -11,7 +11,7 @@ before_script:
 - |
   seq 1 $GITHUB_REPOS_LAST_PAGE_NUMBER \
   | xargs -n1 -i bash -c "curl -H 'Authorization: token $GITHUB_TOKEN' 'https://api.github.com/users/$GITHUB_OWNER/repos?page={}' >> github-repositories.json"
-- echo -e "machine github.com\nlogin $GITHUB_NAME\npassword $GITHUB_TOKEN" >> ~/.netrc
+- echo -e "machine github.com\nlogin $GITHUB_LOGIN\npassword $GITHUB_TOKEN" >> ~/.netrc
 script:
 - |
   cat github-repositories.json \
