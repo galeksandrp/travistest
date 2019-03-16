@@ -27,7 +27,7 @@ script:
   && rm -f .git/refs/heads/HEAD \
   && cat .git/packed-refs \
   | grep ' refs/remotes/origin/' \
-  | grep -v \" refs/remotes/origin/\$GITHUB_REPO_DEFAULT_BRANCH\" \
+  | grep -v \" refs/remotes/origin/\$GITHUB_REPO_DEFAULT_BRANCH$\" \
   | sed 's& refs/remotes/origin/& refs/heads/&' >> .git/packed-refs \
   && git remote add fork \$GITHUB_REPO_URL \
   && git push fork --all \
