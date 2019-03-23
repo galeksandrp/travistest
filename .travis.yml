@@ -4,6 +4,7 @@ env:
   matrix:
     - GITHUB_OWNER=$GITHUB_LOGIN-backup
     - GITHUB_OWNER=$GITHUB_LOGIN-merged
+    - GITHUB_OWNER=$GITHUB_LOGIN-ci
 before_script:
 - |
   export GITHUB_REPOS_LAST_PAGE_NUMBER=$(curl -I -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/users/$GITHUB_OWNER/repos \
