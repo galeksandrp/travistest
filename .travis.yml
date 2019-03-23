@@ -1,6 +1,9 @@
 env:
-  - GITHUB_OWNER=$GITHUB_LOGIN-backup
-  - GITHUB_OWNER=$GITHUB_LOGIN-merged
+  global:
+    - GITHUB_LOGIN=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
+  matrix:
+    - GITHUB_OWNER=$GITHUB_LOGIN-backup
+    - GITHUB_OWNER=$GITHUB_LOGIN-merged
 before_script:
 - |
   export GITHUB_REPOS_LAST_PAGE_NUMBER=$(curl -I -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/users/$GITHUB_OWNER/repos \
