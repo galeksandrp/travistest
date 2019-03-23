@@ -62,6 +62,19 @@ function githubRepoTransferMerged {
 		"$GITHUB_REPO_API_URL/transfer"
 }
 
+function githubRepoTransferCI {
+	GITHUB_REPO_NAME="$1"
+	GITHUB_REPO_API_URL=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").url" "$GITHUB_REPOS_PAGE")
+
+	test $(git log --all --author=$GITHUB_EMAIL --oneline | wc -l) -gt 0 \
+	&& test $(git log --all --author=$GITHUB_EMAIL --pretty= --name-only | grep -v '\.yml$' | wc -l) -eq 0 \
+	&& echo -e "$GITHUB_REPO_NAME\t:ci" \
+	&& curl -H "Authorization: token $GITHUB_TOKEN" \
+		-H 'Accept: application/vnd.github.nightshade-preview+json' \
+		--data "{\"new_owner\": \"$GITHUB_CI_OWNER\"}" \
+		"$GITHUB_REPO_API_URL/transfer"
+}
+
 function githubReposPage {
   export GITHUB_REPOS_PAGE=$(readlink -f "$1")
   export WORKING_DIR=$(dirname "$GITHUB_REPOS_PAGE")
@@ -70,7 +83,8 @@ function githubReposPage {
   | jq -r '.[]|select(.fork).name' \
   | xargs -n1 -P8 -i bash -c ". \"$WORKING_DIR/functions.sh\" \
   && githubRepoPullUpstream {} \
-  ; githubRepoTransferMerged {}"
+  ; githubRepoTransferMerged {} \
+  ; githubRepoTransferCI {}"
   
   cat "$GITHUB_REPOS_PAGE" \
   | jq -r '.[]|select(.fork==false).name' \
