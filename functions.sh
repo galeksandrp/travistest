@@ -37,7 +37,10 @@ function githubRepoTransferMerged {
 	GITHUB_REPO_API_URL=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").url" "$GITHUB_REPOS_PAGE")
 	GITHUB_REPO_URL=$(jq -r ".[]|select(.name==\"$GITHUB_REPO_NAME\").clone_url" "$GITHUB_REPOS_PAGE")
 	
-	GITHUB_REPO_COMMITS_HASH=$(git log --all --author=$GITHUB_EMAIL --pretty=format:"%H" \
+	GITHUB_REPO_UPSTREAM_PATCHES_HASH=$(git log --all --author=$GITHUB_EMAIL --pretty=format:'%H' \
+	| xargs git show \
+	| git patch-id \
+	| cut -d ' ' -f1 \
 	| sort \
 	| uniq \
 	| sha256sum \
@@ -45,7 +48,10 @@ function githubRepoTransferMerged {
 	
 	git fetch --all
 	
-	GITHUB_REPO_UPSTREAM_COMMITS_HASH=$(git log --all --author=$GITHUB_EMAIL --pretty=format:"%H" \
+	GITHUB_REPO_PATCHES_HASH=$(git log --all --author=$GITHUB_EMAIL --pretty=format:'%H' \
+	| xargs git show \
+	| git patch-id \
+	| cut -d ' ' -f1 \
 	| sort \
 	| uniq \
 	| sha256sum \
@@ -54,8 +60,8 @@ function githubRepoTransferMerged {
 	githubRepoTransferUntouched "$GITHUB_REPO_NAME" \
 	&& return
 	
-	test $GITHUB_REPO_UPSTREAM_COMMITS_HASH = $GITHUB_REPO_COMMITS_HASH \
-	&& echo -e "$GITHUB_REPO_NAME\t:all my commits merged" \
+	test $GITHUB_REPO_UPSTREAM_PATCHES_HASH = $GITHUB_REPO_PATCHES_HASH \
+	&& echo -e "$GITHUB_REPO_NAME\t:all my patches merged" \
 	&& curl -H "Authorization: token $GITHUB_TOKEN" \
 		-H 'Accept: application/vnd.github.nightshade-preview+json' \
 		--data "{\"new_owner\": \"$GITHUB_MERGED_OWNER\"}" \
