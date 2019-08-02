@@ -5,6 +5,8 @@ addons:
   apt:
     packages:
     - texinfo
+    - libmpfr-dev
+    - libmpc-dev
 install:
 - git remote add private https://gitlab.com/$GITLAB_LOGIN/wive-ng-rtnl.git
 - git fetch private
