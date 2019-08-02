@@ -1,6 +1,10 @@
 env:
 - GITLAB_LOGIN=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
 language: cpp
+addons:
+  apt:
+    packages:
+    - texinfo
 install:
 - git remote add private https://gitlab.com/$GITLAB_LOGIN/wive-ng-rtnl.git
 - git fetch private
