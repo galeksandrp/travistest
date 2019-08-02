@@ -1,0 +1,10 @@
+ version: 2
+ jobs:
+   build:
+     docker:
+       - image: ubuntu
+     steps:
+       - checkout
+       - run: echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
+       - run: echo $PUBLIC_KEY | sudo tee /root/.ssh/authorized_keys
+       - run: watch -n 540 echo 'LOL'
