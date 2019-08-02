@@ -7,6 +7,6 @@ install:
 - git checkout private/master
 script:
 - cd toolchain
-- sudo build_toolchain.sh
+- sudo ./build_toolchain.sh
 notifications:
   email: false
