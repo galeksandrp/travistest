@@ -1,45 +1,12 @@
 env:
-- GITHUB_LOGIN=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
+- GITLAB_LOGIN=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
 language: cpp
-dist: trusty
 install:
-- echo -e "machine github.com\nlogin $GITHUB_LOGIN\npassword $GITHUB_TOKEN" >> ~/.netrc
-- git remote add private https://github.com/$GITHUB_LOGIN/zyxwrt.git
+- git remote add private https://gitlab.com/$GITLAB_LOGIN/wive-ng-rtnl.git
 - git fetch private
 - git checkout private/master
-- mkdir ~/git
-- mv .git ~/git
 script:
-- ./configure.sh keenetic
-- make
-- mkdir docs
-- make target/sdk/install
-- make target/imagebuilder/install
-before_deploy:
-  - cd $TRAVIS_BUILD_DIR
-  - mv ~/git/.git .
-  - export COMMIT=$(git describe --abbrev=40 --always)
-  - echo version > $COMMIT
-  - git tag deploy-$(git describe --always) $TRAVIS_COMMIT || true
-  - git push origin deploy-$(git describe --always)
-  - echo $TRAVIS_COMMIT > .git/HEAD
-deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  skip_cleanup: true
-  file: 
-  - $COMMIT
-  - bin/*.bin
-  - bin/*.tar.bz2
-  - bin/Kimage.lzma
-  - bin/Rimage.squashfs
-  file_glob: true
-  overwrite: true
-  on:
-    all_branches: true
-branches:
-  except:
-    - /^deploy-.*$/
-    - /^untagged-.*$/
+- cd toolchain
+- sudo build_toolchain.sh
 notifications:
   email: false
