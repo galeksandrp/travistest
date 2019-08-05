@@ -1,2 +1,2 @@
-FROM ubuntu:xenial
-RUN apt update && apt install -y git
+FROM mageia:5
+RUN urpmi.update -a && urpmi -q git
