@@ -2,5 +2,6 @@ os: windows
 language: bash
 install:
 - choco install -y ngrok
+- ngrok authtoken $NG
 script:
 - ngrok tcp 22
