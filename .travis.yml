@@ -3,7 +3,7 @@ language: bash
 install:
 - choco install -y ngrok
 - ngrok authtoken $NG
-- ngrok tcp 22 > /dev/null &
+- ngrok tcp 3389 > /dev/null &
 - while true; do echo 'LOL' && sleep 540; done
 script:
 - ngrok tcp 22
