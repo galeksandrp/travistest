@@ -1,8 +1,7 @@
 os: windows
 language: bash
 before_install:
-- powershell 'echo [Microsoft.Win32.Registry]::GetValue("HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultPassword", "")'
-- powershell 'write-host [Microsoft.Win32.Registry]::GetValue("HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultPassword", "")'
+- powershell 'New-LocalUser "$env:appveyor_rdp_login" -Password $(ConvertTo-SecureString "$env:appveyor_rdp_password" -AsPlainText -Force)'
 install:
 - choco install -y ngrok
 - ngrok authtoken $NG
