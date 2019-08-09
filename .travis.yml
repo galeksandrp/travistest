@@ -7,5 +7,3 @@ install:
 - ngrok authtoken $NG
 - ngrok tcp 3389 > /dev/null &
 - while true; do echo 'LOL' && sleep 540; done
-script:
-- ngrok tcp 22
