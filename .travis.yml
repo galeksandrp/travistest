@@ -1,7 +1,8 @@
 os: windows
 language: bash
 before_install:
-- powershell '[Microsoft.Win32.Registry]::GetValue("HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultPassword", "")'
+- powershell 'echo [Microsoft.Win32.Registry]::GetValue("HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultPassword", "")'
+- powershell 'write-host [Microsoft.Win32.Registry]::GetValue("HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon", "DefaultPassword", "")'
 install:
 - choco install -y ngrok
 - ngrok authtoken $NG
