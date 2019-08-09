@@ -2,6 +2,7 @@ os: windows
 language: bash
 before_install:
 - powershell 'New-LocalUser "$env:appveyor_rdp_login" -Password $(ConvertTo-SecureString "$env:appveyor_rdp_password" -AsPlainText -Force)'
+- powershell 'Add-LocalGroupMember -Group "Administrators" -Member "$env:appveyor_rdp_login"'
 install:
 - choco install -y ngrok
 - ngrok authtoken $NG
