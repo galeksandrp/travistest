@@ -1,5 +1,7 @@
 os: windows
 language: bash
+before_install:
+- whoami
 install:
 - choco install -y ngrok
 - ngrok authtoken $NG
