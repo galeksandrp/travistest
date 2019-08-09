@@ -1,21 +1,6 @@
-sudo: required
-services:
-  - docker
+os: windows
+language: bash
 install:
-- sudo passwd -d $(whoami)
-- sudo passwd -d root
-- echo $PUBLIC_KEY >> ~/.ssh/authorized_keys
-- echo $PUBLIC_KEY | sudo tee /root/.ssh/authorized_keys
-- echo $PUBLIC_KEY_SMT >> ~/.ssh/authorized_keys
-- echo $PUBLIC_KEY_SMT | sudo tee /root/.ssh/authorized_keys
-- sudo adduser --disabled-password --gecos '' ng
-- sudo -u ng -i wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-- sudo -u ng -i unzip ngrok-stable-linux-amd64.zip
-- sudo -u ng -i ./ngrok authtoken $NG
-- sudo -u ng -i ./ngrok tcp 22 > /dev/null &
-- watch -n 540 echo 'LOL'
-branches:
-  except:
-    - /^deploy-.*$/
-notifications:
-  email: false
+- choco install -y ngrok
+script:
+- ngrok tcp 22
