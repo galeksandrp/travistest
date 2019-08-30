@@ -5,6 +5,7 @@
        - image: galeksandrp/travistest:docker-build-android-alps
      steps:
        - checkout
+       - apt-get update && apt-get install -y wget
 # Common environment variables
        - run: echo 'export PREFIX=https://github.com/galeksandrp/travistest/releases/download/deploy-alps3' >> $BASH_ENV
        - run: echo 'export CUSTOMER=HCT6580_WE_N' >> $BASH_ENV
