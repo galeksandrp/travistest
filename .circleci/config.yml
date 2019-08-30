@@ -20,11 +20,11 @@
        - run:
            command: echo 'export BRANCH_LABEL_NAME=MOLY.WR8.W1449.MD.WG.MP.V91.5' >> $BASH_ENV
        - run:
-           command: wget "$PREFIX/$CUSTOMER_GPRS_HSPA_$BRANCH_LABEL_NAME.tar.gz"
+           command: wget "$PREFIX/${CUSTOMER}_GPRS_HSPA_$BRANCH_LABEL_NAME.tar.gz"
            working_directory: ~/alps-modem
        - run:
-           command: tar zxf "$CUSTOMER_GPRS_HSPA_$BRANCH_LABEL_NAME.tar.gz"
+           command: tar zxf "${CUSTOMER}_GPRS_HSPA_$BRANCH_LABEL_NAME.tar.gz"
            working_directory: ~/alps-modem
        - run:
-           command: ./make HCT6580_WE_N_HSPA.mak new
+           command: ./make ${CUSTOMER}_HSPA.mak new
            working_directory: ~/alps-modem
