@@ -26,5 +26,5 @@
            command: tar zxf "${CUSTOMER}_GPRS_HSPA_$BRANCH_LABEL_NAME.tar.gz" --no-same-owner
            working_directory: ~/alps-modem
        - run:
-           command: ./make ${CUSTOMER}_HSPA.mak new
+           command: ./make.sh "${CUSTOMER}_HSPA.mak" new
            working_directory: ~/alps-modem
