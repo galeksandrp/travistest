@@ -1,2 +1,4 @@
-FROM mageia:5
-RUN urpmi.update -a && urpmi --auto git groff zip --download-all
+FROM node:12.6.0
+RUN apt-get update && apt-get install -y jq
+RUN npm install -g bower
+RUN npm install -g grunt-cli
