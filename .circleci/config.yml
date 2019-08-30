@@ -23,7 +23,7 @@
            command: wget "$PREFIX/${CUSTOMER}_GPRS_HSPA_$BRANCH_LABEL_NAME.tar.gz"
            working_directory: ~/alps-modem
        - run:
-           command: tar zxf "${CUSTOMER}_GPRS_HSPA_$BRANCH_LABEL_NAME.tar.gz"
+           command: tar zxf "${CUSTOMER}_GPRS_HSPA_$BRANCH_LABEL_NAME.tar.gz" --no-same-owner
            working_directory: ~/alps-modem
        - run:
            command: ./make ${CUSTOMER}_HSPA.mak new
