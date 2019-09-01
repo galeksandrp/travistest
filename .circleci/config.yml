@@ -15,9 +15,9 @@
 # ALPS source download & verify & checkout
        - run: wget "$PREFIX/$CUSTOMER_PROJECT.md5"
        - run: cat "$CUSTOMER_PROJECT.md5" | sed "s^.\+  ^$PREFIX/^" | wget -i -
-       - run: md5sum -c ${customer_project}.md5
-       - run: tar zxf ${customer_project}_KERNEL.tar.gz
-       - run: cat ${customer_project}_INHOUSE.tar.gz* | tar zxf -
+       - run: md5sum -c ${CUSTOMER_PROJECT}.md5
+       - run: tar zxf ${CUSTOMER_PROJECT}_KERNEL.tar.gz
+       - run: cat ${CUSTOMER_PROJECT}_INHOUSE.tar.gz* | tar zxf -
 #
 # ALPS modem download & checkout 
        - run:
