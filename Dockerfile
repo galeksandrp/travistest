@@ -1,4 +1,3 @@
-FROM mysql:5.7
-RUN apt-get update && apt-get install -y curl
-RUN curl -L https://github.com/galeksandrp/mysql-server/releases/download/v5.7.20-fix-mysql-5.7.20-deploy/mysqldump -o /usr/bin/mysqldump-tldr
-RUN chmod +x /usr/bin/mysqldump-tldr
+FROM alpine:3.10.3
+RUN apk add --no-cache atd
+CMD ["atd", "-f"]
