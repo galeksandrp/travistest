@@ -3,7 +3,7 @@ branches:
   only:
   - /^appveyor-.*$/
 clone_script:
-- cmd: git clone -q --depth=1 https://github.com/jech/polipo.git %APPVEYOR_BUILD_FOLDER%
+- cmd: git clone -q --depth=1 https://github.com/klaxa/mkvserver_mk2.git %APPVEYOR_BUILD_FOLDER%
 install:
 - cmd: >-
     set MSYSTEM=MINGW64
@@ -11,12 +11,6 @@ install:
     set CHERE_INVOKING=enabled_from_arguments
 build_script:
 - cmd: >-
-    echo %MSYSTEM%
-
-    echo %CHERE_INVOKING%
-
-    C:\msys64\usr\bin\bash --login -c "make -j3 EXE=.exe LDLIBS=-lwsock32"
-    
-    C:\msys64\usr\bin\bash --login -c "make PREFIX=mingw64/mingw64 install"
+    C:\msys64\usr\bin\bash --login -c "make"
 artifacts:
-- path: mingw64
+- path: server*
