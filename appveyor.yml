@@ -9,6 +9,10 @@ install:
     set MSYSTEM=MINGW64
 
     set CHERE_INVOKING=enabled_from_arguments
+
+    C:\msys64\usr\bin\bash --login -c "pacman -Syu --noconfirm"
+
+    C:\msys64\usr\bin\bash --login -c "pacman -S --noconfirm mingw-w64-x86_64-ffmpeg"
 build_script:
 - cmd: >-
     C:\msys64\usr\bin\bash --login -c "make"
