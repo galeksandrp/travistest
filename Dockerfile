@@ -1,4 +1,4 @@
-FROM php:5.5.37-apache
+FROM php:7.4.9-apache
 RUN apt-get update && apt-get install -y libfreetype6-dev libpng12-dev libjpeg62-turbo-dev git unzip ssmtp
 RUN curl https://dl.eff.org/certbot-auto -o /usr/bin/certbot-auto
 RUN chmod a+x /usr/bin/certbot-auto
