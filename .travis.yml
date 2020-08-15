@@ -2,7 +2,7 @@ env:
 - GITHUB_LOGIN=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)
 before_script:
 - |
-  export GITHUB_REPOS_LAST_PAGE_NUMBER=$(curl -I -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user/repos?affiliation=owner \
+  export GITHUB_REPOS_LAST_PAGE_NUMBER=$(curl -I -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user/repos?affiliation=organization_member \
   | grep '^Link: ' \
   | sed 's/,/\n/g' \
   | grep '>; rel="last"' \
@@ -11,7 +11,7 @@ before_script:
 script:
 - |
   seq 1 $GITHUB_REPOS_LAST_PAGE_NUMBER \
-  | xargs -n1 -i bash -c "curl -H 'Authorization: token $GITHUB_TOKEN' 'https://api.github.com/user/repos?affiliation=owner&page={}' > github-repositories-{}.json \
+  | xargs -n1 -i bash -c "curl -H 'Authorization: token $GITHUB_TOKEN' 'https://api.github.com/user/repos?affiliation=organization_member&page={}' > github-repositories-{}.json \
   && . functions.sh \
   && githubReposPage github-repositories-{}.json"
 notifications:
