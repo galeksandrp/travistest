@@ -46,10 +46,7 @@ function githubReposPage {
   export WORKING_DIR=$(dirname "$GITHUB_REPOS_PAGE")
 
   cat "$GITHUB_REPOS_PAGE" \
-  | jq -r ".[]|select(.owner.login|startswith(\"$GITHUB_LOGIN\"))|select(.fork).name" \
+  | jq -r ".[]|select(.owner.login|startswith(\"$GITHUB_LOGIN-\"))|select(.fork).full_name" \
   | xargs -n1 -P8 -i bash -c ". \"$WORKING_DIR/functions.sh\" \
-  && githubRepoPullUpstream"
-
-  rm -r $(cat "$GITHUB_REPOS_PAGE" \
-  | jq -r '.[].name')
+  && githubRepoPullUpstream {}"
 }
