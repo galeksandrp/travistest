@@ -21,3 +21,4 @@ env:
   matrix:
   - GITHUB_REPO=experienceui HG_URL=http://hg.enanocms.org/repos/experienceui/
   - GITHUB_REPO=ruadlist HG_URL=https://hg.adblockplus.org/ruadlist/
+  - GITHUB_NAME=$(echo $TRAVIS_REPO_SLUG | cut -d '/' -f 1)-gaming GITHUB_REPO=aquaria HG_URL=https://hg.icculus.org/icculus/aquaria/
