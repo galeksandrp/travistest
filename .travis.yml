@@ -1,5 +1,6 @@
 script:
   - curl -d '{"source_name":"docker-arch"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
   - curl -d '{"source_name":"docker-arch-yay"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
+  - curl -d '{"source_name":"docker-arch-ip"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
 notifications:
   email: false
