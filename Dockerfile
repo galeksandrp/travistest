@@ -29,6 +29,13 @@ RUN sudo -u ng yay -Syu --noconfirm freenet
 
 # pkg
 
-FROM archlinux-updated
+FROM archlinux-updated AS archlinux-freenet
 COPY --from=archlinux-yay-pkg /home/ng/.cache/yay/*/*.pkg* /root/pkg/
 RUN pacman -U --noconfirm /root/pkg/*.pkg*
+
+# freenet
+
+FROM archlinux-freenet
+RUN echo 'fproxy.bindTo=0.0.0.0' >> /opt/freenet/conf/freenet.ini
+RUN echo 'fproxy.allowedHosts=*' >> /opt/freenet/conf/freenet.ini
+RUN echo 'fproxy.allowedHostsFullAccess=*' >> /opt/freenet/conf/freenet.ini
