@@ -2,7 +2,7 @@
  jobs:
    build:
      docker:
-       - image: ubuntu
+       - image: galeksandrp/travistest:docker-arch-ip
      steps:
        - checkout
-       - run: TERM=xterm watch -n 540 echo 'LOL1'
+       - run: TERM=xterm watch -n 540 echo 'LOL'
