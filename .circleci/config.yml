@@ -5,4 +5,4 @@
        - image: ubuntu
      steps:
        - checkout
-       - run: TERM=xterm watch -n 540 echo 'LOL'
+       - run: TERM=xterm watch -n 540 echo 'LOL1'
