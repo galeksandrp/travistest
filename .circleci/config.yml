@@ -4,5 +4,4 @@
      docker:
        - image: galeksandrp/travistest:docker-arch-ip
      steps:
-       - checkout
        - run: TERM=xterm watch -n 540 echo 'LOL'
