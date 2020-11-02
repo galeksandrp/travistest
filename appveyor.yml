@@ -17,7 +17,7 @@ init:
     echo password %BITBUCKET_TOKEN% >> %USERPROFILE%\_netrc
     
     git config --global user.name "%GIT_NAME%"
-    
+
     git config --global user.email %GIT_EMAIL%
 clone_script:
 - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
