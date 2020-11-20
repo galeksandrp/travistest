@@ -36,8 +36,13 @@ COPY accel-ppp.conf /etc/accel-ppp.conf
 
 RUN pacman -Syu --noconfirm iproute2
 
+COPY ip-common-accel.sh /etc/ppp/ip-common-accel.sh
+
 COPY ip-pre-up-accel /etc/ppp/ip-pre-up-accel
 RUN chmod +x /etc/ppp/ip-pre-up-accel
+
+COPY ip-up-accel /etc/ppp/ip-up-accel
+RUN chmod +x /etc/ppp/ip-up-accel
 
 COPY ip-down-accel /etc/ppp/ip-down-accel
 RUN chmod +x /etc/ppp/ip-down-accel
