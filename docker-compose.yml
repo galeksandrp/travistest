@@ -2,7 +2,7 @@ version: "3.8"
 services:
 
   accel-ppp:
-    image: galeksandrp/travistest:docker-arch-accel-ppp
+    image: galeksandrp/travistest:docker-arch-accel-ppp-git
     ports:
       - 1723:1723
       - 1701:1701/udp
