@@ -1,9 +1,5 @@
 script:
-  - curl -d '{"source_name":"docker-arch"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
-  - curl -d '{"source_name":"docker-arch-yay"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
-  - curl -d '{"source_name":"docker-arch-ip"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
-  - curl -d '{"source_name":"docker-arch-freenet"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
-  - curl -d '{"source_name":"docker-arch-freenet-ini"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
-  - curl -d '{"source_name":"docker-arch-accel-ppp"}' "$DOCKER_HUB_BUILD_TRIGGER_URL"
+  - git fetch origin
+  - git branch -r | grep '^ *origin/docker-arch' | cut -d '/' -f2 | xargs bash -c "echo curl -d '{\"source_name\":\"{}\"}' \"$DOCKER_HUB_BUILD_TRIGGER_URL\""
 notifications:
   email: false
