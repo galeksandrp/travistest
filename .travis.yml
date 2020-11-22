@@ -1,5 +1,6 @@
 script:
-  - git fetch origin
-  - git branch -r | grep '^ *origin/docker-arch' | cut -d '/' -f2 | xargs -i bash -c "curl -d '{\"source_name\":\"{}\"}' \"$DOCKER_HUB_BUILD_TRIGGER_URL\""
+  - git remote add upstream https://github.com/$TRAVIS_REPO_SLUG.git
+  - git fetch upstream
+  - git branch -r | grep '^ *upstream/docker-arch' | cut -d '/' -f2 | xargs -i bash -c "curl -d '{\"source_name\":\"{}\"}' \"$DOCKER_HUB_BUILD_TRIGGER_URL\""
 notifications:
   email: false
