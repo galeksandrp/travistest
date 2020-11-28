@@ -1,10 +1,11 @@
 FROM archlinux AS archlinux-updated
 RUN pacman -Syu --noconfirm
+#RUN pacman -Syu --noconfirm reflector
+#RUN reflector --save /etc/pacman.d/mirrorlist --protocol https --latest 70 --sort rate
 
 FROM archlinux-updated AS archlinux-sudo
 RUN pacman -Syu --noconfirm sudo
-RUN sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
-RUN grep '^%wheel ALL=(ALL) NOPASSWD: ALL' /etc/sudoers || echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel
 
 # ng
 
@@ -34,7 +35,7 @@ COPY accel-ppp.conf /etc/accel-ppp.conf
 
 # app additional config
 
-RUN pacman -Syu --noconfirm iproute2
+RUN pacman -Syu --noconfirm iproute2 jq
 
 COPY ip-common-accel.sh /etc/ppp/ip-common-accel.sh
 
@@ -47,8 +48,8 @@ RUN chmod +x /etc/ppp/ip-up-accel
 COPY ip-down-accel /etc/ppp/ip-down-accel
 RUN chmod +x /etc/ppp/ip-down-accel
 
-CMD iptables -t nat -A POSTROUTING -m mark --mark 7368816 -j MASQUERADE && \
+CMD iptables -t nat -A POSTROUTING -o $(ip -4 -j route get 255.255.255.255 | jq -r '.[].dev') -m mark --mark 7368816 -j MASQUERADE && \
 accel-pppd -c /etc/accel-ppp.conf ; \
 APP_EXIT_CODE="$?" && \
-iptables -t nat -D POSTROUTING -m mark --mark 7368816 -j MASQUERADE ; \
+iptables -t nat -D POSTROUTING -o $(ip -4 -j route get 255.255.255.255 | jq -r '.[].dev') -m mark --mark 7368816 -j MASQUERADE ; \
 exit $APP_EXIT_CODE

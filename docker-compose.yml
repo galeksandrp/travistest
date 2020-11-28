@@ -3,15 +3,13 @@ services:
 
   accel-ppp:
     image: galeksandrp/travistest:docker-arch-accel-ppp-git-forward
-    ports:
-      - 1723:1723
-      - 1701:1701/udp
     volumes:
       - ./chap-secrets:/etc/ppp/chap-secrets:ro
     devices:
       - /dev/ppp
     cap_add:
       - NET_ADMIN
+    network_mode: host
 
   librespeed:
     image: adolfintel/speedtest
