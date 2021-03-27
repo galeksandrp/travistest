@@ -1,14 +1,4 @@
 #!/usr/bin/env bash
 . /etc/ppp/ip-common-accel.sh
 
-echo "$PPP_INTERFACE ip-up"
-
-# See ip-common-accel.sh
-if isRouter; then
-	# Subnet of 192.168.0.0/16 is used by PPP callers
-	# and subnet of 172.16.0.0/12 is used by containers.
-
-	# On Windows WSL2 you need more finely sliced subnets
-	# since additional subnet of 192.168.0.0/16 is used by containers on that platform (as of 2020-11-22).
-	ip route add 10.0.0.0/8 dev $PPP_INTERFACE
-fi
+ROUTES_COMMAND='add' pppRoutes

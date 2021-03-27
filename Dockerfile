@@ -1,7 +1,7 @@
 FROM archlinux AS archlinux-updated
 RUN pacman -Syu --noconfirm
 #RUN pacman -Syu --noconfirm reflector
-#RUN reflector --save /etc/pacman.d/mirrorlist --protocol https --latest 70 --sort rate
+#RUN reflector --save /etc/pacman.d/mirrorlist --protocol https --latest 20 --sort rate
 
 FROM archlinux-updated AS archlinux-sudo
 RUN pacman -Syu --noconfirm sudo
@@ -48,8 +48,4 @@ RUN chmod +x /etc/ppp/ip-up-accel
 COPY ip-down-accel /etc/ppp/ip-down-accel
 RUN chmod +x /etc/ppp/ip-down-accel
 
-CMD iptables -t nat -A POSTROUTING -o $(ip -4 -j route get 255.255.255.255 | jq -r '.[].dev') -m mark --mark 7368816 -j MASQUERADE && \
-accel-pppd -c /etc/accel-ppp.conf ; \
-APP_EXIT_CODE="$?" && \
-iptables -t nat -D POSTROUTING -o $(ip -4 -j route get 255.255.255.255 | jq -r '.[].dev') -m mark --mark 7368816 -j MASQUERADE ; \
-exit $APP_EXIT_CODE
+CMD ["accel-pppd", "-c", "/etc/accel-ppp.conf"]

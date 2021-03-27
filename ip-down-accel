@@ -1,20 +1,10 @@
 #!/usr/bin/env bash
 . /etc/ppp/ip-common-accel.sh
 
-echo "$PPP_INTERFACE ip-down"
+. ~/ppp_environment_$PPP_INTERFACE
 
-iptables -t mangle -D FORWARD -i $PPP_INTERFACE -j MARK --set-mark 7368816
+rm -f ~/ppp_environment_$PPP_INTERFACE
 
-# See /etc/ppp/ip-pre-up script
-iptables -t filter -D FORWARD -i $PPP_INTERFACE -j ACCEPT
-# See /etc/ppp/ip-pre-up script
-iptables -t filter -D FORWARD -o $PPP_INTERFACE -j ACCEPT
+IPTABLES_COMMAND='D' pppIPTablesRules
 
-# See /etc/ppp/ip-up script
-if isRouter; then
-	ip route delete 10.0.0.0/8 dev $PPP_INTERFACE
-
-	iptables -t nat -D PREROUTING -i $PPP_DEFAULT_INTERFACE -d $PPP_DEFAULT_INTERFACE_IP -j DNAT --to-destination $PPP_CALLER_IP
-	iptables -t nat -D PREROUTING -i $PPP_DEFAULT_INTERFACE -p udp -d $PPP_DEFAULT_INTERFACE_IP --dport 22 -j RETURN
-	iptables -t nat -D PREROUTING -i $PPP_DEFAULT_INTERFACE -p tcp -d $PPP_DEFAULT_INTERFACE_IP --dport 22 -j RETURN
-fi
+ROUTES_COMMAND='delete' pppRoutes
