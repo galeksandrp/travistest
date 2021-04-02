@@ -23,14 +23,21 @@ require-mschap
 require-mschap-v2
 
 nodefaultroute
-proxyarp
+#proxyarp
 
 #bsdcomp
 #deflate
 #accomp
-#noccp
-#nopcomp
-#nopredictor1
-#novj
-#novjccomp
+noccp
+nopcomp
+nopredictor1
+novj
+novjccomp
 #debug 7
+
+noaccomp
+nobsdcomp
+nodeflate
+
+nodefaultroute6
+noproxyarp

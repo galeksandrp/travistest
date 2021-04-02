@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
-echo "$PPP_INTERFACE ip-down"
-iptables -t mangle -D FORWARD -i $IFNAME -j MARK --set-mark 7368816
-iptables -t filter -D FORWARD -i $IFNAME -j ACCEPT
+. /etc/ppp/ip-common-accel.sh
+
+. ~/ppp_environment_$PPP_INTERFACE
+
+rm -f ~/ppp_environment_$PPP_INTERFACE
+
+IPTABLES_COMMAND='D' pppIPTablesRules
+
+ROUTES_COMMAND='delete' pppRoutes

@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
-echo "$PPP_INTERFACE ip-pre-up"
-iptables -t mangle -A FORWARD -i $IFNAME -j MARK --set-mark 7368816
-iptables -t filter -A FORWARD -i $IFNAME -j ACCEPT
+. /etc/ppp/ip-common-accel.sh
+
+echo "PPP_DEFAULT_INTERFACE='$(ip -4 -j route get 255.255.255.255 | jq -r '.[].dev')'
+PPP_DEFAULT_INTERFACE_IP='$(ip -4 -j route get 255.255.255.255 | jq -r '.[].prefsrc')'" > ~/ppp_environment_$PPP_INTERFACE
+
+. ~/ppp_environment_$PPP_INTERFACE
+
+IPTABLES_COMMAND='A' pppIPTablesRules
+
+ROUTES_COMMAND='add' pppRoutes
