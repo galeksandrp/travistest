@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+
+  pptpd:
+    image: galeksandrp/travistest:docker-arch-pptpd-forward
+    volumes:
+      - ./chap-secrets:/etc/ppp/chap-secrets:ro
+      - ./chap-secrets:/etc/ppp/pap-secrets:ro
+    devices:
+      - /dev/ppp
+    cap_add:
+      - NET_ADMIN
+    network_mode: host
+
+  librespeed:
+    image: adolfintel/speedtest
