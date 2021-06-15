@@ -38,9 +38,11 @@ RUN apk add --update asciidoc \
 # README.md
   libc-dev \
   subversion
+RUN adduser -D ng
 RUN git config --global user.email "you@example.com"
 RUN git config --global user.name "Your Name"
-WORKDIR /root/openwrt
+USER ng
+WORKDIR /home/ng/openwrt
 CMD ./scripts/feeds update -a \
 && ./scripts/feeds install -a \
 make
