@@ -34,7 +34,7 @@ RUN apk add --update asciidoc \
   zlib-dev \
 # https://openwrt.org/docs/guide-developer/build-system/install-buildsystem#prerequisites
   help2man \
-  libelf-dev \
+  libelf \
 # README.md
   libc-dev \
   subversion
