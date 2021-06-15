@@ -35,6 +35,7 @@ RUN apk add --update asciidoc \
 # https://openwrt.org/docs/guide-developer/build-system/install-buildsystem#prerequisites
   help2man \
   libelf \
+  perl-extutils-makemaker \
 # README.md
   libc-dev \
   subversion
