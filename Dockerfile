@@ -40,3 +40,7 @@ RUN apk add --update asciidoc \
   subversion
 RUN git config --global user.email "you@example.com"
 RUN git config --global user.name "Your Name"
+WORKDIR /root/openwrt
+CMD ./scripts/feeds update -a \
+&& ./scripts/feeds install -a \
+make
