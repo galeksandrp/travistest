@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.13.5
 # https://openwrt.org/docs/guide-developer/build-system/install-buildsystem#alpine
 RUN apk add --update asciidoc \
   bash \
