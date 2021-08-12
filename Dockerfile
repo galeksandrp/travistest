@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:16.04
 RUN sed 's&http://archive.ubuntu.com/ubuntu/&mirror://mirrors.ubuntu.com/mirrors.txt&' -i /etc/apt/sources.list
 RUN apt-get update
 RUN whoami
