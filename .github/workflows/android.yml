@@ -1,0 +1,60 @@
+on:
+  schedule:
+    - cron: '0 21 * * 1'
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+        - GITHUB_REPO: android
+          GITHUB_UPSTREAM: CyanogenMod
+        - GITHUB_REPO: android
+          GITHUB_UPSTREAM: LineageOS
+        - GITHUB_REPO: android_frameworks_av
+          GITHUB_UPSTREAM: CyanogenMod
+        - GITHUB_REPO: android_frameworks_av
+          GITHUB_UPSTREAM: LineageOS
+        - GITHUB_REPO: android_hardware_ti_wpan
+          GITHUB_UPSTREAM: CyanogenMod
+        - GITHUB_REPO: android_hardware_ti_wpan
+          GITHUB_UPSTREAM: LineageOS
+        - GITHUB_REPO: android_frameworks_base
+          GITHUB_UPSTREAM: CyanogenMod
+        - GITHUB_REPO: android_frameworks_base
+          GITHUB_UPSTREAM: LineageOS
+        - GITHUB_REPO: android_external_sonivox
+          GITHUB_UPSTREAM: CyanogenMod
+        - GITHUB_REPO: android_external_sonivox
+          GITHUB_UPSTREAM: LineageOS
+        - GITHUB_REPO: android_device_samsung_cooper
+          GITHUB_UPSTREAM: CyanogenMod
+        - GITHUB_REPO: android_device_samsung_cooper
+          GITHUB_UPSTREAM: LineageOS
+        - GITHUB_REPO: android_system_media
+          GITHUB_UPSTREAM: CyanogenMod
+        - GITHUB_REPO: android_system_media
+          GITHUB_UPSTREAM: LineageOS
+        - GITHUB_REPO: android_external_bluetooth_bluedroid
+          GITHUB_UPSTREAM: CyanogenMod
+        - GITHUB_REPO: android_external_bluetooth_bluedroid
+          GITHUB_UPSTREAM: LineageOS
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ matrix.GITHUB_UPSTREAM }}/${{ matrix.GITHUB_REPO }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      - run: cd .git/refs/remotes/origin && for f in * ; do mv "$f" "${{ matrix.GITHUB_UPSTREAM }}-$f" ; done
+      - run: cp -Rf .git/refs/remotes/origin/* .git/refs/heads/
+      - run: rm -f .git/refs/heads/HEAD
+      - run: cat .git/packed-refs | grep ' refs/remotes/origin/' | sed "s& refs/remotes/origin/& refs/heads/${{ matrix.GITHUB_UPSTREAM }}-&" >> .git/packed-refs
+      - run: git remote add fork https://github.com/${{ github.repository_owner }}/${{ matrix.GITHUB_REPO }}.git
+      - run: echo -e "machine github.com\nlogin ${{ github.repository_owner }}\npassword ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> ~/.netrc
+      - run: git push fork --all
+      - run: git push fork --tags
