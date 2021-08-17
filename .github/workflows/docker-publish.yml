@@ -23,4 +23,4 @@ jobs:
 
       - run: git fetch --no-tags --unshallow origin
 
-      - run: git branch -r --list 'origin/docker-*' | cut -d/ -f2 | xargs -i bash -c 'docker pull ${{ github.repository }}:{} || true'
+      - run: git branch -r --list 'origin/docker-*' | cut -d/ -f2 | xargs -i bash -c 'docker pull ${{ github.repository }}:{} > /dev/null && echo fetched {} || echo failed to fetch {}'
