@@ -1,0 +1,28 @@
+on:
+  schedule:
+    - cron: '0 20 * * 1'
+  push:
+    branches:
+      - '**'
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: githubReposPage
+        run: |
+          export GITHUB_REPOS_LAST_PAGE_NUMBER=$(curl -I -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" https://api.github.com/user/repos?affiliation=organization_member \
+          | grep '^Link: ' \
+          | sed 's/,/\n/g' \
+          | grep '>; rel="last"' \
+          | grep -o '[0-9]')
+          seq 1 $GITHUB_REPOS_LAST_PAGE_NUMBER \
+          | xargs -n1 -i bash -c "curl -H 'Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}' 'https://api.github.com/user/repos?affiliation=organization_member&page={}' > github-repositories-{}.json \
+          && . git-github-orgs/functions.sh \
+          && GITHUB_EMAIL=${{ secrets.GH_EMAIL }} GITHUB_TOKEN=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }} GITHUB_UNTOUCHED_OWNER=${{ secrets.GH_UNTOUCHED_OWNER }} GITHUB_LOGIN=${{ github.repository_owner }} githubReposPage github-repositories-{}.json"
