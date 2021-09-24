@@ -17,7 +17,7 @@ index af525bb..d8a28db 100644
  	'dictionary.accel_ipoe'
 -        'shaper.patch')
 +        'shaper.patch'
-+	'0001-CMake-PPTP-ctrl-link-fix.patch::https://github.com/galeksandrp/accel-ppp/commit/patch-1.patch')
++	'0001-CMake-PPTP-ctrl-link-fix.patch::https://github.com/galeksandrp/accel-ppp/commit/6d0bbab9f53732c5a806cc4c794fe39ae6e003f4.patch')
  
  _pkgname=accel-ppp
  
