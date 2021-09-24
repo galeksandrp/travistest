@@ -17,7 +17,7 @@ index d0b0696..818307a 100644
  	'dictionary.abills'
 -        'dictionary.accel_ipoe')
 +        'dictionary.accel_ipoe'
-+	'0001-CMake-PPTP-ctrl-link-fix.patch::https://github.com/galeksandrp/accel-ppp/commit/patch-1.patch')
++	'0001-CMake-PPTP-ctrl-link-fix.patch::https://github.com/galeksandrp/accel-ppp/commit/6d0bbab9f53732c5a806cc4c794fe39ae6e003f4.patch')
  
  prepare() {
  	cd "$srcdir/$pkgname-$pkgver"
