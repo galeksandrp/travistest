@@ -43,11 +43,27 @@ pppIPTablesRules() {
 	# chmod +x /etc/ppp/ip-up.d/iptables-nat-miniupnpd
 	# chmod +x /etc/ppp/ip-down.d/iptables-nat-miniupnpd
 	if pppIsRouter; then
+		# icmp
+		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -p 1 -d $PPP_DEFAULT_INTERFACE_IP -j RETURN
+
+		# ssh
 		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -p tcp -d $PPP_DEFAULT_INTERFACE_IP --dport 22 -j RETURN
 		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -p udp -d $PPP_DEFAULT_INTERFACE_IP --dport 22 -j RETURN
 
+		# l2tp
 		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -p tcp -d $PPP_DEFAULT_INTERFACE_IP --dport 1701 -j RETURN
 		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -p udp -d $PPP_DEFAULT_INTERFACE_IP --dport 1701 -j RETURN
+
+		# wireguard
+		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -p tcp -d $PPP_DEFAULT_INTERFACE_IP --dport 51820 -j RETURN
+		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -p udp -d $PPP_DEFAULT_INTERFACE_IP --dport 51820 -j RETURN
+
+		# pptp
+		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -p tcp -d $PPP_DEFAULT_INTERFACE_IP --dport 1723 -j RETURN
+		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -p udp -d $PPP_DEFAULT_INTERFACE_IP --dport 1723 -j RETURN
+
+		# pptp gre
+		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -p 47 -d $PPP_DEFAULT_INTERFACE_IP -j RETURN
 
 		iptables -t nat -$IPTABLES_COMMAND PREROUTING -i $PPP_DEFAULT_INTERFACE -d $PPP_DEFAULT_INTERFACE_IP -j DNAT --to-destination $PPP_CALLER_IP
 	fi
