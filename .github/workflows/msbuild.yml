@@ -1,0 +1,14 @@
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin
+
+    - run: docker build --pull -t "${{ github.repository }}:$(('${{ github.ref }}' -split '/')[-1])" .
+
+    - run: docker push "${{ github.repository }}:$(('${{ github.ref }}' -split '/')[-1])"
