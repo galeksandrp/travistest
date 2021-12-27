@@ -1,0 +1,32 @@
+on:
+  schedule:
+    - cron: '0 19 * * 1'
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - run: echo -e "machine github.com\nlogin ${{ github.actor }}\npassword ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> ~/.netrc
+      - name: Set env
+        run: |
+          GITHUB_REPOS_LAST_PAGE_NUMBER=$(curl -I -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" https://api.github.com/user/repos?affiliation=owner \
+          | grep '^link: ' \
+          | sed 's/,/\n/g' \
+          | grep '>; rel="last"' \
+          | grep -o '[0-9]') \
+          && seq 1 $GITHUB_REPOS_LAST_PAGE_NUMBER \
+          | xargs -n1 -i bash -c "curl -H 'Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}' 'https://api.github.com/user/repos?affiliation=owner&page={}' > github-repositories-{}.json \
+          && . functions.sh \
+          && export GITHUB_EMAIL="${{ secrets.GH_EMAIL }}" \
+          && export GITHUB_TOKEN="${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
+          && export GITHUB_UNTOUCHED_OWNER="${{ secrets.GH_UNTOUCHED_OWNER }}" \
+          && export GITHUB_MERGED_OWNER="${{ secrets.GH_MERGED_OWNER }}" \
+          && export GITHUB_CI_OWNER="${{ secrets.GH_CI_OWNER }}" \
+          && githubReposPage github-repositories-{}.json"

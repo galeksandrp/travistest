@@ -4,10 +4,10 @@ function githubRepoTransferUntouched {
 
 	test $(git log --all --author=$GITHUB_EMAIL --oneline | wc -l) -eq 0 \
 	&& echo -e "$GITHUB_REPO_NAME\t:untouched" \
-	&& curl -H "Authorization: token $GITHUB_TOKEN" \
-		-H 'Accept: application/vnd.github.nightshade-preview+json' \
-		--data "{\"new_owner\": \"$GITHUB_UNTOUCHED_OWNER\"}" \
-		"$GITHUB_REPO_API_URL/transfer"
+	# && echo curl -H "Authorization: token $GITHUB_TOKEN" \
+	# 	-H 'Accept: application/vnd.github.nightshade-preview+json' \
+	# 	--data "{\"new_owner\": \"$GITHUB_UNTOUCHED_OWNER\"}" \
+	# 	"$GITHUB_REPO_API_URL/transfer"
 }
 
 function githubRepoPullUpstream {
@@ -21,15 +21,15 @@ function githubRepoPullUpstream {
 	
 	git clone "$GITHUB_REPO_UPSTREAM_URL" "$GITHUB_REPO_NAME" \
 	&& cd "$GITHUB_REPO_NAME" \
-	cp -Rf .git/refs/remotes/origin/* .git/refs/heads/ \
+	&& cp -Rf .git/refs/remotes/origin/* .git/refs/heads/ \
 	&& rm -f .git/refs/heads/HEAD \
 	&& cat .git/packed-refs \
 	| grep ' refs/remotes/origin/' \
 	| grep -v " refs/remotes/origin/$GITHUB_REPO_DEFAULT_BRANCH$" \
 	| sed 's& refs/remotes/origin/& refs/heads/&' >> .git/packed-refs \
 	&& git remote add fork "$GITHUB_REPO_URL" \
-	&& git push fork --all \
-	&& git push fork --tags
+	&& (git push fork --all || (echo push fail ; false)) \
+	&& (git push fork --tags || (echo tags fail ; false))
 }
 
 function githubRepoTransferMerged {
@@ -46,7 +46,7 @@ function githubRepoTransferMerged {
 	| sha256sum \
 	| head -c 64)
 	
-	git fetch --all
+	git fetch --all -q
 	
 	GITHUB_REPO_PATCHES_HASH=$(git log --all --author=$GITHUB_EMAIL --pretty=format:'%H' \
 	| xargs git show \
@@ -62,10 +62,10 @@ function githubRepoTransferMerged {
 	
 	test $GITHUB_REPO_UPSTREAM_PATCHES_HASH = $GITHUB_REPO_PATCHES_HASH \
 	&& echo -e "$GITHUB_REPO_NAME\t:all my patches merged" \
-	&& curl -H "Authorization: token $GITHUB_TOKEN" \
-		-H 'Accept: application/vnd.github.nightshade-preview+json' \
-		--data "{\"new_owner\": \"$GITHUB_MERGED_OWNER\"}" \
-		"$GITHUB_REPO_API_URL/transfer"
+	# && echo curl -H "Authorization: token $GITHUB_TOKEN" \
+	# 	-H 'Accept: application/vnd.github.nightshade-preview+json' \
+	# 	--data "{\"new_owner\": \"$GITHUB_MERGED_OWNER\"}" \
+	# 	"$GITHUB_REPO_API_URL/transfer"
 }
 
 function githubRepoTransferCI {
@@ -75,10 +75,10 @@ function githubRepoTransferCI {
 	test $(git log --all --author=$GITHUB_EMAIL --oneline | wc -l) -gt 0 \
 	&& test $(git log --all --author=$GITHUB_EMAIL --pretty= --name-only | grep -v '\.yml$' | wc -l) -eq 0 \
 	&& echo -e "$GITHUB_REPO_NAME\t:ci" \
-	&& curl -H "Authorization: token $GITHUB_TOKEN" \
-		-H 'Accept: application/vnd.github.nightshade-preview+json' \
-		--data "{\"new_owner\": \"$GITHUB_CI_OWNER\"}" \
-		"$GITHUB_REPO_API_URL/transfer"
+	# && echo curl -H "Authorization: token $GITHUB_TOKEN" \
+	# 	-H 'Accept: application/vnd.github.nightshade-preview+json' \
+	# 	--data "{\"new_owner\": \"$GITHUB_CI_OWNER\"}" \
+	# 	"$GITHUB_REPO_API_URL/transfer"
 }
 
 function githubReposPage {
