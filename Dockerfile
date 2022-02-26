@@ -36,6 +36,8 @@ RUN pacman -U --noconfirm /root/pkg/*.pkg*
 # freenet
 
 FROM archlinux-freenet
-RUN echo 'fproxy.bindTo=0.0.0.0' >> /opt/freenet/conf/freenet.ini
-RUN echo 'fproxy.allowedHosts=*' >> /opt/freenet/conf/freenet.ini
-RUN echo 'fproxy.allowedHostsFullAccess=*' >> /opt/freenet/conf/freenet.ini
+
+RUN freenet start
+RUN freenet stop
+
+RUN sed -i -e 's/^fproxy.bindTo=.*/fproxy.bindTo=0.0.0.0/' -e 's/^fproxy.allowedHosts=.*/fproxy.allowedHosts=*/' -e 's/^fproxy.allowedHostsFullAccess=.*/fproxy.allowedHostsFullAccess=*/' /opt/freenet/conf/freenet.ini
