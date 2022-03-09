@@ -27,6 +27,10 @@ jobs:
           GITHUB_UPSTREAM: M66B
           GITHUB_BRANCH: ci
           GITHUB_UPSTREAM_BRANCH: master
+        - GITHUB_REPO: lawnchair
+          GITHUB_UPSTREAM: LawnchairLauncher
+          GITHUB_BRANCH: stable
+          GITHUB_UPSTREAM_BRANCH: 9-stable
 
     steps:
       - run: git config --global user.email "3586205+galeksandrp@users.noreply.github.com"
