@@ -23,6 +23,10 @@ jobs:
           GITHUB_UPSTREAM: AdAway
           GITHUB_BRANCH: ci
           GITHUB_UPSTREAM_BRANCH: master
+        - GITHUB_REPO: XPrivacyLua
+          GITHUB_UPSTREAM: M66B
+          GITHUB_BRANCH: ci
+          GITHUB_UPSTREAM_BRANCH: master
 
     steps:
       - run: git config --global user.email "3586205+galeksandrp@users.noreply.github.com"
