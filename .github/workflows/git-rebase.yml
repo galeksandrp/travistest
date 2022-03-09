@@ -19,6 +19,10 @@ jobs:
           GITHUB_UPSTREAM: Jackett
           GITHUB_BRANCH: no-filters-ci
           GITHUB_UPSTREAM_BRANCH: master
+        - GITHUB_REPO: AdAway
+          GITHUB_UPSTREAM: AdAway
+          GITHUB_BRANCH: ci
+          GITHUB_UPSTREAM_BRANCH: master
 
     steps:
       - run: git config --global user.email "3586205+galeksandrp@users.noreply.github.com"
