@@ -1,0 +1,22 @@
+on:
+  schedule:
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Test'
+        required: false 
+        type: boolean
+
+jobs:
+  docker-build:
+    runs-on: windows-2022
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: git fetch --no-tags --unshallow origin
+
+      - run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin
+
+      - run: git branch -r --list 'origin/*-ltsc2022*' | % {($_ -split '/')[1]} | % {git checkout $_ ; docker build --pull -t  ${{ github.repository }}:$_ . ; docker push ${{ github.repository }}:$_}

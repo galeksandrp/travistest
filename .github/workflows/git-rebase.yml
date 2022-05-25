@@ -11,6 +11,7 @@ on:
 jobs:
   docker-build:
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     strategy:
       matrix:
@@ -31,6 +32,10 @@ jobs:
           GITHUB_UPSTREAM: LawnchairLauncher
           GITHUB_BRANCH: stable
           GITHUB_UPSTREAM_BRANCH: 9-stable
+        - GITHUB_REPO: MPC-BE
+          GITHUB_UPSTREAM: Aleksoid1978
+          GITHUB_BRANCH: ci
+          GITHUB_UPSTREAM_BRANCH: master
 
     steps:
       - run: git config --global user.email "3586205+galeksandrp@users.noreply.github.com"
