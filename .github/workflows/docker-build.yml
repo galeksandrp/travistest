@@ -1,17 +1,39 @@
 on:
   schedule:
     - cron: '0 22 * * *'
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Test'
+        required: false 
+        type: boolean
 
 jobs:
-  docker-build:
+  git-branches:
     runs-on: ubuntu-latest
+    outputs:
+      job: ${{ steps.git-branches.outputs.step }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: git unshallow
-        run: git fetch --no-tags --unshallow origin
+      - id: git-branches
+        run: echo "::set-output name=step::$(git branch -r --list 'origin/docker-arch-*' | cut -d '/' -f2 | jq  --raw-input | jq --slurp -c)"
+
+  docker-build:
+    needs: git-branches
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        branch: ${{ fromJson(needs.git-branches.outputs.job) }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ matrix.branch }}
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
@@ -23,5 +45,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: git branch
-        run: git branch -r --list 'origin/docker-arch-*' | cut -d/ -f2 | xargs -i bash -c 'git checkout {} && docker build -t ${{ github.repository }}:{} > /dev/null . && docker push ${{ github.repository }}:{} && echo build {} || echo failed to built {}'
+      - run: docker build -t ${{ github.repository }}:${{ matrix.branch }} .
+      - run: docker push ${{ github.repository }}:${{ matrix.branch }}
