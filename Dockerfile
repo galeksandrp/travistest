@@ -1,4 +1,4 @@
-FROM php:7.4.10-fpm
+FROM php:7.4.30-fpm
 RUN apt-get update && apt-get install -y libfreetype6-dev libpng-dev libjpeg62-turbo-dev git unzip msmtp
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install -j$(nproc) mysqli gd opcache
