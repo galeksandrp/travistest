@@ -1,0 +1,16 @@
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: aria2c http://www.skyrim-beautification-project.com/fallout4/mods/files/Best_Of_Ultra_DLC_Pack_01.rar
+      - run: aria2c http://www.skyrim-beautification-project.com/fallout4/mods/files/Best_Of_Ultra_DLC_Pack_02.rar
+      - run: aria2c http://www.skyrim-beautification-project.com/fallout4/mods/files/Best_Of_Ultra_DLC_Pack_03.rar
+      - run: aria2c http://www.skyrim-beautification-project.com/fallout4/mods/files/Best_Of_Ultra_DLC_Pack_04.rar
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: "*.rar"
