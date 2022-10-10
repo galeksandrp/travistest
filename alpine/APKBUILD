@@ -1,0 +1,55 @@
+# Contributor: Carlo Landmeter <clandmeter@alpinelinux.org>
+# Maintainer: Tuan M. Hoang <tmhoang@flatglobe.org>
+pkgname=x11vnc
+pkgver=0.9.16
+pkgrel=4
+pkgdesc="VNC server for real X displays"
+url="https://github.com/LibVNC/x11vnc"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="openssl1.1-compat-dev libjpeg-turbo-dev avahi-dev libvncserver-dev
+	automake autoconf"
+subpackages="$pkgname-doc"
+source="x11vnc-$pkgver.tar.gz::https://github.com/LibVNC/x11vnc/archive/$pkgver.tar.gz
+	0001-Fix-build-on-32bit-arches-with-64bit-time_t.patch::https://git.alpinelinux.org/aports/plain/community/x11vnc/0001-Fix-build-on-32bit-arches-with-64bit-time_t.patch?h=3.16-stable&id=19213cd943970a001423f262f7f61189281e6b3e
+	CVE-2020-29074.patch::https://git.alpinelinux.org/aports/plain/community/x11vnc/CVE-2020-29074.patch?h=3.16-stable&id=19213cd943970a001423f262f7f61189281e6b3e
+	gcc-10.patch::https://git.alpinelinux.org/aports/plain/community/x11vnc/gcc-10.patch?h=3.16-stable&id=19213cd943970a001423f262f7f61189281e6b3e
+	0001-Add-initial-support-for-setdesktopsize.patch::https://github.com/maxnet/x11vnc/commit/4b64054bbc05395478cd97012ed5a004338d46ab.patch
+	0002-setDesktopSize-support-disable-support-if-older-libv.patch::https://github.com/maxnet/x11vnc/commit/2872260fff9cc786137a060e2efb5251ff3043f4.patch
+	"
+
+# secfixes:
+#   0.9.16-r2:
+#     - CVE-2020-29074
+
+prepare() {
+	default_prepare
+	autoreconf -v --install
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" install
+}
+
+check() {
+	make check
+}
+
+sha512sums="69f65ee312f8dede6051b401304987502a213c6c28c7f41e855734f11de1fae14d5d493dc9c28b2e4b7c0be55f8dbd3b35dd2610aae910183772c3e626736fec  x11vnc-0.9.16.tar.gz
+7752f125b083ec2d8c778dcc460853d29cf62cd354dc454aa132d3eb1671ad4592923cca5360884cf86f25d989fa04db04120d5d70782d65164821d463107e2e  0001-Fix-build-on-32bit-arches-with-64bit-time_t.patch
+d2ee26414451a7e92b3c687c51abe74637cff247a264ebd46080dd570e05db3231425441e56b7ed4a39aa01b6f6ab600cf1b4c9a0216e8030983b43e1f609bda  CVE-2020-29074.patch
+594c364c21ae7274e521dd44ee265f0330be788e7ec6995fc0fce09f3cfa9e1f3340931490df77a42bb7f6d8a6d67eb918174599a901b26b30df59cf20ab6af5  gcc-10.patch
+9b896400b6afb40ffb4ab2ea623e8eebdb922e8edadd4029c525ce4bfe13c0bef871bba898f90eaaef1c36a68afa61a5acb398c4f608523c0a6d059dbf83e198  0001-Add-initial-support-for-setdesktopsize.patch
+8eb3780b8d918f272adccc5f9e0cfb3ae29678b7594d7b38924d5493d6bb379bc1cc0a49e7a41e55f32aeb8eedf72159a3309b6b720f1d50a244320d343c80b2  0002-setDesktopSize-support-disable-support-if-older-libv.patch"
