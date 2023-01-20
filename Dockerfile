@@ -8,4 +8,5 @@ RUN apk add --no-cache x11vnc \
   && Xdummy -install \
   && apk del linux-headers \
     build-base
+RUN wget -O /usr/share/X11/xorg.conf.d/20-xdummy.conf https://raw.githubusercontent.com/Xpra-org/xpra/master/fs/etc/xpra/xorg.conf
 CMD ["Xdummy"]
