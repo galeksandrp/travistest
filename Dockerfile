@@ -3,8 +3,7 @@ RUN pacman -Syu --noconfirm
 
 FROM archlinux-updated AS archlinux-sudo
 RUN pacman -Syu --noconfirm sudo
-RUN sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
-RUN grep '^%wheel ALL=(ALL) NOPASSWD: ALL' /etc/sudoers || echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/wheel
 
 # ng
 
@@ -37,6 +36,13 @@ RUN pacman -U --noconfirm /root/pkg/*.pkg*
 
 FROM archlinux-freenet
 
-RUN ((sleep 60 && freenet stop) &) && freenet console
+RUN ((sleep 30 && freenet stop) &) && freenet console
 
-RUN sed -i -e 's/^fproxy.bindTo=.*/fproxy.bindTo=0.0.0.0/' -e 's/^fproxy.allowedHosts=.*/fproxy.allowedHosts=*/' -e 's/^fproxy.allowedHostsFullAccess=.*/fproxy.allowedHostsFullAccess=*/' /opt/freenet/conf/freenet.ini
+RUN rm -rf /opt/freenet/plugins/WebOfTrust.jar
+
+RUN sed -i -e 's/^fproxy.bindTo=.*/fproxy.bindTo=0.0.0.0/' \
+  -e 's/^fproxy.allowedHosts=.*/fproxy.allowedHosts=*/' \
+  -e 's/^fproxy.allowedHostsFullAccess=.*/fproxy.allowedHostsFullAccess=*/' \
+  -e 's/^pluginmanager.loadplugin=WebOfTrust//' /opt/freenet/conf/freenet.ini
+
+RUN ((sleep 30 && freenet stop) &) && freenet console
