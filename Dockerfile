@@ -39,10 +39,11 @@ FROM archlinux-freenet
 RUN ((sleep 30 && freenet stop) &) && freenet console
 
 RUN rm -rf /opt/freenet/plugins/WebOfTrust.jar
+RUN curl -L --output /opt/freenet/plugins/UPnP2.jar https://github.com/freenet/plugin-UPnP2/releases/download/latest/freenet-UPnP2.jar
 
 RUN sed -i -e 's/^fproxy.bindTo=.*/fproxy.bindTo=0.0.0.0/' \
   -e 's/^fproxy.allowedHosts=.*/fproxy.allowedHosts=*/' \
   -e 's/^fproxy.allowedHostsFullAccess=.*/fproxy.allowedHostsFullAccess=*/' \
-  -e 's/^pluginmanager.loadplugin=WebOfTrust//' /opt/freenet/conf/freenet.ini
+  -e 's/^pluginmanager.loadplugin=WebOfTrust/pluginmanager.loadplugin=UPnP2/' /opt/freenet/conf/freenet.ini
 
 RUN ((sleep 30 && freenet stop) &) && freenet console
