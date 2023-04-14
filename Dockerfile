@@ -1,8 +1,8 @@
 FROM archlinux AS archlinux-updated
-RUN pacman -Syu --noconfirm && pacman -Scc --noconfirm
+RUN pacman -Syu --noconfirm tor && rm -rf /var/cache/pacman/pkg
 
 FROM archlinux-updated AS archlinux-sudo
-RUN pacman -Syu --noconfirm sudo && pacman -Scc --noconfirm
+RUN pacman -Syu --noconfirm sudo && rm -rf /var/cache/pacman/pkg
 RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/wheel
 
 # ng
@@ -12,12 +12,12 @@ RUN useradd -G wheel -m ng
 WORKDIR /home/ng
 
 FROM archlinux-ng AS archlinux-ng-toolchain
-RUN pacman -Syu --noconfirm base-devel && pacman -Scc --noconfirm
+RUN pacman -Syu --noconfirm base-devel && rm -rf /var/cache/pacman/pkg
 
 # yay
 
 FROM archlinux-ng-toolchain AS archlinux-yay-toolchain
-RUN pacman -Syu --noconfirm git && pacman -Scc --noconfirm
+RUN pacman -Syu --noconfirm git && rm -rf /var/cache/pacman/pkg
 RUN sudo -u ng git clone https://aur.archlinux.org/yay.git
 WORKDIR /home/ng/yay
 RUN sudo -u ng makepkg -si --noconfirm
@@ -34,4 +34,7 @@ RUN rm -rf /home/ng/.cache/yay/*/ungoogled-chromium-*.pkg*
 FROM archlinux-updated
 COPY --from=archlinux-yay-pkg /root/pkg /root/pkg
 COPY --from=archlinux-yay-pkg /home/ng/.cache/yay/*/*.pkg* /root/pkg/
-RUN pacman -U --noconfirm /root/pkg/*.pkg* && pacman -Scc --noconfirm
+RUN pacman -U --noconfirm /root/pkg/*.pkg* && rm -rf /var/cache/pacman/pkg
+RUN echo '--proxy-server="socks5://127.0.0.1:9050"' >> /etc/chromium-flags.conf
+RUN echo '--extension-mime-request-handling=always-prompt-for-install' >> /etc/chromium-flags.conf
+CMD ["sh", "-c", "(tor &) && exec chromium --no-sandbox"]
