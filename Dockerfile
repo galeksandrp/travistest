@@ -27,7 +27,7 @@ WORKDIR /home/ng
 RUN sudo -u ng gpg --recv-keys 0E51E7F06EF719FBD072782A5F56E5AFA63CCD33
 RUN sudo -u ng git clone -b packages/icu --depth=50 https://github.com/archlinux/svntogit-packages.git icu
 WORKDIR /home/ng/icu/trunk
-RUN git checkout 5709c1a0a314d08a3318b4074eccd480889e7fdd
+RUN sudo -u ng git checkout 5709c1a0a314d08a3318b4074eccd480889e7fdd
 RUN sudo -u ng makepkg -s --noconfirm
 
 # app download
