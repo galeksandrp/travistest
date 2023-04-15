@@ -35,3 +35,5 @@ FROM archlinux-updated
 COPY --from=archlinux-yay-pkg /root/pkg /root/pkg
 COPY --from=archlinux-yay-pkg /home/ng/.cache/yay/*/*.pkg* /root/pkg/
 RUN pacman -U --noconfirm /root/pkg/*.pkg* && rm -rf /var/cache/pacman/pkg
+RUN echo '--extension-mime-request-handling=always-prompt-for-install' >> /etc/chromium-flags.conf
+CMD ["chromium", "--no-sandbox"]
