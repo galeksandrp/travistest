@@ -1,8 +1,8 @@
 FROM archlinux AS archlinux-updated
-RUN pacman -Syu --noconfirm
+RUN pacman -Syu --noconfirm && rm -rf /var/cache/pacman/pkg
 
 FROM archlinux-updated AS archlinux-sudo
-RUN pacman -Syu --noconfirm sudo
+RUN pacman -Syu --noconfirm sudo && rm -rf /var/cache/pacman/pkg
 RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/wheel
 
 # ng
@@ -12,12 +12,12 @@ RUN useradd -G wheel -m ng
 WORKDIR /home/ng
 
 FROM archlinux-ng AS archlinux-ng-toolchain
-RUN pacman -Syu --noconfirm base-devel
+RUN pacman -Syu --noconfirm base-devel && rm -rf /var/cache/pacman/pkg
 
 # yay
 
 FROM archlinux-ng-toolchain AS archlinux-yay-toolchain
-RUN pacman -Syu --noconfirm git
+RUN pacman -Syu --noconfirm git && rm -rf /var/cache/pacman/pkg
 RUN sudo -u ng git clone https://aur.archlinux.org/yay.git
 WORKDIR /home/ng/yay
 RUN sudo -u ng makepkg -si --noconfirm
@@ -30,7 +30,7 @@ RUN sudo -u ng yay -Syu --noconfirm freenet
 
 FROM archlinux-updated AS archlinux-freenet
 COPY --from=archlinux-yay-pkg /home/ng/.cache/yay/*/*.pkg* /root/pkg/
-RUN pacman -U --noconfirm /root/pkg/*.pkg*
+RUN pacman -U --noconfirm /root/pkg/*.pkg* && rm -rf /var/cache/pacman/pkg
 
 # freenet
 
@@ -47,3 +47,5 @@ RUN sed -i -e 's/^fproxy.bindTo=.*/fproxy.bindTo=0.0.0.0/' \
   -e 's/^pluginmanager.loadplugin=WebOfTrust/pluginmanager.loadplugin=UPnP/' /opt/freenet/conf/freenet.ini
 
 RUN ((sleep 30 && freenet stop) &) && freenet console
+
+CMD ["freenet", "console"]
