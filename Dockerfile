@@ -1,8 +1,8 @@
 FROM archlinux AS archlinux-updated
-RUN pacman -Syu --noconfirm
+RUN pacman -Syu --noconfirm && rm -rf /var/cache/pacman/pkg
 
 FROM archlinux-updated AS archlinux-sudo
-RUN pacman -Syu --noconfirm sudo
+RUN pacman -Syu --noconfirm sudo && rm -rf /var/cache/pacman/pkg
 RUN sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 RUN grep '^%wheel ALL=(ALL) NOPASSWD: ALL' /etc/sudoers || echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
@@ -13,12 +13,12 @@ RUN useradd -G wheel -m ng
 WORKDIR /home/ng
 
 FROM archlinux-ng AS archlinux-ng-toolchain
-RUN pacman -Syu --noconfirm base-devel
+RUN pacman -Syu --noconfirm base-devel && rm -rf /var/cache/pacman/pkg
 
 # yay
 
 FROM archlinux-ng-toolchain AS archlinux-yay-toolchain
-RUN pacman -Syu --noconfirm git
+RUN pacman -Syu --noconfirm git && rm -rf /var/cache/pacman/pkg
 RUN sudo -u ng git clone https://aur.archlinux.org/yay.git
 WORKDIR /home/ng/yay
 RUN sudo -u ng makepkg -si --noconfirm
@@ -31,4 +31,5 @@ RUN sudo -u ng yay -Syu --noconfirm freenet
 
 FROM archlinux-updated
 COPY --from=archlinux-yay-pkg /home/ng/.cache/yay/*/*.pkg* /root/pkg/
-RUN pacman -U --noconfirm /root/pkg/*.pkg*
+RUN pacman -U --noconfirm /root/pkg/*.pkg* && rm -rf /var/cache/pacman/pkg
+CMD ["freenet", "console"]
