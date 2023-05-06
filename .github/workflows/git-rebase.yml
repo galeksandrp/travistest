@@ -43,7 +43,7 @@ jobs:
         - GITHUB_REPO: MagiskOnWSALocal
           GITHUB_UPSTREAM: LSPosed
           GITHUB_BRANCH: container
-          GITHUB_UPSTREAM_BRANCH: master
+          GITHUB_UPSTREAM_BRANCH: main
 
     steps:
       - run: git config --global user.email "3586205+galeksandrp@users.noreply.github.com"
