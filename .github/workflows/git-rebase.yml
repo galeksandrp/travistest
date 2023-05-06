@@ -40,6 +40,10 @@ jobs:
           GITHUB_UPSTREAM: phpshopsoftware
           GITHUB_BRANCH: ci
           GITHUB_UPSTREAM_BRANCH: master
+        - GITHUB_REPO: MagiskOnWSALocal
+          GITHUB_UPSTREAM: LSPosed
+          GITHUB_BRANCH: container
+          GITHUB_UPSTREAM_BRANCH: master
 
     steps:
       - run: git config --global user.email "3586205+galeksandrp@users.noreply.github.com"
