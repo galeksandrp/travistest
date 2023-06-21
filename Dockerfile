@@ -1,15 +1,39 @@
-FROM ubuntu:22.04
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  apt-transport-https \
-  software-properties-common \
-  ca-certificates \
-  wget \
-  && rm -rf /var/lib/apt/lists/*
-RUN wget -O "/usr/share/keyrings/xpra-2022.gpg" https://xpra.org/xpra-2022.gpg
-RUN wget -O "/usr/share/keyrings/xpra-2018.gpg" https://xpra.org/xpra-2018.gpg
-RUN wget -O "/etc/apt/sources.list.d/xpra.list" https://xpra.org/repos/jammy/xpra.list
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  xpra \
-  x11-xserver-utils \
-  && rm -rf /var/lib/apt/lists/*
-CMD ["xpra", "start", ":14", "--bind-tcp=0.0.0.0:10000", "--daemon=no"]
+
+FROM archlinux AS archlinux-updated
+RUN pacman -Syu --noconfirm && rm -rf /var/cache/pacman/pkg
+
+FROM archlinux-updated AS archlinux-sudo
+RUN pacman -Syu --noconfirm sudo && rm -rf /var/cache/pacman/pkg
+RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/wheel
+
+# ng
+
+FROM archlinux-sudo AS archlinux-ng
+RUN useradd -G wheel -m ng
+WORKDIR /home/ng
+
+FROM archlinux-ng AS archlinux-ng-toolchain
+RUN pacman -Syu --noconfirm base-devel && rm -rf /var/cache/pacman/pkg
+
+# yay
+
+FROM archlinux-ng-toolchain AS archlinux-yay-toolchain
+RUN pacman -Syu --noconfirm git && rm -rf /var/cache/pacman/pkg
+RUN sudo -u ng git clone https://aur.archlinux.org/yay.git
+WORKDIR /home/ng/yay
+RUN sudo -u ng makepkg -si --noconfirm
+RUN sudo -u ng gpg --search-keys galeksandrp || echo 'keyserver keys.gnupg.net' >> /home/ng/.gnupg/gpg.conf
+
+FROM archlinux-yay-toolchain AS archlinux-yay-pkg
+RUN sudo -u ng yay -Syu --noconfirm winbox
+
+# pkg
+
+FROM archlinux-updated AS archlinux-installed
+COPY --from=archlinux-yay-pkg /home/ng/.cache/yay/*/*.pkg* /root/pkg/
+RUN pacman -U --noconfirm /root/pkg/*.pkg* && rm -rf /var/cache/pacman/pkg
+
+# installed
+
+FROM archlinux-installed
+CMD ["/usr/bin/WinBox"]
