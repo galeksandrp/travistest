@@ -7,6 +7,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 RUN wget -O "/usr/share/keyrings/xpra-2022.gpg" https://xpra.org/xpra-2022.gpg
 RUN wget -O "/usr/share/keyrings/xpra-2018.gpg" https://xpra.org/xpra-2018.gpg
+RUN wget -O "/usr/share/keyrings/xpra.gpg" https://xpra.org/xpra.gpg
 RUN wget -O "/etc/apt/sources.list.d/xpra.list" https://xpra.org/repos/jammy/xpra.list
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   xpra \
