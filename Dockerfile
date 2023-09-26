@@ -29,4 +29,4 @@ RUN curl -L 'https://github.com/galeksandrp/galeksandrp/releases/download/1c/ser
     --disable-components client_full \
     --installer-language en \
   && rm -rf /root/1c-installer
-CMD [ "sh", "-c", "/opt/1cv8/x86_64/8.3.22.2239/srv1cv83 start && exec tail --pid=$(pidof ragent) -f /dev/null" ]
+CMD [ "/opt/1cv8/x86_64/8.3.22.2239/ragent", "-d", "/home/usr1cv8/.1cv8/1C/1cv8", "-port", "1540", "-regport", "1541", "-range", "1560:1591", "-seclev", "0", "-pingPeriod", "1000", "-pingTimeout", "5000" ]
