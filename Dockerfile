@@ -22,7 +22,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   ttf-mscorefonts-installer \
   && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /root/1c-installer/untar
-RUN curl -L 'https://github.com/galeksandrp/galeksandrp/releases/download/1c/server64_8_3_20_1674.tar.gz' | tar xz -C /root/1c-installer/untar \
+RUN curl -L 'https://github.com/galeksandrp/galeksandrp/releases/download/1c/server64_8_3_22_2239.tar.gz' | tar xz -C /root/1c-installer/untar \
   && /root/1c-installer/untar/setup-full-*-x86_64.run \
     --mode unattended \
     --enable-components server \
