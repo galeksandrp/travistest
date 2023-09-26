@@ -30,4 +30,4 @@ RUN mkdir -p /root/1c-setup/untar \
     --installer-language en \
   && rm -rf /root/1c-setup
 # docker run --init required, -v/tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY for GUI
-CMD [ "sh", "-c", "/opt/1cv8/x86_64/8.3.20.1674/1cv8s && APPPID=$(pidof 1cv8 || pidof 1cv8c) && exec tail --pid=$APPPID -f /dev/null" ]
+CMD [ "sh", "-c", "/opt/1cv8/x86_64/8.3.22.2239/1cv8s && APPPID=$(pidof 1cv8 || pidof 1cv8c) && exec tail --pid=$APPPID -f /dev/null" ]
