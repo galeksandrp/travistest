@@ -1,7 +1,7 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   libgtk-3-0 \
-  libenchant1c2a \
+  libenchant-2-dev \
   libharfbuzz-icu0 \
   libgstreamer1.0-0 \
   libgstreamer-plugins-base1.0-0 \
