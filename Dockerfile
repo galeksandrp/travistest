@@ -1,0 +1,23 @@
+FROM debian
+RUN apt-get update && apt-get install -y \
+  wget \
+  && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /root/hypha
+RUN wget -O /root/hypha/hyphanet-fred.deb https://github.com/hyphanet/fred/releases/download/build01498/hyphanet-fred-build01498.deb \
+  && apt-get update && apt-get install -y \
+  /root/hypha/hyphanet-fred.deb \
+  && rm -rf /root/hypha \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN chown -R freenet:freenet /etc/freenet
+
+RUN ((sleep 30 && /etc/init.d/freenet stop) &) && /etc/init.d/freenet console
+
+RUN sed -i -e 's/^fproxy.bindTo=.*/fproxy.bindTo=0.0.0.0/' \
+  -e 's/^fproxy.allowedHosts=.*/fproxy.allowedHosts=*/' \
+  -e 's/^fproxy.allowedHostsFullAccess=.*/fproxy.allowedHostsFullAccess=*/' \
+  -e 's/^pluginmanager.loadplugin=.*/pluginmanager.loadplugin=UPnP/' /etc/freenet/freenet.ini
+
+RUN ((sleep 30 && /etc/init.d/freenet stop) &) && /etc/init.d/freenet console
+
+CMD ["/etc/init.d/freenet", "console"]

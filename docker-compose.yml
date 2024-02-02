@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  pve:
+    image: galeksandrp/travistest:docker-pve
+    ports:
+      - "8006:8006"
+    devices:
+      - /dev/kvm:/dev/kvm
+      - /dev/fuse:/dev/fuse
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    cap_add:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /run/lock
+    network_mode: "host"
