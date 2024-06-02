@@ -48,6 +48,10 @@ jobs:
           GITHUB_UPSTREAM: Prowlarr
           GITHUB_BRANCH: tor-hidden-sites-wip
           GITHUB_UPSTREAM_BRANCH: master
+        - GITHUB_REPO: search-plugins
+          GITHUB_UPSTREAM: qbittorrent
+          GITHUB_BRANCH: jackett-test
+          GITHUB_UPSTREAM_BRANCH: master
 
     steps:
       - run: git config --global user.email "3586205+galeksandrp@users.noreply.github.com"
