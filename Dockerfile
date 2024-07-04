@@ -13,6 +13,8 @@ RUN chown -R freenet:freenet /etc/freenet
 
 RUN ((sleep 30 && /etc/init.d/freenet stop) &) && /etc/init.d/freenet console
 
+RUN wget -O /var/lib/freenet/plugins/UPnP.jar https://github.com/galeksandrp/plugin-UPnP/releases/download/10007/UPnP.jar
+
 RUN sed -i -e 's/^fproxy.bindTo=.*/fproxy.bindTo=0.0.0.0/' \
   -e 's/^fproxy.allowedHosts=.*/fproxy.allowedHosts=*/' \
   -e 's/^fproxy.allowedHostsFullAccess=.*/fproxy.allowedHostsFullAccess=*/' \
