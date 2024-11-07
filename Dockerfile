@@ -24,28 +24,14 @@ RUN sudo -u ng makepkg -si --noconfirm
 RUN sudo -u ng gpg --search-keys galeksandrp || echo 'keyserver keys.gnupg.net' >> /home/ng/.gnupg/gpg.conf
 
 FROM archlinux-yay-toolchain AS archlinux-yay-pkg
-RUN sudo -u ng yay -Syu --noconfirm freenet
+RUN sudo -u ng yay -Syu --noconfirm jackett
 
 # pkg
 
-FROM archlinux-updated AS archlinux-freenet
+FROM archlinux-updated AS archlinux-installed
 COPY --from=archlinux-yay-pkg /home/ng/.cache/yay/*/*.pkg* /root/pkg/
 RUN pacman -U --noconfirm /root/pkg/*.pkg* && rm -rf /var/cache/pacman/pkg
 
-# freenet
+# installed
 
-FROM archlinux-freenet
-
-RUN ((sleep 30 && freenet stop) &) && freenet console
-
-RUN rm -rf /opt/freenet/plugins/WebOfTrust.jar
-RUN curl -L --output /opt/freenet/plugins/UPnP.jar https://github.com/galeksandrp/plugin-UPnP/releases/download/10007/UPnP.jar
-
-RUN sed -i -e 's/^fproxy.bindTo=.*/fproxy.bindTo=0.0.0.0/' \
-  -e 's/^fproxy.allowedHosts=.*/fproxy.allowedHosts=*/' \
-  -e 's/^fproxy.allowedHostsFullAccess=.*/fproxy.allowedHostsFullAccess=*/' \
-  -e 's/^pluginmanager.loadplugin=WebOfTrust/pluginmanager.loadplugin=UPnP/' /opt/freenet/conf/freenet.ini
-
-RUN ((sleep 30 && freenet stop) &) && freenet console
-
-CMD ["freenet", "console"]
+FROM archlinux-installed
