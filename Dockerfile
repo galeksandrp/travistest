@@ -35,3 +35,4 @@ RUN pacman -U --noconfirm /root/pkg/*.pkg* && rm -rf /var/cache/pacman/pkg
 # installed
 
 FROM archlinux-installed
+CMD ["sh", "-c", "exec $(cat /usr/lib/systemd/system/jackett.service | grep ExecStart | head -1 | cut -d= -f2)"]
