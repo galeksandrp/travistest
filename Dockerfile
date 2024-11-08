@@ -24,7 +24,7 @@ RUN sudo -u ng makepkg -si --noconfirm
 RUN sudo -u ng gpg --search-keys galeksandrp || echo 'keyserver keys.gnupg.net' >> /home/ng/.gnupg/gpg.conf
 
 FROM archlinux-yay-toolchain AS archlinux-yay-pkg
-RUN sudo -u ng yay -Syu --noconfirm jackett
+RUN sudo -u ng yay -Syu --noconfirm docker-systemctl-replacement-git jackett
 
 # pkg
 
@@ -35,4 +35,4 @@ RUN pacman -U --noconfirm /root/pkg/*.pkg* && rm -rf /var/cache/pacman/pkg
 # installed
 
 FROM archlinux-installed
-CMD ["sh", "-c", "exec $(cat /usr/lib/systemd/system/jackett.service | grep ExecStart | head -1 | cut -d= -f2)"]
+CMD ["/usr/bin/systemctl.py", "init", "jackett"]
