@@ -36,3 +36,4 @@ RUN pacman -U --noconfirm /root/pkg/*.pkg* && rm -rf /var/cache/pacman/pkg
 
 FROM archlinux-installed
 CMD ["/usr/bin/systemctl.py", "init", "jackett"]
+EXPOSE 9117
