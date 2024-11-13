@@ -11,4 +11,9 @@ RUN apt-get update && apt-get install -y \
   && /etc/init.d/postgrespro-1c-12 stop \
   && rm -rf /var/lib/apt/lists/*
 USER postgres
-CMD [ "/opt/pgpro/1c-12/bin/postgres", "-D", "/var/lib/pgpro/1c-12/data" ]
+CMD ["bash", "-c", "((sleep 30 \
+    && psql -c \"ALTER USER postgres PASSWORD '$POSTGRES_PASSWORD';\" \
+    && (createuser --no-password $POSTGRES_USER \
+      ; psql -c \"ALTER USER $POSTGRES_USER PASSWORD '$POSTGRES_USER_PASSWORD';\") \
+      && createdb --owner=$POSTGRES_USER $POSTGRES_USER) &) \
+  && exec /opt/pgpro/1c-12/bin/postgres -D /var/lib/pgpro/1c-12/data"]
