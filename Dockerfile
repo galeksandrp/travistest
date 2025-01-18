@@ -1,7 +1,4 @@
-FROM alpine:3.20.3
-RUN apk update --no-cache && apk add --no-cache \
-    tor
+FROM openwrt/rootfs
 
-USER tor
-
-CMD ["/usr/bin/tor"]
+RUN opkg update
+RUN opkg install nano luci
