@@ -1,7 +1,3 @@
-FROM alpine:3.20.3
+FROM alpine:3.22.1
 RUN apk update --no-cache && apk add --no-cache \
-    tor
-
-USER tor
-
-CMD ["/usr/bin/tor"]
+    rsync
