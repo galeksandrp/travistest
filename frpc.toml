@@ -1,0 +1,2 @@
+serverAddr = "{{ .Envs.FRP_SERVER_ADDR }}"
+auth.token = "{{ .Envs.FRP_AUTH_TOKEN }}"

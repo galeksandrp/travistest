@@ -11,6 +11,12 @@ on:
   push:
     branches:
       - '**'
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Test'
+        required: false 
+        type: boolean
 
 #env:
   # Use docker.io for Docker Hub if empty

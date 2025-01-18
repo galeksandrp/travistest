@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+   frpc:
+     image: galeksandrp/travistest:docker-frpc
+     restart: always
+     environment:
+       FRP_SERVER_ADDR: css-okyes.ru
+       FRP_AUTH_TOKEN: cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e
+       FRP_SIMPLEHTTP_TEST: www.example.com:80:test1.209.css-okyes.ru
+       FRP_PROXYHTTP_TEST_NAME: test
+       FRP_PROXYHTTP_TEST_LOCAL_IP: www.example.com
+       FRP_PROXYHTTP_TEST_LOCAL_PORT: 80
+       FRP_PROXYHTTP_TEST_CUSTOM_DOMAINS: test.209.css-okyes.ru

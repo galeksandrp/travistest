@@ -1,7 +1,7 @@
-FROM alpine:3.20.3
-RUN apk update --no-cache && apk add --no-cache \
-    tor
+FROM fatedier/frpc:v0.65.0
 
-USER tor
+COPY frpc.toml frpc.toml
+COPY frpc.sh frpc.sh
 
-CMD ["/usr/bin/tor"]
+ENTRYPOINT [""]
+CMD ["./frpc.sh"]
