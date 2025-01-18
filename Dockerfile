@@ -1,7 +1,7 @@
-FROM alpine:3.20.3
+FROM alpine/git
+
+COPY cron.sh /root/cron.sh
+RUN chmod +x /root/cron.sh
+
 RUN apk update --no-cache && apk add --no-cache \
-    tor
-
-USER tor
-
-CMD ["/usr/bin/tor"]
+    cron
