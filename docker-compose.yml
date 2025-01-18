@@ -12,3 +12,6 @@ services:
        FRP_PROXYHTTP_TEST_LOCAL_IP: www.example.com
        FRP_PROXYHTTP_TEST_LOCAL_PORT: 80
        FRP_PROXYHTTP_TEST_CUSTOM_DOMAINS: test.209.css-okyes.ru
+       FRP_SIMPLEHTTPS2HTTP_TEST: www.example.com:80:test2.209.css-okyes.ru:209.css-okyes.ru
+     volumes:
+       - /DATA/AppData/certbot-dns-cloudflare/etc/letsencrypt:/etc/letsencrypt
