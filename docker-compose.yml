@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+   certbot:
+     image: galeksandrp/travistest:docker-certbot-dns-cloudflare
+     restart: always
+     environment:
+       DNS_CLOUDFLARE_API_TOKEN: xx
+       DOMAIN: "*.151.css-okyes.ru"
+     volumes:
+       - /DATA/AppData/certbot-dns-cloudflare/etc/letsencrypt:/etc/letsencrypt
