@@ -3,7 +3,7 @@ RUN apt-get update && apt-get install -y \
   wget \
   && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /root/hypha
-RUN wget -O /root/hypha/hyphanet-fred.deb https://github.com/hyphanet/fred/releases/download/build01498/hyphanet-fred-build01498.deb \
+RUN wget -O /root/hypha/hyphanet-fred.deb https://github.com/hyphanet/fred/releases/download/build01499/freenet_0.7.5+1499-1_amd64.deb \
   && apt-get update && apt-get install -y \
   /root/hypha/hyphanet-fred.deb \
   && rm -rf /root/hypha \
