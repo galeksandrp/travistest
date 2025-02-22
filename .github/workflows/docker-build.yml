@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
 
       - id: git-branches
-        run: echo "::set-output name=step::$(git branch -r --list 'origin/docker-arch-*' | cut -d '/' -f2 | jq  --raw-input | jq --slurp -c)"
+        run: echo "::set-output name=step::$((git branch -r --list 'origin/docker-arch-*' ; git branch -r --list 'origin/docker-alpine-*') | cut -d '/' -f2 | jq  --raw-input | jq --slurp -c)"
 
   docker-build:
     needs: git-branches
