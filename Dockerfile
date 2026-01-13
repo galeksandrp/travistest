@@ -1,14 +1,14 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   apt-transport-https \
   software-properties-common \
   ca-certificates \
   wget \
   && rm -rf /var/lib/apt/lists/*
-RUN wget -O "/usr/share/keyrings/xpra-2022.gpg" https://xpra.org/xpra-2022.gpg
-RUN wget -O "/usr/share/keyrings/xpra-2018.gpg" https://xpra.org/xpra-2018.gpg
-RUN wget -O "/usr/share/keyrings/xpra.gpg" https://xpra.org/xpra.gpg
-RUN wget -O "/etc/apt/sources.list.d/xpra.list" https://xpra.org/repos/jammy/xpra.list
+
+RUN wget -O "/usr/share/keyrings/xpra.asc" https://xpra.org/xpra.asc
+RUN wget -O "/etc/apt/sources.list.d/xpra.sources" https://raw.githubusercontent.com/Xpra-org/xpra/master/packaging/repos/noble/xpra.sources
+
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   xpra \
   x11-xserver-utils \
