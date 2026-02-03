@@ -1,4 +1,4 @@
-FROM alpine:3.16.2
+FROM alpine:3.23.3
 RUN apk add --update alpine-sdk
 RUN adduser -D ng -G abuild
 RUN mkdir -p /var/cache/distfiles/
